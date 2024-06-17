@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="msilib --- Microsoft インストーラーファイルの読み書き" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/msilib.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/msilib/__init__.py msilib モジュールは Microsoft インストーラー(.msi)の作成を支援します。このファイルは大抵の場合埋め込まれた「キャビネット」ファイル (.cab) を含むので、CAB ファイル作成用の API も公開されています。.cab ファイルの読み出しは現時点では実装されていませんが、.msi データベースの読み出しは..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/msilib/__init__.py msilib モジュールは Microsoft インストーラー(.msi)の作成を支援します。このファイルは大抵の場合埋め込まれた「キャビネット」ファイル (.cab) を含むので、CAB ファイル作成用の API も公開されています。.cab ファイルの読み出しは現時点では実装されていませんが、.msi データベースの読み出しは..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>msilib --- Microsoft インストーラーファイルの読み書き &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="nis --- Sun の NIS (Yellow Pages) へのインターフェース" href="nis.html" />
+    <link rel="prev" title="mailcap --- mailcap ファイルの操作" href="mailcap.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/msilib.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="msilib.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code> --- Microsoft インストーラーファイルの読み書き</a><ul>
+<li><a class="reference internal" href="msilib.html#database-objects">データベースオブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#view-objects">ビューオブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#summary-information-objects">サマリー情報オブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#record-objects">レコードオブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#errors">エラー</a></li>
+<li><a class="reference internal" href="msilib.html#cab-objects">CAB オブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#directory-objects">ディレクトリオブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#features">フィーチャー</a></li>
+<li><a class="reference internal" href="msilib.html#gui-classes">GUI クラス</a></li>
+<li><a class="reference internal" href="msilib.html#precomputed-tables">事前に計算されたテーブル</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="mailcap.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mailcap</span></code> --- mailcap ファイルの操作</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="nis.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nis</span></code> --- Sun の NIS (Yellow Pages) へのインターフェース</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/msilib.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="nis.html" title="nis --- Sun の NIS (Yellow Pages) へのインターフェース"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="mailcap.html" title="mailcap --- mailcap ファイルの操作"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="superseded.html" accesskey="U">取って代わられたモジュール群</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="msilib.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code> --- Microsoft インストーラーファイルの読み書き</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-msilib">
+<span id="msilib-read-and-write-microsoft-installer-files"></span><h1><a class="reference internal" href="msilib.html#module-msilib" title="msilib: Creation of Microsoft Installer files, and CAB files. (非推奨) (Windows)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code></a> --- Microsoft インストーラーファイルの読み書き<a class="headerlink" href="msilib.html#module-msilib" title="Link to this heading">¶</a></h1>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/msilib/__init__.py">Lib/msilib/__init__.py</a></p>
+<div class="deprecated-removed" id="index-0">
+<p><span class="versionmodified">バージョン 3.11 で非推奨、バージョン 3.13 で削除予定: </span>The <a class="reference internal" href="msilib.html#module-msilib" title="msilib: Creation of Microsoft Installer files, and CAB files. (非推奨) (Windows)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code></a> module is deprecated
+(see <span class="target" id="index-1"></span><a class="pep reference external" href="https://peps.python.org/pep-0594/#msilib"><strong>PEP 594</strong></a> for details).</p>
+</div>
+<hr class="docutils" />
+<p><a class="reference internal" href="msilib.html#module-msilib" title="msilib: Creation of Microsoft Installer files, and CAB files. (非推奨) (Windows)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code></a> モジュールは Microsoft インストーラー(<code class="docutils literal notranslate"><span class="pre">.msi</span></code>)の作成を支援します。このファイルは大抵の場合埋め込まれた「キャビネット」ファイル (<code class="docutils literal notranslate"><span class="pre">.cab</span></code>) を含むので、CAB ファイル作成用の API も公開されています。<code class="docutils literal notranslate"><span class="pre">.cab</span></code> ファイルの読み出しは現時点では実装されていませんが、 <code class="docutils literal notranslate"><span class="pre">.msi</span></code> データベースの読み出しは可能です。</p>
+<p>このパッケージの目的は <code class="docutils literal notranslate"><span class="pre">.msi</span></code> ファイルにある全てのテーブルへの完全なアクセスの提供であり、提供されているものは非常に低レベルな API です。このパッケージの一つの主要な使用目的は Python インストーラーパッケージそれ自体(と言いつつ現在は別バージョンの <code class="docutils literal notranslate"><span class="pre">msilib</span></code> を使っているのですが)です。</p>
+<p>パッケージの内容は大きく四つのパートに分けられます。低レベル CAB ルーチン、低レベル MSI ルーチン、少し高レベルの MSI ルーチン、標準的なテーブル構造、の四つです。</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="msilib.FCICreate">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">FCICreate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cabname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">files</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.FCICreate" title="Link to this definition">¶</a></dt>
+<dd><p>新しい CAB ファイルを <em>cabname</em> という名前で作ります。<em>files</em> はタプルのリストで、それぞれのタプルはディスク上のファイル名と CAB ファイルで付けられるファイル名で構成されなければなりません。</p>
+<p>ファイルはリストに現れた順番で CAB ファイルに追加されます。全てのファイルは MSZIP 圧縮アルゴリズムを使って一つの CAB ファイルに追加されます。</p>
+<p>MSI 作成の様々なステップに対する Python コールバックは現在公開されていません。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="msilib.UuidCreate">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">UuidCreate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.UuidCreate" title="Link to this definition">¶</a></dt>
+<dd><p>新しい一意な識別子の文字列表現を返します。この関数は Windows API の関数 <code class="xref c c-func docutils literal notranslate"><span class="pre">UuidCreate()</span></code> と <code class="xref c c-func docutils literal notranslate"><span class="pre">UuidToString()</span></code> をラップしたものです。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="msilib.OpenDatabase">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">OpenDatabase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">persist</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.OpenDatabase" title="Link to this definition">¶</a></dt>
+<dd><p>MsiOpenDatabase を呼び出して新しいデータベースオブジェクトを返します。<em>path</em> は MSI ファイルのファイル名です。<em>persist</em> は五つの定数 <code class="docutils literal notranslate"><span class="pre">MSIDBOPEN_CREATEDIRECT</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIDBOPEN_CREATE</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIDBOPEN_DIRECT</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIDBOPEN_READONLY</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIDBOPEN_TRANSACT</span></code> のどれか一つで、フラグ <code class="docutils literal notranslate"><span class="pre">MSIDBOPEN_PATCHFILE</span></code> を含めても構いません。これらのフラグの意味は Microsoft のドキュメントを参照してください。フラグに従って、既存のデータベースを開いたり新しいデータベースを作成したりします。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="msilib.CreateRecord">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">CreateRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.CreateRecord" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MSICreateRecord()</span></code> を呼び出して新しいレコードオブジェクトを返します。 <em>count</em> はレコードのフィールドの数です。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="msilib.init_database">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">init_database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">schema</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ProductName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ProductCode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ProductVersion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Manufacturer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.init_database" title="Link to this definition">¶</a></dt>
+<dd><p><em>name</em> という名前の新しいデータベースを作り、<em>schema</em> で初期化し、プロパティ <em>ProductName</em>, <em>ProductCode</em>, <em>ProductVersion</em>, <em>Manufacturer</em> をセットして、返します。</p>
+<p><em>schema</em> は <code class="docutils literal notranslate"><span class="pre">tables</span></code> と <code class="docutils literal notranslate"><span class="pre">_Validation_records</span></code> という属性をもったモジュールオブジェクトでなければなりません。大抵の場合、 <a class="reference internal" href="msilib.html#msilib.schema" title="msilib.schema"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib.schema</span></code></a> を使うべきです。</p>
+<p>データベースはこの関数から返された時点でスキーマとバリデーションレコードだけが収められています。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="msilib.add_data">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">add_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.add_data" title="Link to this definition">¶</a></dt>
+<dd><p>全ての <em>records</em> を <em>database</em> の <em>table</em> テーブルに追加します。</p>
+<p><em>table</em> 引数は MSI スキーマで事前に定義されたテーブルでなければなりません。例えば、<code class="docutils literal notranslate"><span class="pre">'Feature'</span></code>, <code class="docutils literal notranslate"><span class="pre">'File'</span></code>, <code class="docutils literal notranslate"><span class="pre">'Component'</span></code>, <code class="docutils literal notranslate"><span class="pre">'Dialog'</span></code>, <code class="docutils literal notranslate"><span class="pre">'Control'</span></code>, などです。</p>
+<p><em>records</em> はタプルのリストで、それぞれのタプルにはテーブルのスキーマに従ったレコードの全てのフィールドを含んでいるものでなければなりません。オプションのフィールドには <code class="docutils literal notranslate"><span class="pre">None</span></code> を渡すことができます。</p>
+<p>フィールドの値には、整数・文字列・Binary クラスのインスタンスが使えます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="msilib.Binary">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">Binary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Binary" title="Link to this definition">¶</a></dt>
+<dd><p>Binary テーブル中のエントリーを表わします。 <a class="reference internal" href="msilib.html#msilib.add_data" title="msilib.add_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_data()</span></code></a> を使ってこのクラスのオブジェクトを挿入するときには <em>filename</em> という名前のファイルをテーブルに読み込みます。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="msilib.add_tables">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">add_tables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.add_tables" title="Link to this definition">¶</a></dt>
+<dd><p><em>module</em> の全てのテーブルの内容を <em>database</em> に追加します。<em>module</em> は <em>tables</em> という内容が追加されるべき全てのテーブルのリストと、テーブルごとに一つある実際の内容を持っている属性とを含んでいなければなりません。</p>
+<p>この関数は典型的にシーケンステーブルをインストールするために使われます。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="msilib.add_stream">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">add_stream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.add_stream" title="Link to this definition">¶</a></dt>
+<dd><p><em>database</em> の <code class="docutils literal notranslate"><span class="pre">_Stream</span></code> テーブルに、ファイル <em>path</em> を <em>name</em> というストリーム名で追加します。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="msilib.gen_uuid">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">gen_uuid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.gen_uuid" title="Link to this definition">¶</a></dt>
+<dd><p>新しい UUID を、MSI が通常要求する形式(つまり、中括弧で囲み、16進数は大文字)で返します。</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<p><a class="reference external" href="https://msdn.microsoft.com/en-us/library/bb432265.aspx">FCICreate</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa379205.aspx">UuidCreate</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa379352.aspx">UuidToString</a></p>
+</div>
+<section id="database-objects">
+<span id="id1"></span><h2>データベースオブジェクト<a class="headerlink" href="msilib.html#database-objects" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Database.OpenView">
+<span class="sig-prename descclassname"><span class="pre">Database.</span></span><span class="sig-name descname"><span class="pre">OpenView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Database.OpenView" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MSIDatabaseOpenView()</span></code> を呼び出して取得したビューオブジェクトを返します。 <em>sql</em> は実行される SQL ステートメントです。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Database.Commit">
+<span class="sig-prename descclassname"><span class="pre">Database.</span></span><span class="sig-name descname"><span class="pre">Commit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Database.Commit" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MSIDatabaseCommit()</span></code> を呼び出して現在のトランザクションで保留されている変更をコミットします。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Database.GetSummaryInformation">
+<span class="sig-prename descclassname"><span class="pre">Database.</span></span><span class="sig-name descname"><span class="pre">GetSummaryInformation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">count</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Database.GetSummaryInformation" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiGetSummaryInformation()</span></code> を呼び出して新しいサマリー情報オブジェクトを返します。 <em>count</em> は更新された値の最大数です。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Database.Close">
+<span class="sig-prename descclassname"><span class="pre">Database.</span></span><span class="sig-name descname"><span class="pre">Close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Database.Close" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiCloseHandle()</span></code> を通してデータベースオブジェクトを閉じます。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.7.</span></p>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<p><a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370082.aspx">MSIDatabaseOpenView</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370075.aspx">MSIDatabaseCommit</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370301.aspx">MSIGetSummaryInformation</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370067.aspx">MsiCloseHandle</a></p>
+</div>
+</section>
+<section id="view-objects">
+<span id="id2"></span><h2>ビューオブジェクト<a class="headerlink" href="msilib.html#view-objects" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.View.Execute">
+<span class="sig-prename descclassname"><span class="pre">View.</span></span><span class="sig-name descname"><span class="pre">Execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.View.Execute" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MSIViewExecute()</span></code> を通してビューに対する SQL 問い合わせを実行します。 <em>params</em> が <code class="docutils literal notranslate"><span class="pre">None</span></code> でない場合、クエリ中のパラメータトークンの実際の値を与えるものです。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.View.GetColumnInfo">
+<span class="sig-prename descclassname"><span class="pre">View.</span></span><span class="sig-name descname"><span class="pre">GetColumnInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.View.GetColumnInfo" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiViewGetColumnInfo()</span></code> の呼び出しを通してビューのカラムを説明するレコードを返します。 <em>kind</em> は <code class="docutils literal notranslate"><span class="pre">MSICOLINFO_NAMES</span></code> または <code class="docutils literal notranslate"><span class="pre">MSICOLINFO_TYPES</span></code> です。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.View.Fetch">
+<span class="sig-prename descclassname"><span class="pre">View.</span></span><span class="sig-name descname"><span class="pre">Fetch</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.View.Fetch" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiViewFetch()</span></code> の呼び出しを通してクエリの結果レコードを返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.View.Modify">
+<span class="sig-prename descclassname"><span class="pre">View.</span></span><span class="sig-name descname"><span class="pre">Modify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.View.Modify" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiViewModify()</span></code> を呼び出してビューを変更します。 <em>kind</em> は <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_SEEK</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_REFRESH</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_INSERT</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_UPDATE</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_ASSIGN</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_REPLACE</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_MERGE</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_DELETE</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_INSERT_TEMPORARY</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_VALIDATE</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_VALIDATE_NEW</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_VALIDATE_FIELD</span></code>, <code class="docutils literal notranslate"><span class="pre">MSIMODIFY_VALIDATE_DELETE</span></code> のいずれかです。</p>
+<p><em>data</em> は新しいデータを表わすレコードでなければなりません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.View.Close">
+<span class="sig-prename descclassname"><span class="pre">View.</span></span><span class="sig-name descname"><span class="pre">Close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.View.Close" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiViewClose()</span></code> を通してビューを閉じます。</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<p><a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370513.aspx">MsiViewExecute</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370516.aspx">MSIViewGetColumnInfo</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370514.aspx">MsiViewFetch</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370519.aspx">MsiViewModify</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370510.aspx">MsiViewClose</a></p>
+</div>
+</section>
+<section id="summary-information-objects">
+<span id="summary-objects"></span><h2>サマリー情報オブジェクト<a class="headerlink" href="msilib.html#summary-information-objects" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.SummaryInformation.GetProperty">
+<span class="sig-prename descclassname"><span class="pre">SummaryInformation.</span></span><span class="sig-name descname"><span class="pre">GetProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.SummaryInformation.GetProperty" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiSummaryInfoGetProperty()</span></code> を通してサマリーのプロパティを返します。 <em>field</em> はプロパティ名で、定数 <code class="docutils literal notranslate"><span class="pre">PID_CODEPAGE</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_TITLE</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_SUBJECT</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_AUTHOR</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_KEYWORDS</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_COMMENTS</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_TEMPLATE</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_LASTAUTHOR</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_REVNUMBER</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_LASTPRINTED</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_CREATE_DTM</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_LASTSAVE_DTM</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_PAGECOUNT</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_WORDCOUNT</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_CHARCOUNT</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_APPNAME</span></code>, <code class="docutils literal notranslate"><span class="pre">PID_SECURITY</span></code> のいずれかです。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.SummaryInformation.GetPropertyCount">
+<span class="sig-prename descclassname"><span class="pre">SummaryInformation.</span></span><span class="sig-name descname"><span class="pre">GetPropertyCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.SummaryInformation.GetPropertyCount" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiSummaryInfoGetPropertyCount()</span></code> を通してサマリープロパティの個数を返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.SummaryInformation.SetProperty">
+<span class="sig-prename descclassname"><span class="pre">SummaryInformation.</span></span><span class="sig-name descname"><span class="pre">SetProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.SummaryInformation.SetProperty" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiSummaryInfoSetProperty()</span></code> を通してプロパティをセットします。 <em>field</em> は <a class="reference internal" href="msilib.html#msilib.SummaryInformation.GetProperty" title="msilib.SummaryInformation.GetProperty"><code class="xref py py-meth docutils literal notranslate"><span class="pre">GetProperty()</span></code></a> におけるものと同じ値をとります。 <em>value</em> はプロパティの新しい値です。許される値の型は整数と文字列です。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.SummaryInformation.Persist">
+<span class="sig-prename descclassname"><span class="pre">SummaryInformation.</span></span><span class="sig-name descname"><span class="pre">Persist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.SummaryInformation.Persist" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiSummaryInfoPersist()</span></code> を使って変更されたプロパティをサマリー情報ストリームに書き込みます。</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<p><a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370409.aspx">MsiSummaryInfoGetProperty</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370488.aspx">MsiSummaryInfoGetPropertyCount</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370491.aspx">MsiSummaryInfoSetProperty</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370490.aspx">MsiSummaryInfoPersist</a></p>
+</div>
+</section>
+<section id="record-objects">
+<span id="id3"></span><h2>レコードオブジェクト<a class="headerlink" href="msilib.html#record-objects" title="Link to this heading">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Record.GetFieldCount">
+<span class="sig-prename descclassname"><span class="pre">Record.</span></span><span class="sig-name descname"><span class="pre">GetFieldCount</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Record.GetFieldCount" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiRecordGetFieldCount()</span></code> を通してレコードのフィールド数を返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Record.GetInteger">
+<span class="sig-prename descclassname"><span class="pre">Record.</span></span><span class="sig-name descname"><span class="pre">GetInteger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Record.GetInteger" title="Link to this definition">¶</a></dt>
+<dd><p><em>field</em> の値を可能なら整数として返します。<em>field</em> は整数でなければなりません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Record.GetString">
+<span class="sig-prename descclassname"><span class="pre">Record.</span></span><span class="sig-name descname"><span class="pre">GetString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Record.GetString" title="Link to this definition">¶</a></dt>
+<dd><p><em>field</em> の値を可能なら文字列として返します。<em>field</em> は整数でなければなりません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Record.SetString">
+<span class="sig-prename descclassname"><span class="pre">Record.</span></span><span class="sig-name descname"><span class="pre">SetString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Record.SetString" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiRecordSetString()</span></code> を通して <em>field</em> を <em>value</em> にセットします。 <em>field</em> は整数、 <em>value</em> は文字列でなければなりません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Record.SetStream">
+<span class="sig-prename descclassname"><span class="pre">Record.</span></span><span class="sig-name descname"><span class="pre">SetStream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Record.SetStream" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiRecordSetStream()</span></code> を通して <em>field</em> を <em>value</em> という名のファイルの内容にセットします。 <em>field</em> は整数、 <em>value</em> は文字列でなければなりません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Record.SetInteger">
+<span class="sig-prename descclassname"><span class="pre">Record.</span></span><span class="sig-name descname"><span class="pre">SetInteger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Record.SetInteger" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiRecordSetInteger()</span></code> を通して <em>field</em> を <em>value</em> にセットします。 <em>field</em> も <em>value</em> も整数でなければなりません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Record.ClearData">
+<span class="sig-prename descclassname"><span class="pre">Record.</span></span><span class="sig-name descname"><span class="pre">ClearData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Record.ClearData" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref c c-func docutils literal notranslate"><span class="pre">MsiRecordClearData()</span></code> を通してレコードの全てのフィールドを 0 にセットします。</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<p><a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370366.aspx">MsiRecordGetFieldCount</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370373.aspx">MsiRecordSetString</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370372.aspx">MsiRecordSetStream</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370371.aspx">MsiRecordSetInteger</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370364.aspx">MsiRecordClearData</a></p>
+</div>
+</section>
+<section id="errors">
+<span id="msi-errors"></span><h2>エラー<a class="headerlink" href="msilib.html#errors" title="Link to this heading">¶</a></h2>
+<p>全ての MSI 関数のラッパーは <code class="xref py py-exc docutils literal notranslate"><span class="pre">MSIError</span></code> を送出します。例外の内部の文字列がより詳細な情報を含んでいます。</p>
+</section>
+<section id="cab-objects">
+<span id="cab"></span><h2>CAB オブジェクト<a class="headerlink" href="msilib.html#cab-objects" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="msilib.CAB">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">CAB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.CAB" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="msilib.html#msilib.CAB" title="msilib.CAB"><code class="xref py py-class docutils literal notranslate"><span class="pre">CAB</span></code></a> クラスは CAB ファイルを表わすものです。MSI 構築中、ファイルは <code class="docutils literal notranslate"><span class="pre">Files</span></code> テーブルと CAB ファイルとに同時に追加されます。そして、全てのファイルを追加し終えたら、CAB ファイルは書き込まれることが可能になり、MSI ファイルに追加されます。</p>
+<p><em>name</em> は MSI ファイル中の CAB ファイルの名前です。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.CAB.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">full</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logical</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.CAB.append" title="Link to this definition">¶</a></dt>
+<dd><p>パス名 <em>full</em> のファイルを CAB ファイルに <em>logical</em> という名で追加します。<em>logical</em> という名が既に存在したならば、新しいファイル名が作られます。</p>
+<p>ファイルの CAB ファイル中のインデクスと新しいファイル名を返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.CAB.commit">
+<span class="sig-name descname"><span class="pre">commit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.CAB.commit" title="Link to this definition">¶</a></dt>
+<dd><p>CAB ファイルを作り、MSI ファイルにストリームとして追加し、<code class="docutils literal notranslate"><span class="pre">Media</span></code> テーブルに送り込み、作ったファイルはディスクから削除します。</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="directory-objects">
+<span id="msi-directory"></span><h2>ディレクトリオブジェクト<a class="headerlink" href="msilib.html#directory-objects" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="msilib.Directory">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">Directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">database</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basedir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">physical</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logical</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">componentflags</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Directory" title="Link to this definition">¶</a></dt>
+<dd><p>新しいディレクトリを Directory テーブルに作成します。ディレクトリには各時点で現在のコンポーネントがあります。そのコンポーネントは <a class="reference internal" href="msilib.html#msilib.Directory.start_component" title="msilib.Directory.start_component"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start_component()</span></code></a> を使って明示的に作成されたか、最初にファイルが追加された際に暗黙裡に作成されたものです。ファイルは現在のコンポーネントと cab ファイルの両方に追加されます。ディレクトリを作成するには親ディレクトリオブジェクト(<code class="docutils literal notranslate"><span class="pre">None</span></code> でも可)、物理的ディレクトリへのパス、論理的ディレクトリ名を指定する必要があります。 <em>default</em> はディレクトリテーブルの DefaultDir スロットを指定します。 <em>componentflags</em> は新しいコンポーネントが得るデフォルトのフラグを指定します。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Directory.start_component">
+<span class="sig-name descname"><span class="pre">start_component</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keyfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uuid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Directory.start_component" title="Link to this definition">¶</a></dt>
+<dd><p>エントリを Component テーブルに追加し、このコンポーネントをこのディレクトリの現在のコンポーネントにします。もしコンポーネント名が与えられなければディレクトリ名が使われます。<em>feature</em> が与えられなければ、ディレクトリのデフォルトフラグが使われます。<em>keyfile</em> が与えられなければ、Component テーブルの KeyPath は null のままになります。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Directory.add_file">
+<span class="sig-name descname"><span class="pre">add_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Directory.add_file" title="Link to this definition">¶</a></dt>
+<dd><p>ファイルをディレクトリの現在のコンポーネントに追加します。現在のコンポーネントが存在しない場合、新しいコンポーネントを開始します。デフォルトではソースとファイルテーブルのファイル名は同じになります。<em>src</em> ファイルが指定された場合、それは現在のディレクトリから相対的に解釈されます。オプションで <em>version</em> と <em>language</em> を File テーブルのエントリ用に指定することができます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Directory.glob">
+<span class="sig-name descname"><span class="pre">glob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Directory.glob" title="Link to this definition">¶</a></dt>
+<dd><p>現在のコンポーネントに glob パターンで指定されたファイルのリストを追加します。個々のファイルを <em>exclude</em> リストで除外することができます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Directory.remove_pyc">
+<span class="sig-name descname"><span class="pre">remove_pyc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Directory.remove_pyc" title="Link to this definition">¶</a></dt>
+<dd><p>アンインストールの際に <code class="docutils literal notranslate"><span class="pre">.pyc</span></code> を削除します。</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<p><a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368295.aspx">Directory Table</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368596.aspx">File Table</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368007.aspx">Component Table</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368579.aspx">FeatureComponents Table</a></p>
+</div>
+</section>
+<section id="features">
+<span id="id4"></span><h2>フィーチャー<a class="headerlink" href="msilib.html#features" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="msilib.Feature">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">Feature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Feature" title="Link to this definition">¶</a></dt>
+<dd><p><em>id</em>, <em>parent.id</em>, <em>title</em>, <em>desc</em>, <em>display</em>, <em>level</em>, <em>directory</em>, <em>attributes</em> の値を使って、新しいレコードを <code class="docutils literal notranslate"><span class="pre">Feature</span></code> テーブルに追加します。出来上がったフィーチャーオブジェクトは <a class="reference internal" href="msilib.html#msilib.Directory" title="msilib.Directory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Directory</span></code></a> の <code class="xref py py-meth docutils literal notranslate"><span class="pre">start_component()</span></code> メソッドに渡すことができます。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Feature.set_current">
+<span class="sig-name descname"><span class="pre">set_current</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Feature.set_current" title="Link to this definition">¶</a></dt>
+<dd><p>このフィーチャーを <a class="reference internal" href="msilib.html#module-msilib" title="msilib: Creation of Microsoft Installer files, and CAB files. (非推奨) (Windows)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code></a> の現在のフィーチャーにします。フィーチャーを明示的に指定しない場合、新しいコンポーネントが自動的にデフォルトのフィーチャーに追加されます。</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<p><a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368585.aspx">Feature Table</a></p>
+</div>
+</section>
+<section id="gui-classes">
+<span id="msi-gui"></span><h2>GUI クラス<a class="headerlink" href="msilib.html#gui-classes" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="msilib.html#module-msilib" title="msilib: Creation of Microsoft Installer files, and CAB files. (非推奨) (Windows)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code></a> provides several classes that wrap the GUI tables in an MSI
+database. However, no standard user interface is provided.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="msilib.Control">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">Control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dlg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Control" title="Link to this definition">¶</a></dt>
+<dd><p>ダイアログコントロールの基底クラス。<em>dlg</em> はコントロールの属するダイアログオブジェクト、<em>name</em> はコントロールの名前です。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Control.event">
+<span class="sig-name descname"><span class="pre">event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">argument</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ordering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Control.event" title="Link to this definition">¶</a></dt>
+<dd><p>このコントロールの <code class="docutils literal notranslate"><span class="pre">ControlEvent</span></code> テーブルにエントリを作ります。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Control.mapping">
+<span class="sig-name descname"><span class="pre">mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribute</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Control.mapping" title="Link to this definition">¶</a></dt>
+<dd><p>このコントロールの <code class="docutils literal notranslate"><span class="pre">EventMapping</span></code> テーブルにエントリを作ります。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Control.condition">
+<span class="sig-name descname"><span class="pre">condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Control.condition" title="Link to this definition">¶</a></dt>
+<dd><p>このコントロールの <code class="docutils literal notranslate"><span class="pre">ControlCondition</span></code> テーブルにエントリを作ります。</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="msilib.RadioButtonGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">RadioButtonGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dlg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.RadioButtonGroup" title="Link to this definition">¶</a></dt>
+<dd><p><em>name</em> という名前のラジオボタンコントロールを作成します。<em>property</em> はラジオボタンが選ばれたときにセットされるインストーラープロパティです。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.RadioButtonGroup.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.RadioButtonGroup.add" title="Link to this definition">¶</a></dt>
+<dd><p>グループに <em>name</em> という名前で、座標 <em>x</em>, <em>y</em> に大きさが <em>width</em>, <em>height</em> で <em>text</em> というラベルの付いたラジオボタンを追加します。<em>value</em> が <code class="docutils literal notranslate"><span class="pre">None</span></code> なら、デフォルトは <em>name</em> になります。</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="msilib.Dialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">Dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Dialog" title="Link to this definition">¶</a></dt>
+<dd><p>新しい <a class="reference internal" href="msilib.html#msilib.Dialog" title="msilib.Dialog"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dialog</span></code></a> オブジェクトを返します。 <code class="docutils literal notranslate"><span class="pre">Dialog</span></code> テーブルを以下の引数に渡された情報を元に作成します: 座標、ダイアログ属性、タイトル、first・default・cancelという三つのコントロールに対する名前。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Dialog.control">
+<span class="sig-name descname"><span class="pre">control</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control_next</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">help</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Dialog.control" title="Link to this definition">¶</a></dt>
+<dd><p>新しい <a class="reference internal" href="msilib.html#msilib.Control" title="msilib.Control"><code class="xref py py-class docutils literal notranslate"><span class="pre">Control</span></code></a> オブジェクトを返します。 <code class="docutils literal notranslate"><span class="pre">Control</span></code> テーブルに指定されたパラメータのエントリが作られます。</p>
+<p>これは汎用のメソッドで、特定の型に対しては特化したメソッドが提供されています。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Dialog.text">
+<span class="sig-name descname"><span class="pre">text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Dialog.text" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">Text</span></code> コントロールを追加して返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Dialog.bitmap">
+<span class="sig-name descname"><span class="pre">bitmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Dialog.bitmap" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">Bitmap</span></code> コントロールを追加して返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Dialog.line">
+<span class="sig-name descname"><span class="pre">line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Dialog.line" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">Line</span></code> コントロールを追加して返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Dialog.pushbutton">
+<span class="sig-name descname"><span class="pre">pushbutton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_control</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Dialog.pushbutton" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">PushButton</span></code> コントロールを追加して返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Dialog.radiogroup">
+<span class="sig-name descname"><span class="pre">radiogroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_control</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Dialog.radiogroup" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">RadioButtonGroup</span></code> コントロールを追加して返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="msilib.Dialog.checkbox">
+<span class="sig-name descname"><span class="pre">checkbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attributes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">property</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_control</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="msilib.html#msilib.Dialog.checkbox" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">CheckBox</span></code> コントロールを追加して返します。</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<p><a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368286.aspx">Dialog Table</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368044.aspx">Control Table</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368039.aspx">Control Types</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368035.aspx">ControlCondition Table</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368037.aspx">ControlEvent Table</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa368559.aspx">EventMapping Table</a>
+<a class="reference external" href="https://msdn.microsoft.com/en-us/library/windows/desktop/aa370962.aspx">RadioButton Table</a></p>
+</div>
+</section>
+<section id="precomputed-tables">
+<span id="msi-tables"></span><h2>事前に計算されたテーブル<a class="headerlink" href="msilib.html#precomputed-tables" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="msilib.html#module-msilib" title="msilib: Creation of Microsoft Installer files, and CAB files. (非推奨) (Windows)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code></a> はスキーマとテーブル定義だけから成るサブパッケージをいくつか提供しています。現在のところ、これらの定義は MSI バージョン 2.0 に基づいています。</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="msilib.schema">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">schema</span></span><a class="headerlink" href="msilib.html#msilib.schema" title="Link to this definition">¶</a></dt>
+<dd><p>これは MSI 2.0 用の標準 MSI スキーマで、テーブル定義のリストを提供する <em>tables</em> 変数と、MSI バリデーション用のデータを提供する <em>_Validation_records</em> 変数があります。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="msilib.sequence">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">sequence</span></span><a class="headerlink" href="msilib.html#msilib.sequence" title="Link to this definition">¶</a></dt>
+<dd><p>このモジュールは標準シーケンステーブルのテーブル内容を含んでいます。<em>AdminExecuteSequence</em>, <em>AdminUISequence</em>, <em>AdvtExecuteSequence</em>, <em>InstallExecuteSequence</em>, <em>InstallUISequence</em> が含まれています。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="msilib.text">
+<span class="sig-prename descclassname"><span class="pre">msilib.</span></span><span class="sig-name descname"><span class="pre">text</span></span><a class="headerlink" href="msilib.html#msilib.text" title="Link to this definition">¶</a></dt>
+<dd><p>このモジュールは標準的なインストーラーのアクションのための UIText および ActionText テーブルの定義を含んでいます。</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="msilib.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code> --- Microsoft インストーラーファイルの読み書き</a><ul>
+<li><a class="reference internal" href="msilib.html#database-objects">データベースオブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#view-objects">ビューオブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#summary-information-objects">サマリー情報オブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#record-objects">レコードオブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#errors">エラー</a></li>
+<li><a class="reference internal" href="msilib.html#cab-objects">CAB オブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#directory-objects">ディレクトリオブジェクト</a></li>
+<li><a class="reference internal" href="msilib.html#features">フィーチャー</a></li>
+<li><a class="reference internal" href="msilib.html#gui-classes">GUI クラス</a></li>
+<li><a class="reference internal" href="msilib.html#precomputed-tables">事前に計算されたテーブル</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="mailcap.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mailcap</span></code> --- mailcap ファイルの操作</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="nis.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">nis</span></code> --- Sun の NIS (Yellow Pages) へのインターフェース</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/msilib.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="nis.html" title="nis --- Sun の NIS (Yellow Pages) へのインターフェース"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="mailcap.html" title="mailcap --- mailcap ファイルの操作"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="superseded.html" >取って代わられたモジュール群</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="msilib.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code> --- Microsoft インストーラーファイルの読み書き</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

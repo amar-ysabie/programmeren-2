@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+
+<html lang="ko" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="메모리 관리" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/c-api/memory.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="개요: 파이썬의 메모리 관리에는 모든 파이썬 객체와 데이터 구조를 포함하는 비공개 힙(private heap)을 수반합니다. 이 비공개 힙의 관리는 파이썬 메모리 관리자 에 의해 내부적으로 이루어집니다. 파이썬 메모리 관리자는 공유, 세그먼트 화, 사전 할당 또는 캐싱과 같은 동적 스토리지 관리의 다양한 측면을 처리하는 서로 다른 구성 요소를 가지고 ..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="개요: 파이썬의 메모리 관리에는 모든 파이썬 객체와 데이터 구조를 포함하는 비공개 힙(private heap)을 수반합니다. 이 비공개 힙의 관리는 파이썬 메모리 관리자 에 의해 내부적으로 이루어집니다. 파이썬 메모리 관리자는 공유, 세그먼트 화, 사전 할당 또는 캐싱과 같은 동적 스토리지 관리의 다양한 측면을 처리하는 서로 다른 구성 요소를 가지고 ..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>메모리 관리 &#8212; Python 3.12.4 문서</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=3050f571"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=b5f768d8"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 문서에서 찾기"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="이 문서 정보" href="../about.html" />
+    <link rel="index" title="색인" href="../genindex.html" />
+    <link rel="search" title="검색" href="../search.html" />
+    <link rel="copyright" title="저작권" href="../copyright.html" />
+    <link rel="next" title="객체 구현 지원" href="objimpl.html" />
+    <link rel="prev" title="파이썬 초기화 구성" href="init_config.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/c-api/memory.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="빠른 검색" aria-label="빠른 검색" type="search" name="q" />
+                <input type="submit" value="이동"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">목차</a></h3>
+    <ul>
+<li><a class="reference internal" href="memory.html#">메모리 관리</a><ul>
+<li><a class="reference internal" href="memory.html#overview">개요</a></li>
+<li><a class="reference internal" href="memory.html#allocator-domains">Allocator Domains</a></li>
+<li><a class="reference internal" href="memory.html#raw-memory-interface">원시 메모리 인터페이스</a></li>
+<li><a class="reference internal" href="memory.html#memory-interface">메모리 인터페이스</a></li>
+<li><a class="reference internal" href="memory.html#object-allocators">객체 할당자</a></li>
+<li><a class="reference internal" href="memory.html#default-memory-allocators">기본 메모리 할당자</a></li>
+<li><a class="reference internal" href="memory.html#customize-memory-allocators">메모리 할당자 사용자 정의</a></li>
+<li><a class="reference internal" href="memory.html#debug-hooks-on-the-python-memory-allocators">Debug hooks on the Python memory allocators</a></li>
+<li><a class="reference internal" href="memory.html#the-pymalloc-allocator">pymalloc 할당자</a><ul>
+<li><a class="reference internal" href="memory.html#customize-pymalloc-arena-allocator">pymalloc 아레나 할당자 사용자 정의</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="memory.html#tracemalloc-c-api">tracemalloc C API</a></li>
+<li><a class="reference internal" href="memory.html#examples">예</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>이전 항목</h4>
+    <p class="topless"><a href="init_config.html"
+                          title="이전 장">파이썬 초기화 구성</a></p>
+  </div>
+  <div>
+    <h4>다음 항목</h4>
+    <p class="topless"><a href="objimpl.html"
+                          title="다음 장">객체 구현 지원</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>이 페이지</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">버그 보고하기</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/c-api/memory.rst"
+            rel="nofollow">소스 보기
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>탐색</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="일반 색인"
+             accesskey="I">색인</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 모듈 목록"
+             >모듈</a> |</li>
+        <li class="right" >
+          <a href="objimpl.html" title="객체 구현 지원"
+             accesskey="N">다음</a> |</li>
+        <li class="right" >
+          <a href="init_config.html" title="파이썬 초기화 구성"
+             accesskey="P">이전</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">파이썬/C API 레퍼런스 설명서</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="memory.html">메모리 관리</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="빠른 검색" aria-label="빠른 검색" type="search" name="q" id="search-box" />
+          <input type="submit" value="이동" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="memory-management">
+<span id="memory"></span><h1>메모리 관리<a class="headerlink" href="memory.html#memory-management" title="Link to this heading">¶</a></h1>
+<section id="overview">
+<span id="memoryoverview"></span><h2>개요<a class="headerlink" href="memory.html#overview" title="Link to this heading">¶</a></h2>
+<p>파이썬의 메모리 관리에는 모든 파이썬 객체와 데이터 구조를 포함하는 비공개 힙(private heap)을 수반합니다. 이 비공개 힙의 관리는 <em>파이썬 메모리 관리자</em>에 의해 내부적으로 이루어집니다. 파이썬 메모리 관리자는 공유, 세그먼트 화, 사전 할당 또는 캐싱과 같은 동적 스토리지 관리의 다양한 측면을 처리하는 서로 다른 구성 요소를 가지고 있습니다.</p>
+<p>가장 낮은 수준에서, 원시 메모리 할당자는 운영 체제의 메모리 관리자와 상호 작용하여 비공개 힙에 모든 파이썬 관련 데이터를 저장하기에 충분한 공간이 있는지 확인합니다. 원시 메모리 할당자 위에, 여러 개의 객체별 할당자가 같은 힙에서 작동하며 각 객체 형의 특성에 맞는 고유한 메모리 관리 정책을 구현합니다. 예를 들어, 정수는 다른 스토리지 요구 사항과 속도/공간 절충을 의미하므로, 정수 객체는 힙 내에서 문자열, 튜플 또는 딕셔너리와는 다르게 관리됩니다. 따라서 파이썬 메모리 관리자는 일부 작업을 객체별 할당자에게 위임하지만, 후자가 비공개 힙의 경계 내에서 작동하도록 합니다.</p>
+<p>파이썬 힙의 관리는 인터프리터 자체에 의해 수행되며, 사용자는 힙 내부의 메모리 블록에 대한 객체 포인터를 규칙적으로 조작하더라도, 사용자가 제어할 수 없다는 것을 이해하는 것이 중요합니다. 파이썬 객체와 기타 내부 버퍼를 위한 힙 공간 할당은 이 설명서에 나열된 파이썬/C API 함수를 통해 파이썬 메모리 관리자의 요청에 따라 수행됩니다.</p>
+<p id="index-0">메모리 손상을 피하고자, 확장 작성자는 C 라이브러리에서 내보낸 함수를 파이썬 객체에 대해 실행하지 않아야 합니다: <code class="xref c c-func docutils literal notranslate"><span class="pre">malloc()</span></code>, <code class="xref c c-func docutils literal notranslate"><span class="pre">calloc()</span></code>, <code class="xref c c-func docutils literal notranslate"><span class="pre">realloc()</span></code> 및 <code class="xref c c-func docutils literal notranslate"><span class="pre">free()</span></code>. 그렇게 한다면, 서로 다른 알고리즘을 구현하고 다른 힘에 작동하기 때문에, C 할당자와 파이썬 메모리 관리자 간에 혼합 호출이 발생하여 치명적인 결과를 초래합니다. 그러나, 다음 예제와 같이 개별 목적으로 C 라이브러리 할당자를 사용하여 메모리 블록을 안전하게 할당하고 해제할 수 있습니다:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">res</span><span class="p">;</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="n">BUFSIZ</span><span class="p">);</span><span class="w"> </span><span class="cm">/* for I/O */</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">PyErr_NoMemory</span><span class="p">();</span>
+<span class="p">...</span><span class="n">Do</span><span class="w"> </span><span class="n">some</span><span class="w"> </span><span class="n">I</span><span class="o">/</span><span class="n">O</span><span class="w"> </span><span class="n">operation</span><span class="w"> </span><span class="n">involving</span><span class="w"> </span><span class="n">buf</span><span class="p">...</span>
+<span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyBytes_FromString</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+<span class="n">free</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span><span class="w"> </span><span class="cm">/* malloc&#39;ed */</span>
+<span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>이 예에서, I/O 버퍼에 대한 메모리 요청은 C 라이브러리 할당자에 의해 처리됩니다. 파이썬 메모리 관리자는 결과로 반환되는 바이트열 객체의 할당에만 관여합니다.</p>
+<p>In most situations, however, it is recommended to allocate memory from the
+Python heap specifically because the latter is under control of the Python
+memory manager. For example, this is required when the interpreter is extended
+with new object types written in C. Another reason for using the Python heap is
+the desire to <em>inform</em> the Python memory manager about the memory needs of the
+extension module. Even when the requested memory is used exclusively for
+internal, highly specific purposes, delegating all memory requests to the Python
+memory manager causes the interpreter to have a more accurate image of its
+memory footprint as a whole. Consequently, under certain circumstances, the
+Python memory manager may or may not trigger appropriate actions, like garbage
+collection, memory compaction or other preventive procedures. Note that by using
+the C library allocator as shown in the previous example, the allocated memory
+for the I/O buffer escapes completely the Python memory manager.</p>
+<div class="admonition seealso">
+<p class="admonition-title">더 보기</p>
+<p><span class="target" id="index-8"></span><a class="reference internal" href="../using/cmdline.html#envvar-PYTHONMALLOC"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PYTHONMALLOC</span></code></a> 환경 변수를 사용하여 파이썬에서 사용하는 메모리 할당자를 구성할 수 있습니다.</p>
+<p><span class="target" id="index-9"></span><a class="reference internal" href="../using/cmdline.html#envvar-PYTHONMALLOCSTATS"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PYTHONMALLOCSTATS</span></code></a> 환경 변수는 새로운 pymalloc 객체 아레나(arena)가 만들어질 때마다 그리고 종료 시 <a class="reference internal" href="memory.html#pymalloc"><span class="std std-ref">pymalloc 메모리 할당자</span></a>의 통계를 인쇄하는 데 사용될 수 있습니다.</p>
+</div>
+</section>
+<section id="allocator-domains">
+<h2>Allocator Domains<a class="headerlink" href="memory.html#allocator-domains" title="Link to this heading">¶</a></h2>
+<p id="id1">All allocating functions belong to one of three different “domains” (see also
+<a class="reference internal" href="memory.html#c.PyMemAllocatorDomain" title="PyMemAllocatorDomain"><code class="xref c c-type docutils literal notranslate"><span class="pre">PyMemAllocatorDomain</span></code></a>). These domains represent different allocation
+strategies and are optimized for different purposes. The specific details on
+how every domain allocates memory or what internal functions each domain calls
+is considered an implementation detail, but for debugging purposes a simplified
+table can be found at <a class="reference internal" href="memory.html#default-memory-allocators"><span class="std std-ref">here</span></a>. There is no hard
+requirement to use the memory returned by the allocation functions belonging to
+a given domain for only the purposes hinted by that domain (although this is the
+recommended practice). For example, one could use the memory returned by
+<a class="reference internal" href="memory.html#c.PyMem_RawMalloc" title="PyMem_RawMalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawMalloc()</span></code></a> for allocating Python objects or the memory returned
+by <a class="reference internal" href="memory.html#c.PyObject_Malloc" title="PyObject_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Malloc()</span></code></a> for allocating memory for buffers.</p>
+<p>The three allocation domains are:</p>
+<ul class="simple">
+<li><p>Raw domain: intended for allocating memory for general-purpose memory
+buffers where the allocation <em>must</em> go to the system allocator or where the
+allocator can operate without the <a class="reference internal" href="../glossary.html#term-GIL"><span class="xref std std-term">GIL</span></a>. The memory is requested directly
+to the system.</p></li>
+<li><p>“Mem” domain: intended for allocating memory for Python buffers and
+general-purpose memory buffers where the allocation must be performed with
+the <a class="reference internal" href="../glossary.html#term-GIL"><span class="xref std std-term">GIL</span></a> held. The memory is taken from the Python private heap.</p></li>
+<li><p>Object domain: intended for allocating memory belonging to Python objects. The
+memory is taken from the Python private heap.</p></li>
+</ul>
+<p>When freeing memory previously allocated by the allocating functions belonging to a
+given domain,the matching specific deallocating functions must be used. For example,
+<a class="reference internal" href="memory.html#c.PyMem_Free" title="PyMem_Free"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Free()</span></code></a> must be used to free memory allocated using <a class="reference internal" href="memory.html#c.PyMem_Malloc" title="PyMem_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Malloc()</span></code></a>.</p>
+</section>
+<section id="raw-memory-interface">
+<h2>원시 메모리 인터페이스<a class="headerlink" href="memory.html#raw-memory-interface" title="Link to this heading">¶</a></h2>
+<p>다음 함수 집합은 시스템 할당자에 대한 래퍼입니다. 이러한 함수는 스레드 안전해서, <a class="reference internal" href="../glossary.html#term-global-interpreter-lock"><span class="xref std std-term">GIL</span></a>을 유지할 필요는 없습니다.</p>
+<p>The <a class="reference internal" href="memory.html#default-memory-allocators"><span class="std std-ref">default raw memory allocator</span></a> uses
+the following functions: <code class="xref c c-func docutils literal notranslate"><span class="pre">malloc()</span></code>, <code class="xref c c-func docutils literal notranslate"><span class="pre">calloc()</span></code>, <code class="xref c c-func docutils literal notranslate"><span class="pre">realloc()</span></code>
+and <code class="xref c c-func docutils literal notranslate"><span class="pre">free()</span></code>; call <code class="docutils literal notranslate"><span class="pre">malloc(1)</span></code> (or <code class="docutils literal notranslate"><span class="pre">calloc(1,</span> <span class="pre">1)</span></code>) when requesting
+zero bytes.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.4.</span></p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_RawMalloc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_RawMalloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_RawMalloc" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Allocates <em>n</em> bytes and returns a pointer of type <span class="c-expr sig sig-inline c"><span class="kt">void</span><span class="p">*</span></span> to the
+allocated memory, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if the request fails.</p>
+<p>0바이트를 요청하면 가능하면 <code class="docutils literal notranslate"><span class="pre">PyMem_RawMalloc(1)</span></code>이 대신 호출된 것처럼 가능하면 고유한 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌 포인터를 반환합니다. 메모리는 어떤 식으로든 초기화되지 않습니다.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_RawCalloc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_RawCalloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nelem</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">elsize</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_RawCalloc" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Allocates <em>nelem</em> elements each whose size in bytes is <em>elsize</em> and returns
+a pointer of type <span class="c-expr sig sig-inline c"><span class="kt">void</span><span class="p">*</span></span> to the allocated memory, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if the
+request fails. The memory is initialized to zeros.</p>
+<p>0개의 요소나 0바이트 크기의 요소를 요청하면 <code class="docutils literal notranslate"><span class="pre">PyMem_RawCalloc(1,</span> <span class="pre">1)</span></code>이 대신 호출된 것처럼 가능하면 고유한 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌 포인터를 반환합니다.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_RawRealloc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_RawRealloc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_RawRealloc" title="Link to this definition">¶</a><br /></dt>
+<dd><p><em>p</em>가 가리키는 메모리 블록의 크기를 <em>n</em> 바이트로 조정합니다. 내용은 이전과 새로운 크기의 최솟값 내에서는 변경되지 않습니다.</p>
+<p><em>p</em>가 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이면, 호출은 <code class="docutils literal notranslate"><span class="pre">PyMem_RawMalloc(n)</span></code>과 동등합니다; <em>n</em>이 0과 같으면, 메모리 블록의 크기는 조정되지만 해제되지는 않고, 반환된 포인터는 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닙니다.</p>
+<p><em>p</em>가 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌 한, <a class="reference internal" href="memory.html#c.PyMem_RawMalloc" title="PyMem_RawMalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawMalloc()</span></code></a>, <a class="reference internal" href="memory.html#c.PyMem_RawRealloc" title="PyMem_RawRealloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawRealloc()</span></code></a> 또는 <a class="reference internal" href="memory.html#c.PyMem_RawCalloc" title="PyMem_RawCalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawCalloc()</span></code></a>에 대한 이전 호출에 의해 반환된 것이어야 합니다.</p>
+<p>요청이 실패하면, <a class="reference internal" href="memory.html#c.PyMem_RawRealloc" title="PyMem_RawRealloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawRealloc()</span></code></a>은 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>을 반환하고 <em>p</em>는 이전 메모리 영역에 대한 유효한 포인터로 유지됩니다.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_RawFree">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_RawFree</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_RawFree" title="Link to this definition">¶</a><br /></dt>
+<dd><p><em>p</em>가 가리키는 메모리 블록을 해제합니다. <em>p</em>는 <a class="reference internal" href="memory.html#c.PyMem_RawMalloc" title="PyMem_RawMalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawMalloc()</span></code></a>, <a class="reference internal" href="memory.html#c.PyMem_RawRealloc" title="PyMem_RawRealloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawRealloc()</span></code></a> 또는 <a class="reference internal" href="memory.html#c.PyMem_RawCalloc" title="PyMem_RawCalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawCalloc()</span></code></a>에 대한 이전 호출로 반환된 것이어야 합니다. 그렇지 않거나 <code class="docutils literal notranslate"><span class="pre">PyMem_RawFree(p)</span></code>가 앞서 호출되었으면, 정의되지 않은 동작이 일어납니다.</p>
+<p><em>p</em>가 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이면, 아무 작업도 수행되지 않습니다.</p>
+</dd></dl>
+
+</section>
+<section id="memory-interface">
+<span id="memoryinterface"></span><h2>메모리 인터페이스<a class="headerlink" href="memory.html#memory-interface" title="Link to this heading">¶</a></h2>
+<p>ANSI C 표준에 따라 모델링 되었지만 0바이트를 요청할 때의 동작을 지정한 다음 함수 집합은 파이썬 힙에서 메모리를 할당하고 해제하는 데 사용할 수 있습니다.</p>
+<p><a class="reference internal" href="memory.html#default-memory-allocators"><span class="std std-ref">기본 메모리 할당자</span></a>는 <a class="reference internal" href="memory.html#pymalloc"><span class="std std-ref">pymalloc 메모리 할당자</span></a>를 사용합니다.</p>
+<div class="admonition warning">
+<p class="admonition-title">경고</p>
+<p>이 함수를 사용할 때는 <a class="reference internal" href="../glossary.html#term-global-interpreter-lock"><span class="xref std std-term">GIL</span></a>을 유지해야 합니다.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">버전 3.6에서 변경: </span>기본 할당자는 이제 시스템 <code class="xref c c-func docutils literal notranslate"><span class="pre">malloc()</span></code> 대신 pymalloc 입니다.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_Malloc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_Malloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_Malloc" title="Link to this definition">¶</a><br /></dt>
+<dd><em class="stableabi"> Part of the <a class="reference internal" href="stable.html#stable"><span class="std std-ref">Stable ABI</span></a>.</em><p>Allocates <em>n</em> bytes and returns a pointer of type <span class="c-expr sig sig-inline c"><span class="kt">void</span><span class="p">*</span></span> to the
+allocated memory, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if the request fails.</p>
+<p>0바이트를 요청하면 <code class="docutils literal notranslate"><span class="pre">PyMem_Malloc(1)</span></code>이 대신 호출된 것처럼 가능하면 고유한 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌 포인터를 반환합니다. 메모리는 어떤 식으로든 초기화되지 않습니다.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_Calloc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_Calloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nelem</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">elsize</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_Calloc" title="Link to this definition">¶</a><br /></dt>
+<dd><em class="stableabi"> Part of the <a class="reference internal" href="stable.html#stable"><span class="std std-ref">Stable ABI</span></a> since version 3.7.</em><p>Allocates <em>nelem</em> elements each whose size in bytes is <em>elsize</em> and returns
+a pointer of type <span class="c-expr sig sig-inline c"><span class="kt">void</span><span class="p">*</span></span> to the allocated memory, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if the
+request fails. The memory is initialized to zeros.</p>
+<p>0개의 요소나 0바이트 크기의 요소를 요청하면 <code class="docutils literal notranslate"><span class="pre">PyMem_Calloc(1,</span> <span class="pre">1)</span></code>이 대신 호출된 것처럼 가능하면 고유한 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌 포인터를 반환합니다.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_Realloc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_Realloc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_Realloc" title="Link to this definition">¶</a><br /></dt>
+<dd><em class="stableabi"> Part of the <a class="reference internal" href="stable.html#stable"><span class="std std-ref">Stable ABI</span></a>.</em><p><em>p</em>가 가리키는 메모리 블록의 크기를 <em>n</em> 바이트로 조정합니다. 내용은 이전과 새로운 크기의 최솟값 내에서는 변경되지 않습니다.</p>
+<p><em>p</em>가 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이면, 호출은 <code class="docutils literal notranslate"><span class="pre">PyMem_Malloc(n)</span></code>과 동등합니다; 그렇지 않고 <em>n</em>이 0과 같으면, 메모리 블록의 크기는 조정되지만 해제되지는 않으며, 반환된 포인터는 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닙니다.</p>
+<p><em>p</em>가 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌 한, <a class="reference internal" href="memory.html#c.PyMem_Malloc" title="PyMem_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Malloc()</span></code></a>, <a class="reference internal" href="memory.html#c.PyMem_Realloc" title="PyMem_Realloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Realloc()</span></code></a> 또는 <a class="reference internal" href="memory.html#c.PyMem_Calloc" title="PyMem_Calloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Calloc()</span></code></a>에 대한 이전 호출이 반환한 것이어야 합니다.</p>
+<p>요청이 실패하면, <a class="reference internal" href="memory.html#c.PyMem_Realloc" title="PyMem_Realloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Realloc()</span></code></a>은 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>을 반환하고 <em>p</em>는 이전 메모리 영역에 대한 유효한 포인터로 유지됩니다.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_Free">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_Free</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_Free" title="Link to this definition">¶</a><br /></dt>
+<dd><em class="stableabi"> Part of the <a class="reference internal" href="stable.html#stable"><span class="std std-ref">Stable ABI</span></a>.</em><p><em>p</em>가 가리키는 메모리 블록을 해제합니다. <em>p</em>는 <a class="reference internal" href="memory.html#c.PyMem_Malloc" title="PyMem_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Malloc()</span></code></a>, <a class="reference internal" href="memory.html#c.PyMem_Realloc" title="PyMem_Realloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Realloc()</span></code></a> 또는 <a class="reference internal" href="memory.html#c.PyMem_Calloc" title="PyMem_Calloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Calloc()</span></code></a>에 대한 이전 호출이 반환한 것이어야 합니다. 그렇지 않거나 <code class="docutils literal notranslate"><span class="pre">PyMem_Free(p)</span></code>가 앞서 호출되었으면 정의되지 않은 동작이 일어납니다.</p>
+<p><em>p</em>가 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이면, 아무 작업도 수행되지 않습니다.</p>
+</dd></dl>
+
+<p>편의를 위해 다음과 같은 형 지향 매크로가 제공됩니다. <em>TYPE</em>이 모든 C형을 나타냄에 유의하십시오.</p>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PyMem_New">
+<span class="sig-name descname"><span class="n"><span class="pre">PyMem_New</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">TYPE</span></span>, <span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_New" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Same as <a class="reference internal" href="memory.html#c.PyMem_Malloc" title="PyMem_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Malloc()</span></code></a>, but allocates <code class="docutils literal notranslate"><span class="pre">(n</span> <span class="pre">*</span> <span class="pre">sizeof(TYPE))</span></code> bytes of
+memory.  Returns a pointer cast to <code class="docutils literal notranslate"><span class="pre">TYPE*</span></code>.  The memory will not have
+been initialized in any way.</p>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PyMem_Resize">
+<span class="sig-name descname"><span class="n"><span class="pre">PyMem_Resize</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">p</span></span>, <span class="n"><span class="pre">TYPE</span></span>, <span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_Resize" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Same as <a class="reference internal" href="memory.html#c.PyMem_Realloc" title="PyMem_Realloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Realloc()</span></code></a>, but the memory block is resized to <code class="docutils literal notranslate"><span class="pre">(n</span> <span class="pre">*</span>
+<span class="pre">sizeof(TYPE))</span></code> bytes.  Returns a pointer cast to <code class="docutils literal notranslate"><span class="pre">TYPE*</span></code>. On return,
+<em>p</em> will be a pointer to the new memory area, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> in the event of
+failure.</p>
+<p>이것은 C 전처리기 매크로입니다; <em>p</em>는 항상 다시 대입됩니다. 에러를 처리할 때 메모리 손실을 피하려면 <em>p</em>의 원래 값을 보관하십시오.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_Del">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_Del</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_Del" title="Link to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="memory.html#c.PyMem_Free" title="PyMem_Free"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Free()</span></code></a>와 같습니다.</p>
+</dd></dl>
+
+<p>또한, 위에 나열된 C API 함수를 사용하지 않고, 파이썬 메모리 할당자를 직접 호출하기 위해 다음 매크로 집합이 제공됩니다. 그러나, 이들을 사용하면 파이썬 버전을 가로지르는 바이너리 호환성이 유지되지 않아서 확장 모듈에서는 폐지되었습니다.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">PyMem_MALLOC(size)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PyMem_NEW(type,</span> <span class="pre">size)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PyMem_REALLOC(ptr,</span> <span class="pre">size)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PyMem_RESIZE(ptr,</span> <span class="pre">type,</span> <span class="pre">size)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PyMem_FREE(ptr)</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PyMem_DEL(ptr)</span></code></p></li>
+</ul>
+</section>
+<section id="object-allocators">
+<h2>객체 할당자<a class="headerlink" href="memory.html#object-allocators" title="Link to this heading">¶</a></h2>
+<p>ANSI C 표준에 따라 모델링 되었지만 0바이트를 요청할 때의 동작을 지정한 다음 함수 집합은 파이썬 힙에서 메모리를 할당하고 해제하는 데 사용할 수 있습니다.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>There is no guarantee that the memory returned by these allocators can be
+successfully cast to a Python object when intercepting the allocating
+functions in this domain by the methods described in
+the <a class="reference internal" href="memory.html#customize-memory-allocators"><span class="std std-ref">Customize Memory Allocators</span></a> section.</p>
+</div>
+<p><a class="reference internal" href="memory.html#default-memory-allocators"><span class="std std-ref">기본 객체 할당자</span></a>는 <a class="reference internal" href="memory.html#pymalloc"><span class="std std-ref">pymalloc 메모리 할당자</span></a>를 사용합니다.</p>
+<div class="admonition warning">
+<p class="admonition-title">경고</p>
+<p>이 함수를 사용할 때는 <a class="reference internal" href="../glossary.html#term-global-interpreter-lock"><span class="xref std std-term">GIL</span></a>을 유지해야 합니다.</p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyObject_Malloc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PyObject_Malloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyObject_Malloc" title="Link to this definition">¶</a><br /></dt>
+<dd><em class="stableabi"> Part of the <a class="reference internal" href="stable.html#stable"><span class="std std-ref">Stable ABI</span></a>.</em><p>Allocates <em>n</em> bytes and returns a pointer of type <span class="c-expr sig sig-inline c"><span class="kt">void</span><span class="p">*</span></span> to the
+allocated memory, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if the request fails.</p>
+<p>0바이트를 요청하면 <code class="docutils literal notranslate"><span class="pre">PyObject_Malloc(1)</span></code>이 대신 호출된 것처럼 가능하면 고유한 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌 포인터를 반환합니다. 메모리는 어떤 식으로든 초기화되지 않습니다.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyObject_Calloc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PyObject_Calloc</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">nelem</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">elsize</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyObject_Calloc" title="Link to this definition">¶</a><br /></dt>
+<dd><em class="stableabi"> Part of the <a class="reference internal" href="stable.html#stable"><span class="std std-ref">Stable ABI</span></a> since version 3.7.</em><p>Allocates <em>nelem</em> elements each whose size in bytes is <em>elsize</em> and returns
+a pointer of type <span class="c-expr sig sig-inline c"><span class="kt">void</span><span class="p">*</span></span> to the allocated memory, or <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if the
+request fails. The memory is initialized to zeros.</p>
+<p>0개의 요소나 0바이트 크기의 요소를 요청하면 <code class="docutils literal notranslate"><span class="pre">PyObject_Calloc(1,</span> <span class="pre">1)</span></code>이 대신 호출된 것처럼 가능하면 고유한 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌 포인터를 반환합니다.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyObject_Realloc">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">PyObject_Realloc</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">n</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyObject_Realloc" title="Link to this definition">¶</a><br /></dt>
+<dd><em class="stableabi"> Part of the <a class="reference internal" href="stable.html#stable"><span class="std std-ref">Stable ABI</span></a>.</em><p><em>p</em>가 가리키는 메모리 블록의 크기를 <em>n</em> 바이트로 조정합니다. 내용은 이전과 새로운 크기의 최솟값 내에서는 변경되지 않습니다.</p>
+<p><em>p</em>가 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이면, 호출은 <code class="docutils literal notranslate"><span class="pre">PyObject_Malloc(n)</span></code>과 동등합니다; 그렇지 않고 <em>n</em>이 0과 같으면, 메모리 블록의 크기는 조정되지만 해제되지 않고, 반환된 포인터는 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닙니다.</p>
+<p><em>p</em>가 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌 한, <a class="reference internal" href="memory.html#c.PyObject_Malloc" title="PyObject_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Malloc()</span></code></a>, <a class="reference internal" href="memory.html#c.PyObject_Realloc" title="PyObject_Realloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Realloc()</span></code></a> 또는 <a class="reference internal" href="memory.html#c.PyObject_Calloc" title="PyObject_Calloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Calloc()</span></code></a>에 대한 이전 호출에 의해 반환된 것이어야 합니다.</p>
+<p>요청이 실패하면, <a class="reference internal" href="memory.html#c.PyObject_Realloc" title="PyObject_Realloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Realloc()</span></code></a>은 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>을 반환하고 <em>p</em>는 이전 메모리 영역에 대한 유효한 포인터로 유지됩니다.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyObject_Free">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyObject_Free</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyObject_Free" title="Link to this definition">¶</a><br /></dt>
+<dd><em class="stableabi"> Part of the <a class="reference internal" href="stable.html#stable"><span class="std std-ref">Stable ABI</span></a>.</em><p><em>p</em>가 가리키는 메모리 블록을 해제합니다. 이 블록은 <a class="reference internal" href="memory.html#c.PyObject_Malloc" title="PyObject_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Malloc()</span></code></a>, <a class="reference internal" href="memory.html#c.PyObject_Realloc" title="PyObject_Realloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Realloc()</span></code></a> 또는 <a class="reference internal" href="memory.html#c.PyObject_Calloc" title="PyObject_Calloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Calloc()</span></code></a>에 대한 이전 호출에 의해 반환된 것이어야 합니다. 그렇지 않거나 <code class="docutils literal notranslate"><span class="pre">PyObject_Free(p)</span></code>가 이전에 호출되었으면 정의되지 않은 동작이 일어납니다.</p>
+<p><em>p</em>가 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이면, 아무 작업도 수행되지 않습니다.</p>
+</dd></dl>
+
+</section>
+<section id="default-memory-allocators">
+<span id="id2"></span><h2>기본 메모리 할당자<a class="headerlink" href="memory.html#default-memory-allocators" title="Link to this heading">¶</a></h2>
+<p>기본 메모리 할당자:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>구성</p></th>
+<th class="head"><p>이름</p></th>
+<th class="head"><p>PyMem_RawMalloc</p></th>
+<th class="head"><p>PyMem_Malloc</p></th>
+<th class="head"><p>PyObject_Malloc</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>릴리스 빌드</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;pymalloc&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">malloc</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pymalloc</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pymalloc</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>디버그 빌드</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;pymalloc_debug&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">malloc</span></code> + 디버그</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pymalloc</span></code> + 디버그</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pymalloc</span></code> + 디버그</p></td>
+</tr>
+<tr class="row-even"><td><p>pymalloc 없는 배포 빌드</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;malloc&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">malloc</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">malloc</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">malloc</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>pymalloc 없는 디버그 빌드</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&quot;malloc_debug&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">malloc</span></code> + 디버그</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">malloc</span></code> + 디버그</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">malloc</span></code> + 디버그</p></td>
+</tr>
+</tbody>
+</table>
+<p>범례:</p>
+<ul class="simple">
+<li><p>Name: value for <span class="target" id="index-3"></span><a class="reference internal" href="../using/cmdline.html#envvar-PYTHONMALLOC"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PYTHONMALLOC</span></code></a> environment variable.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">malloc</span></code>: system allocators from the standard C library, C functions:
+<code class="xref c c-func docutils literal notranslate"><span class="pre">malloc()</span></code>, <code class="xref c c-func docutils literal notranslate"><span class="pre">calloc()</span></code>, <code class="xref c c-func docutils literal notranslate"><span class="pre">realloc()</span></code> and <code class="xref c c-func docutils literal notranslate"><span class="pre">free()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pymalloc</span></code>: <a class="reference internal" href="memory.html#pymalloc"><span class="std std-ref">pymalloc memory allocator</span></a>.</p></li>
+<li><p>“+ debug”: with <a class="reference internal" href="memory.html#pymem-debug-hooks"><span class="std std-ref">debug hooks on the Python memory allocators</span></a>.</p></li>
+<li><p>“Debug build”: <a class="reference internal" href="../using/configure.html#debug-build"><span class="std std-ref">Python build in debug mode</span></a>.</p></li>
+</ul>
+</section>
+<section id="customize-memory-allocators">
+<span id="id3"></span><h2>메모리 할당자 사용자 정의<a class="headerlink" href="memory.html#customize-memory-allocators" title="Link to this heading">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.4.</span></p>
+</div>
+<dl class="c type">
+<dt class="sig sig-object c" id="c.PyMemAllocatorEx">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyMemAllocatorEx</span></span></span><a class="headerlink" href="memory.html#c.PyMemAllocatorEx" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Structure used to describe a memory block allocator. The structure has
+the following fields:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>필드</p></th>
+<th class="head"><p>의미</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*ctx</span></code></p></td>
+<td><p>첫 번째 인자로 전달된 사용자 컨텍스트</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">void*</span> <span class="pre">malloc(void</span> <span class="pre">*ctx,</span> <span class="pre">size_t</span> <span class="pre">size)</span></code></p></td>
+<td><p>메모리 블록을 할당합니다</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void*</span> <span class="pre">calloc(void</span> <span class="pre">*ctx,</span> <span class="pre">size_t</span> <span class="pre">nelem,</span> <span class="pre">size_t</span> <span class="pre">elsize)</span></code></p></td>
+<td><p>0으로 초기화된 메모리 블록을 할당합니다</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">void*</span> <span class="pre">realloc(void</span> <span class="pre">*ctx,</span> <span class="pre">void</span> <span class="pre">*ptr,</span> <span class="pre">size_t</span> <span class="pre">new_size)</span></code></p></td>
+<td><p>메모리 블록을 할당하거나 크기 조정합니다</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">free(void</span> <span class="pre">*ctx,</span> <span class="pre">void</span> <span class="pre">*ptr)</span></code></p></td>
+<td><p>메모리 블록을 해제합니다</p></td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified changed">버전 3.5에서 변경: </span>The <code class="xref c c-type docutils literal notranslate"><span class="pre">PyMemAllocator</span></code> structure was renamed to
+<a class="reference internal" href="memory.html#c.PyMemAllocatorEx" title="PyMemAllocatorEx"><code class="xref c c-type docutils literal notranslate"><span class="pre">PyMemAllocatorEx</span></code></a> and a new <code class="docutils literal notranslate"><span class="pre">calloc</span></code> field was added.</p>
+</div>
+</dd></dl>
+
+<dl class="c type">
+<dt class="sig sig-object c" id="c.PyMemAllocatorDomain">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyMemAllocatorDomain</span></span></span><a class="headerlink" href="memory.html#c.PyMemAllocatorDomain" title="Link to this definition">¶</a><br /></dt>
+<dd><p>할당자 도메인을 식별하는 데 사용되는 열거형. 도메인:</p>
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PYMEM_DOMAIN_RAW">
+<span class="sig-name descname"><span class="n"><span class="pre">PYMEM_DOMAIN_RAW</span></span></span><a class="headerlink" href="memory.html#c.PYMEM_DOMAIN_RAW" title="Link to this definition">¶</a><br /></dt>
+<dd><p>함수:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="memory.html#c.PyMem_RawMalloc" title="PyMem_RawMalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawMalloc()</span></code></a></p></li>
+<li><p><a class="reference internal" href="memory.html#c.PyMem_RawRealloc" title="PyMem_RawRealloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawRealloc()</span></code></a></p></li>
+<li><p><a class="reference internal" href="memory.html#c.PyMem_RawCalloc" title="PyMem_RawCalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawCalloc()</span></code></a></p></li>
+<li><p><a class="reference internal" href="memory.html#c.PyMem_RawFree" title="PyMem_RawFree"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawFree()</span></code></a></p></li>
+</ul>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PYMEM_DOMAIN_MEM">
+<span class="sig-name descname"><span class="n"><span class="pre">PYMEM_DOMAIN_MEM</span></span></span><a class="headerlink" href="memory.html#c.PYMEM_DOMAIN_MEM" title="Link to this definition">¶</a><br /></dt>
+<dd><p>함수:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="memory.html#c.PyMem_Malloc" title="PyMem_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Malloc()</span></code></a>,</p></li>
+<li><p><a class="reference internal" href="memory.html#c.PyMem_Realloc" title="PyMem_Realloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Realloc()</span></code></a></p></li>
+<li><p><a class="reference internal" href="memory.html#c.PyMem_Calloc" title="PyMem_Calloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Calloc()</span></code></a></p></li>
+<li><p><a class="reference internal" href="memory.html#c.PyMem_Free" title="PyMem_Free"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Free()</span></code></a></p></li>
+</ul>
+</dd></dl>
+
+<dl class="c macro">
+<dt class="sig sig-object c" id="c.PYMEM_DOMAIN_OBJ">
+<span class="sig-name descname"><span class="n"><span class="pre">PYMEM_DOMAIN_OBJ</span></span></span><a class="headerlink" href="memory.html#c.PYMEM_DOMAIN_OBJ" title="Link to this definition">¶</a><br /></dt>
+<dd><p>함수:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="memory.html#c.PyObject_Malloc" title="PyObject_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Malloc()</span></code></a></p></li>
+<li><p><a class="reference internal" href="memory.html#c.PyObject_Realloc" title="PyObject_Realloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Realloc()</span></code></a></p></li>
+<li><p><a class="reference internal" href="memory.html#c.PyObject_Calloc" title="PyObject_Calloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Calloc()</span></code></a></p></li>
+<li><p><a class="reference internal" href="memory.html#c.PyObject_Free" title="PyObject_Free"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Free()</span></code></a></p></li>
+</ul>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_GetAllocator">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_GetAllocator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="memory.html#c.PyMemAllocatorDomain" title="PyMemAllocatorDomain"><span class="n"><span class="pre">PyMemAllocatorDomain</span></span></a><span class="w"> </span><span class="n"><span class="pre">domain</span></span>, <a class="reference internal" href="memory.html#c.PyMemAllocatorEx" title="PyMemAllocatorEx"><span class="n"><span class="pre">PyMemAllocatorEx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">allocator</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_GetAllocator" title="Link to this definition">¶</a><br /></dt>
+<dd><p>지정된 도메인의 메모리 블록 할당자를 가져옵니다.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_SetAllocator">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_SetAllocator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="memory.html#c.PyMemAllocatorDomain" title="PyMemAllocatorDomain"><span class="n"><span class="pre">PyMemAllocatorDomain</span></span></a><span class="w"> </span><span class="n"><span class="pre">domain</span></span>, <a class="reference internal" href="memory.html#c.PyMemAllocatorEx" title="PyMemAllocatorEx"><span class="n"><span class="pre">PyMemAllocatorEx</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">allocator</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_SetAllocator" title="Link to this definition">¶</a><br /></dt>
+<dd><p>지정된 도메인의 메모리 블록 할당자를 설정합니다.</p>
+<p>새 할당자는 0바이트를 요청할 때 고유한 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌 포인터를 반환해야 합니다.</p>
+<p>For the <a class="reference internal" href="memory.html#c.PYMEM_DOMAIN_RAW" title="PYMEM_DOMAIN_RAW"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PYMEM_DOMAIN_RAW</span></code></a> domain, the allocator must be
+thread-safe: the <a class="reference internal" href="../glossary.html#term-global-interpreter-lock"><span class="xref std std-term">GIL</span></a> is not held when the
+allocator is called.</p>
+<p>For the remaining domains, the allocator must also be thread-safe:
+the allocator may be called in different interpreters that do not
+share a <code class="docutils literal notranslate"><span class="pre">GIL</span></code>.</p>
+<p>새 할당자가 훅이 아니면 (이전 할당자를 호출하지 않으면), <a class="reference internal" href="memory.html#c.PyMem_SetupDebugHooks" title="PyMem_SetupDebugHooks"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_SetupDebugHooks()</span></code></a> 함수를 호출하여 새 할당자 위에 디버그 훅을 다시 설치해야 합니다.</p>
+<p>See also <a class="reference internal" href="init_config.html#c.PyPreConfig.allocator" title="PyPreConfig.allocator"><code class="xref c c-member docutils literal notranslate"><span class="pre">PyPreConfig.allocator</span></code></a> and <a class="reference internal" href="init_config.html#c-preinit"><span class="std std-ref">Preinitialize Python
+with PyPreConfig</span></a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">경고</p>
+<p><a class="reference internal" href="memory.html#c.PyMem_SetAllocator" title="PyMem_SetAllocator"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_SetAllocator()</span></code></a> does have the following contract:</p>
+<ul class="simple">
+<li><p>It can be called after <a class="reference internal" href="init_config.html#c.Py_PreInitialize" title="Py_PreInitialize"><code class="xref c c-func docutils literal notranslate"><span class="pre">Py_PreInitialize()</span></code></a> and before
+<a class="reference internal" href="init_config.html#c.Py_InitializeFromConfig" title="Py_InitializeFromConfig"><code class="xref c c-func docutils literal notranslate"><span class="pre">Py_InitializeFromConfig()</span></code></a> to install a custom memory
+allocator. There are no restrictions over the installed allocator
+other than the ones imposed by the domain (for instance, the Raw
+Domain allows the allocator to be called without the GIL held). See
+<a class="reference internal" href="memory.html#id1"><span class="std std-ref">the section on allocator domains</span></a> for more
+information.</p></li>
+<li><p>If called after Python has finish initializing (after
+<a class="reference internal" href="init_config.html#c.Py_InitializeFromConfig" title="Py_InitializeFromConfig"><code class="xref c c-func docutils literal notranslate"><span class="pre">Py_InitializeFromConfig()</span></code></a> has been called) the allocator
+<strong>must</strong> wrap the existing allocator. Substituting the current
+allocator for some other arbitrary one is <strong>not supported</strong>.</p></li>
+</ul>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">버전 3.12에서 변경: </span>All allocators must be thread-safe.</p>
+</div>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyMem_SetupDebugHooks">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyMem_SetupDebugHooks</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyMem_SetupDebugHooks" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Setup <a class="reference internal" href="memory.html#pymem-debug-hooks"><span class="std std-ref">debug hooks in the Python memory allocators</span></a>
+to detect memory errors.</p>
+</dd></dl>
+
+</section>
+<section id="debug-hooks-on-the-python-memory-allocators">
+<span id="pymem-debug-hooks"></span><h2>Debug hooks on the Python memory allocators<a class="headerlink" href="memory.html#debug-hooks-on-the-python-memory-allocators" title="Link to this heading">¶</a></h2>
+<p>When <a class="reference internal" href="../using/configure.html#debug-build"><span class="std std-ref">Python is built in debug mode</span></a>, the
+<a class="reference internal" href="memory.html#c.PyMem_SetupDebugHooks" title="PyMem_SetupDebugHooks"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_SetupDebugHooks()</span></code></a> function is called at the <a class="reference internal" href="init_config.html#c-preinit"><span class="std std-ref">Python
+preinitialization</span></a> to setup debug hooks on Python memory allocators
+to detect memory errors.</p>
+<p>The <span class="target" id="index-4"></span><a class="reference internal" href="../using/cmdline.html#envvar-PYTHONMALLOC"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PYTHONMALLOC</span></code></a> environment variable can be used to install debug
+hooks on a Python compiled in release mode (ex: <code class="docutils literal notranslate"><span class="pre">PYTHONMALLOC=debug</span></code>).</p>
+<p>The <a class="reference internal" href="memory.html#c.PyMem_SetupDebugHooks" title="PyMem_SetupDebugHooks"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_SetupDebugHooks()</span></code></a> function can be used to set debug hooks
+after calling <a class="reference internal" href="memory.html#c.PyMem_SetAllocator" title="PyMem_SetAllocator"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_SetAllocator()</span></code></a>.</p>
+<p>These debug hooks fill dynamically allocated memory blocks with special,
+recognizable bit patterns. Newly allocated memory is filled with the byte
+<code class="docutils literal notranslate"><span class="pre">0xCD</span></code> (<code class="docutils literal notranslate"><span class="pre">PYMEM_CLEANBYTE</span></code>), freed memory is filled with the byte <code class="docutils literal notranslate"><span class="pre">0xDD</span></code>
+(<code class="docutils literal notranslate"><span class="pre">PYMEM_DEADBYTE</span></code>). Memory blocks are surrounded by “forbidden bytes”
+filled with the byte <code class="docutils literal notranslate"><span class="pre">0xFD</span></code> (<code class="docutils literal notranslate"><span class="pre">PYMEM_FORBIDDENBYTE</span></code>). Strings of these bytes
+are unlikely to be valid addresses, floats, or ASCII strings.</p>
+<p>실행 시간 검사:</p>
+<ul class="simple">
+<li><p>Detect API violations. For example, detect if <a class="reference internal" href="memory.html#c.PyObject_Free" title="PyObject_Free"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Free()</span></code></a> is
+called on a memory block allocated by <a class="reference internal" href="memory.html#c.PyMem_Malloc" title="PyMem_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Malloc()</span></code></a>.</p></li>
+<li><p>Detect write before the start of the buffer (buffer underflow).</p></li>
+<li><p>Detect write after the end of the buffer (buffer overflow).</p></li>
+<li><p>Check that the <a class="reference internal" href="../glossary.html#term-global-interpreter-lock"><span class="xref std std-term">GIL</span></a> is held when
+allocator functions of <a class="reference internal" href="memory.html#c.PYMEM_DOMAIN_OBJ" title="PYMEM_DOMAIN_OBJ"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PYMEM_DOMAIN_OBJ</span></code></a> (ex:
+<a class="reference internal" href="memory.html#c.PyObject_Malloc" title="PyObject_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Malloc()</span></code></a>) and <a class="reference internal" href="memory.html#c.PYMEM_DOMAIN_MEM" title="PYMEM_DOMAIN_MEM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PYMEM_DOMAIN_MEM</span></code></a> (ex:
+<a class="reference internal" href="memory.html#c.PyMem_Malloc" title="PyMem_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Malloc()</span></code></a>) domains are called.</p></li>
+</ul>
+<p>에러가 발생하면, 디버그 훅은 <a class="reference internal" href="../library/tracemalloc.html#module-tracemalloc" title="tracemalloc: Trace memory allocations."><code class="xref py py-mod docutils literal notranslate"><span class="pre">tracemalloc</span></code></a> 모듈을 사용하여 메모리 블록이 할당된 곳의 트레이스백을 가져옵니다. <a class="reference internal" href="../library/tracemalloc.html#module-tracemalloc" title="tracemalloc: Trace memory allocations."><code class="xref py py-mod docutils literal notranslate"><span class="pre">tracemalloc</span></code></a>이 파이썬 메모리 할당을 추적 중이고 메모리 블록이 추적될 때만 트레이스백이 표시됩니다.</p>
+<p>Let <em>S</em> = <code class="docutils literal notranslate"><span class="pre">sizeof(size_t)</span></code>. <code class="docutils literal notranslate"><span class="pre">2*S</span></code> bytes are added at each end of each block
+of <em>N</em> bytes requested.  The memory layout is like so, where p represents the
+address returned by a malloc-like or realloc-like function (<code class="docutils literal notranslate"><span class="pre">p[i:j]</span></code> means
+the slice of bytes from <code class="docutils literal notranslate"><span class="pre">*(p+i)</span></code> inclusive up to <code class="docutils literal notranslate"><span class="pre">*(p+j)</span></code> exclusive; note
+that the treatment of negative indices differs from a Python slice):</p>
+<dl>
+<dt><code class="docutils literal notranslate"><span class="pre">p[-2*S:-S]</span></code></dt><dd><p>Number of bytes originally asked for.  This is a size_t, big-endian (easier
+to read in a memory dump).</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">p[-S]</span></code></dt><dd><p>API identifier (ASCII character):</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'r'</span></code> for <a class="reference internal" href="memory.html#c.PYMEM_DOMAIN_RAW" title="PYMEM_DOMAIN_RAW"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PYMEM_DOMAIN_RAW</span></code></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'m'</span></code> for <a class="reference internal" href="memory.html#c.PYMEM_DOMAIN_MEM" title="PYMEM_DOMAIN_MEM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PYMEM_DOMAIN_MEM</span></code></a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'o'</span></code> for <a class="reference internal" href="memory.html#c.PYMEM_DOMAIN_OBJ" title="PYMEM_DOMAIN_OBJ"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PYMEM_DOMAIN_OBJ</span></code></a>.</p></li>
+</ul>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">p[-S+1:0]</span></code></dt><dd><p>Copies of PYMEM_FORBIDDENBYTE.  Used to catch under- writes and reads.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">p[0:N]</span></code></dt><dd><p>The requested memory, filled with copies of PYMEM_CLEANBYTE, used to catch
+reference to uninitialized memory.  When a realloc-like function is called
+requesting a larger memory block, the new excess bytes are also filled with
+PYMEM_CLEANBYTE.  When a free-like function is called, these are
+overwritten with PYMEM_DEADBYTE, to catch reference to freed memory.  When
+a realloc- like function is called requesting a smaller memory block, the
+excess old bytes are also filled with PYMEM_DEADBYTE.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">p[N:N+S]</span></code></dt><dd><p>Copies of PYMEM_FORBIDDENBYTE.  Used to catch over- writes and reads.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">p[N+S:N+2*S]</span></code></dt><dd><p>Only used if the <code class="docutils literal notranslate"><span class="pre">PYMEM_DEBUG_SERIALNO</span></code> macro is defined (not defined by
+default).</p>
+<p>A serial number, incremented by 1 on each call to a malloc-like or
+realloc-like function.  Big-endian <code class="xref c c-type docutils literal notranslate"><span class="pre">size_t</span></code>.  If “bad memory” is detected
+later, the serial number gives an excellent way to set a breakpoint on the
+next run, to capture the instant at which this block was passed out.  The
+static function bumpserialno() in obmalloc.c is the only place the serial
+number is incremented, and exists so you can set such a breakpoint easily.</p>
+</dd>
+</dl>
+<p>A realloc-like or free-like function first checks that the PYMEM_FORBIDDENBYTE
+bytes at each end are intact.  If they’ve been altered, diagnostic output is
+written to stderr, and the program is aborted via Py_FatalError().  The other
+main failure mode is provoking a memory error when a program reads up one of
+the special bit patterns and tries to use it as an address.  If you get in a
+debugger then and look at the object, you’re likely to see that it’s entirely
+filled with PYMEM_DEADBYTE (meaning freed memory is getting used) or
+PYMEM_CLEANBYTE (meaning uninitialized memory is getting used).</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">버전 3.6에서 변경: </span>The <a class="reference internal" href="memory.html#c.PyMem_SetupDebugHooks" title="PyMem_SetupDebugHooks"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_SetupDebugHooks()</span></code></a> function now also works on Python
+compiled in release mode.  On error, the debug hooks now use
+<a class="reference internal" href="../library/tracemalloc.html#module-tracemalloc" title="tracemalloc: Trace memory allocations."><code class="xref py py-mod docutils literal notranslate"><span class="pre">tracemalloc</span></code></a> to get the traceback where a memory block was allocated.
+The debug hooks now also check if the GIL is held when functions of
+<a class="reference internal" href="memory.html#c.PYMEM_DOMAIN_OBJ" title="PYMEM_DOMAIN_OBJ"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PYMEM_DOMAIN_OBJ</span></code></a> and <a class="reference internal" href="memory.html#c.PYMEM_DOMAIN_MEM" title="PYMEM_DOMAIN_MEM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PYMEM_DOMAIN_MEM</span></code></a> domains are
+called.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">버전 3.8에서 변경: </span>Byte patterns <code class="docutils literal notranslate"><span class="pre">0xCB</span></code> (<code class="docutils literal notranslate"><span class="pre">PYMEM_CLEANBYTE</span></code>), <code class="docutils literal notranslate"><span class="pre">0xDB</span></code> (<code class="docutils literal notranslate"><span class="pre">PYMEM_DEADBYTE</span></code>)
+and <code class="docutils literal notranslate"><span class="pre">0xFB</span></code> (<code class="docutils literal notranslate"><span class="pre">PYMEM_FORBIDDENBYTE</span></code>) have been replaced with <code class="docutils literal notranslate"><span class="pre">0xCD</span></code>,
+<code class="docutils literal notranslate"><span class="pre">0xDD</span></code> and <code class="docutils literal notranslate"><span class="pre">0xFD</span></code> to use the same values than Windows CRT debug
+<code class="docutils literal notranslate"><span class="pre">malloc()</span></code> and <code class="docutils literal notranslate"><span class="pre">free()</span></code>.</p>
+</div>
+</section>
+<section id="the-pymalloc-allocator">
+<span id="pymalloc"></span><h2>pymalloc 할당자<a class="headerlink" href="memory.html#the-pymalloc-allocator" title="Link to this heading">¶</a></h2>
+<p>Python has a <em>pymalloc</em> allocator optimized for small objects (smaller or equal
+to 512 bytes) with a short lifetime. It uses memory mappings called “arenas”
+with a fixed size of either 256 KiB on 32-bit platforms or 1 MiB on 64-bit
+platforms. It falls back to <a class="reference internal" href="memory.html#c.PyMem_RawMalloc" title="PyMem_RawMalloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawMalloc()</span></code></a> and
+<a class="reference internal" href="memory.html#c.PyMem_RawRealloc" title="PyMem_RawRealloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_RawRealloc()</span></code></a> for allocations larger than 512 bytes.</p>
+<p><em>pymalloc</em> is the <a class="reference internal" href="memory.html#default-memory-allocators"><span class="std std-ref">default allocator</span></a> of the
+<a class="reference internal" href="memory.html#c.PYMEM_DOMAIN_MEM" title="PYMEM_DOMAIN_MEM"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PYMEM_DOMAIN_MEM</span></code></a> (ex: <a class="reference internal" href="memory.html#c.PyMem_Malloc" title="PyMem_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyMem_Malloc()</span></code></a>) and
+<a class="reference internal" href="memory.html#c.PYMEM_DOMAIN_OBJ" title="PYMEM_DOMAIN_OBJ"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PYMEM_DOMAIN_OBJ</span></code></a> (ex: <a class="reference internal" href="memory.html#c.PyObject_Malloc" title="PyObject_Malloc"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Malloc()</span></code></a>) domains.</p>
+<p>아레나 할당자는 다음 함수를 사용합니다:</p>
+<ul class="simple">
+<li><p><code class="xref c c-func docutils literal notranslate"><span class="pre">VirtualAlloc()</span></code> and <code class="xref c c-func docutils literal notranslate"><span class="pre">VirtualFree()</span></code> on Windows,</p></li>
+<li><p><code class="xref c c-func docutils literal notranslate"><span class="pre">mmap()</span></code> and <code class="xref c c-func docutils literal notranslate"><span class="pre">munmap()</span></code> if available,</p></li>
+<li><p>그렇지 않으면 <code class="xref c c-func docutils literal notranslate"><span class="pre">malloc()</span></code>과 <code class="xref c c-func docutils literal notranslate"><span class="pre">free()</span></code></p></li>
+</ul>
+<p>This allocator is disabled if Python is configured with the
+<a class="reference internal" href="../using/configure.html#cmdoption-without-pymalloc"><code class="xref std std-option docutils literal notranslate"><span class="pre">--without-pymalloc</span></code></a> option. It can also be disabled at runtime using
+the <span class="target" id="index-5"></span><a class="reference internal" href="../using/cmdline.html#envvar-PYTHONMALLOC"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PYTHONMALLOC</span></code></a> environment variable (ex: <code class="docutils literal notranslate"><span class="pre">PYTHONMALLOC=malloc</span></code>).</p>
+<section id="customize-pymalloc-arena-allocator">
+<h3>pymalloc 아레나 할당자 사용자 정의<a class="headerlink" href="memory.html#customize-pymalloc-arena-allocator" title="Link to this heading">¶</a></h3>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.4.</span></p>
+</div>
+<dl class="c type">
+<dt class="sig sig-object c" id="c.PyObjectArenaAllocator">
+<span class="k"><span class="pre">type</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyObjectArenaAllocator</span></span></span><a class="headerlink" href="memory.html#c.PyObjectArenaAllocator" title="Link to this definition">¶</a><br /></dt>
+<dd><p>아레나 할당자를 기술하는 데 사용되는 구조체. 이 구조체에는 세 개의 필드가 있습니다:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>필드</p></th>
+<th class="head"><p>의미</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">*ctx</span></code></p></td>
+<td><p>첫 번째 인자로 전달된 사용자 컨텍스트</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">void*</span> <span class="pre">alloc(void</span> <span class="pre">*ctx,</span> <span class="pre">size_t</span> <span class="pre">size)</span></code></p></td>
+<td><p>size 바이트의 아레나를 할당합니다</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">void</span> <span class="pre">free(void</span> <span class="pre">*ctx,</span> <span class="pre">void</span> <span class="pre">*ptr,</span> <span class="pre">size_t</span> <span class="pre">size)</span></code></p></td>
+<td><p>아레나를 해제합니다</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyObject_GetArenaAllocator">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyObject_GetArenaAllocator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="memory.html#c.PyObjectArenaAllocator" title="PyObjectArenaAllocator"><span class="n"><span class="pre">PyObjectArenaAllocator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">allocator</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyObject_GetArenaAllocator" title="Link to this definition">¶</a><br /></dt>
+<dd><p>아레나 할당자를 얻습니다.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyObject_SetArenaAllocator">
+<span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyObject_SetArenaAllocator</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="memory.html#c.PyObjectArenaAllocator" title="PyObjectArenaAllocator"><span class="n"><span class="pre">PyObjectArenaAllocator</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">allocator</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyObject_SetArenaAllocator" title="Link to this definition">¶</a><br /></dt>
+<dd><p>아레나 할당자를 설정합니다.</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="tracemalloc-c-api">
+<h2>tracemalloc C API<a class="headerlink" href="memory.html#tracemalloc-c-api" title="Link to this heading">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.7.</span></p>
+</div>
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyTraceMalloc_Track">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyTraceMalloc_Track</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">domain</span></span>, <span class="n"><span class="pre">uintptr_t</span></span><span class="w"> </span><span class="n"><span class="pre">ptr</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyTraceMalloc_Track" title="Link to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="../library/tracemalloc.html#module-tracemalloc" title="tracemalloc: Trace memory allocations."><code class="xref py py-mod docutils literal notranslate"><span class="pre">tracemalloc</span></code></a> 모듈에서 할당된 메모리 블록을 추적합니다.</p>
+<p>성공하면 <code class="docutils literal notranslate"><span class="pre">0</span></code>을 반환하고, 에러가 발생하면 (추적을 저장하기 위한 메모리를 할당하지 못했습니다) <code class="docutils literal notranslate"><span class="pre">-1</span></code>을 반환합니다. tracemalloc이 비활성화되었으면 <code class="docutils literal notranslate"><span class="pre">-2</span></code>를 반환합니다.</p>
+<p>메모리 블록이 이미 추적되면, 기존 추적을 갱신합니다.</p>
+</dd></dl>
+
+<dl class="c function">
+<dt class="sig sig-object c" id="c.PyTraceMalloc_Untrack">
+<span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PyTraceMalloc_Untrack</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">unsigned</span></span><span class="w"> </span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="n"><span class="pre">domain</span></span>, <span class="n"><span class="pre">uintptr_t</span></span><span class="w"> </span><span class="n"><span class="pre">ptr</span></span><span class="sig-paren">)</span><a class="headerlink" href="memory.html#c.PyTraceMalloc_Untrack" title="Link to this definition">¶</a><br /></dt>
+<dd><p><a class="reference internal" href="../library/tracemalloc.html#module-tracemalloc" title="tracemalloc: Trace memory allocations."><code class="xref py py-mod docutils literal notranslate"><span class="pre">tracemalloc</span></code></a> 모듈에서 할당된 메모리 블록을 추적 해제합니다. 블록이 추적되지 않으면 아무것도 하지 않습니다.</p>
+<p>tracemalloc이 비활성화되었으면 <code class="docutils literal notranslate"><span class="pre">-2</span></code>를 반환하고, 그렇지 않으면 <code class="docutils literal notranslate"><span class="pre">0</span></code>을 반환합니다.</p>
+</dd></dl>
+
+</section>
+<section id="examples">
+<span id="memoryexamples"></span><h2>예<a class="headerlink" href="memory.html#examples" title="Link to this heading">¶</a></h2>
+<p>다음은 <a class="reference internal" href="memory.html#memoryoverview"><span class="std std-ref">개요</span></a> 섹션에서 따온 예제입니다. I/O 버퍼가 첫 번째 함수 집합을 사용하여 파이썬 힙에서 할당되도록 다시 작성되었습니다:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">res</span><span class="p">;</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">PyMem_Malloc</span><span class="p">(</span><span class="n">BUFSIZ</span><span class="p">);</span><span class="w"> </span><span class="cm">/* for I/O */</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">PyErr_NoMemory</span><span class="p">();</span>
+<span class="cm">/* ...Do some I/O operation involving buf... */</span>
+<span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyBytes_FromString</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+<span class="n">PyMem_Free</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span><span class="w"> </span><span class="cm">/* allocated with PyMem_Malloc */</span>
+<span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>형 지향 함수 집합을 사용하는 같은 코드입니다:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">res</span><span class="p">;</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyMem_New</span><span class="p">(</span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">BUFSIZ</span><span class="p">);</span><span class="w"> </span><span class="cm">/* for I/O */</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buf</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">PyErr_NoMemory</span><span class="p">();</span>
+<span class="cm">/* ...Do some I/O operation involving buf... */</span>
+<span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyBytes_FromString</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span>
+<span class="n">PyMem_Del</span><span class="p">(</span><span class="n">buf</span><span class="p">);</span><span class="w"> </span><span class="cm">/* allocated with PyMem_New */</span>
+<span class="k">return</span><span class="w"> </span><span class="n">res</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>위의 두 가지 예에서, 버퍼는 항상 같은 집합에 속하는 함수를 통해 조작됨에 유의하십시오. 실제로, 서로 다른 할당자를 혼합할 위험이 최소로 줄어들도록, 주어진 메모리 블록에 대해 같은 메모리 API 패밀리를 사용하는 것은 필수입니다 . 다음 코드 시퀀스에는 두 개의 에러가 있으며, 그중 하나는 서로 다른 힙에서 작동하는 두 개의 다른 할당자를 혼합하기 때문에 <em>치명적(fatal)</em>인 것으로 표시됩니다.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyMem_New</span><span class="p">(</span><span class="kt">char</span><span class="p">,</span><span class="w"> </span><span class="n">BUFSIZ</span><span class="p">);</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="n">BUFSIZ</span><span class="p">);</span>
+<span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">buf3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="n">PyMem_Malloc</span><span class="p">(</span><span class="n">BUFSIZ</span><span class="p">);</span>
+<span class="p">...</span>
+<span class="n">PyMem_Del</span><span class="p">(</span><span class="n">buf3</span><span class="p">);</span><span class="w">  </span><span class="cm">/* Wrong -- should be PyMem_Free() */</span>
+<span class="n">free</span><span class="p">(</span><span class="n">buf2</span><span class="p">);</span><span class="w">       </span><span class="cm">/* Right -- allocated via malloc() */</span>
+<span class="n">free</span><span class="p">(</span><span class="n">buf1</span><span class="p">);</span><span class="w">       </span><span class="cm">/* Fatal -- should be PyMem_Del()  */</span>
+</pre></div>
+</div>
+<p>In addition to the functions aimed at handling raw memory blocks from the Python
+heap, objects in Python are allocated and released with <a class="reference internal" href="allocation.html#c.PyObject_New" title="PyObject_New"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PyObject_New</span></code></a>,
+<a class="reference internal" href="allocation.html#c.PyObject_NewVar" title="PyObject_NewVar"><code class="xref c c-macro docutils literal notranslate"><span class="pre">PyObject_NewVar</span></code></a> and <a class="reference internal" href="allocation.html#c.PyObject_Del" title="PyObject_Del"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_Del()</span></code></a>.</p>
+<p>이것들은 C로 새로운 객체 형을 정의하고 구현하는 것에 대한 다음 장에서 설명될 것입니다.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">목차</a></h3>
+    <ul>
+<li><a class="reference internal" href="memory.html#">메모리 관리</a><ul>
+<li><a class="reference internal" href="memory.html#overview">개요</a></li>
+<li><a class="reference internal" href="memory.html#allocator-domains">Allocator Domains</a></li>
+<li><a class="reference internal" href="memory.html#raw-memory-interface">원시 메모리 인터페이스</a></li>
+<li><a class="reference internal" href="memory.html#memory-interface">메모리 인터페이스</a></li>
+<li><a class="reference internal" href="memory.html#object-allocators">객체 할당자</a></li>
+<li><a class="reference internal" href="memory.html#default-memory-allocators">기본 메모리 할당자</a></li>
+<li><a class="reference internal" href="memory.html#customize-memory-allocators">메모리 할당자 사용자 정의</a></li>
+<li><a class="reference internal" href="memory.html#debug-hooks-on-the-python-memory-allocators">Debug hooks on the Python memory allocators</a></li>
+<li><a class="reference internal" href="memory.html#the-pymalloc-allocator">pymalloc 할당자</a><ul>
+<li><a class="reference internal" href="memory.html#customize-pymalloc-arena-allocator">pymalloc 아레나 할당자 사용자 정의</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="memory.html#tracemalloc-c-api">tracemalloc C API</a></li>
+<li><a class="reference internal" href="memory.html#examples">예</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>이전 항목</h4>
+    <p class="topless"><a href="init_config.html"
+                          title="이전 장">파이썬 초기화 구성</a></p>
+  </div>
+  <div>
+    <h4>다음 항목</h4>
+    <p class="topless"><a href="objimpl.html"
+                          title="다음 장">객체 구현 지원</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>이 페이지</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">버그 보고하기</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/c-api/memory.rst"
+            rel="nofollow">소스 보기
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="사이드바 닫기">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>탐색</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="일반 색인"
+             >색인</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 모듈 목록"
+             >모듈</a> |</li>
+        <li class="right" >
+          <a href="objimpl.html" title="객체 구현 지원"
+             >다음</a> |</li>
+        <li class="right" >
+          <a href="init_config.html" title="파이썬 초기화 구성"
+             >이전</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >파이썬/C API 레퍼런스 설명서</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="memory.html">메모리 관리</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="빠른 검색" aria-label="빠른 검색" type="search" name="q" id="search-box" />
+          <input type="submit" value="이동" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    저작권
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      최종 업데이트: Jun 09, 2024 (17:23 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7 버전으로 생성되었습니다.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

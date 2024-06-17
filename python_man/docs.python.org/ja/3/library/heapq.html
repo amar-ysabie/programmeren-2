@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="heapq --- ヒープキューアルゴリズム" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/heapq.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/heapq.py このモジュールではヒープキューアルゴリズムの一実装を提供しています。優先度キューアルゴリズムとしても知られています。 ヒープとは、各親ノードがどの子ノードよりも小さいか等しい値を持つ二分木のことです。この条件をヒープ不変式と呼びます。 ヒープの実装には、全ての k について、要素をゼロから数えたときに、 heap[k] <= heap[2*k+1] ..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/heapq.py このモジュールではヒープキューアルゴリズムの一実装を提供しています。優先度キューアルゴリズムとしても知られています。 ヒープとは、各親ノードがどの子ノードよりも小さいか等しい値を持つ二分木のことです。この条件をヒープ不変式と呼びます。 ヒープの実装には、全ての k について、要素をゼロから数えたときに、 heap[k] <= heap[2*k+1] ..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>heapq --- ヒープキューアルゴリズム &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="bisect --- 配列二分法アルゴリズム" href="bisect.html" />
+    <link rel="prev" title="collections.abc --- コンテナの抽象基底クラス" href="collections.abc.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/heapq.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="heapq.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">heapq</span></code> --- ヒープキューアルゴリズム</a><ul>
+<li><a class="reference internal" href="heapq.html#basic-examples">基本的な例</a></li>
+<li><a class="reference internal" href="heapq.html#priority-queue-implementation-notes">優先度キュー実装の注釈</a></li>
+<li><a class="reference internal" href="heapq.html#theory">理論</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="collections.abc.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">collections.abc</span></code> --- コンテナの抽象基底クラス</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="bisect.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bisect</span></code> --- 配列二分法アルゴリズム</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/heapq.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="bisect.html" title="bisect --- 配列二分法アルゴリズム"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="collections.abc.html" title="collections.abc --- コンテナの抽象基底クラス"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="datatypes.html" accesskey="U">データ型</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="heapq.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">heapq</span></code> --- ヒープキューアルゴリズム</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-heapq">
+<span id="heapq-heap-queue-algorithm"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">heapq</span></code> --- ヒープキューアルゴリズム<a class="headerlink" href="heapq.html#module-heapq" title="Link to this heading">¶</a></h1>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/heapq.py">Lib/heapq.py</a></p>
+<hr class="docutils" />
+<p>このモジュールではヒープキューアルゴリズムの一実装を提供しています。優先度キューアルゴリズムとしても知られています。</p>
+<p>ヒープとは、各親ノードがどの子ノードよりも小さいか等しい値を持つ二分木のことです。この条件をヒープ不変式と呼びます。</p>
+<p>ヒープの実装には、全ての <em>k</em> について、要素をゼロから数えたときに、 <code class="docutils literal notranslate"><span class="pre">heap[k]</span> <span class="pre">&lt;=</span> <span class="pre">heap[2*k+1]</span></code> かつ <code class="docutils literal notranslate"><span class="pre">heap[k]</span> <span class="pre">&lt;=</span> <span class="pre">heap[2*k+2]</span></code> となる配列を使用しています。比較のために、存在しない要素を無限大と考えます。ヒープの興味深い特性は、最小の要素が常にルートの <code class="docutils literal notranslate"><span class="pre">heap[0]</span></code> になることです。</p>
+<p>以下の API は教科書におけるヒープアルゴリズムとは 2 つの側面で異なっています: (a) ゼロベースのインデクス化を行っています。これにより、ノードに対するインデクスとその子ノードのインデクスの関係がやや明瞭でなくなりますが、Python はゼロベースのインデクス化を使っているのでよりしっくりきます。(b) われわれの pop メソッドは最大の要素ではなく最小の要素 (教科書では &quot;min heap:最小ヒープ&quot; と呼ばれています; 教科書では並べ替えをインプレースで行うのに適した &quot;max heap:最大ヒープ&quot; が一般的です)。</p>
+<p>これらの 2 点によって、ユーザに戸惑いを与えることなく、ヒープを通常の Python リストとして見ることができます: <code class="docutils literal notranslate"><span class="pre">heap[0]</span></code> が最小の要素となり、<code class="docutils literal notranslate"><span class="pre">heap.sort()</span></code> はヒープ不変式を保ちます!</p>
+<p>ヒープを作成するには、 <code class="docutils literal notranslate"><span class="pre">[]</span></code> に初期化されたリストを使うか、 <a class="reference internal" href="heapq.html#heapq.heapify" title="heapq.heapify"><code class="xref py py-func docutils literal notranslate"><span class="pre">heapify()</span></code></a> を用いて要素の入ったリストを変換します。</p>
+<p>次の関数が用意されています:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="heapq.heappush">
+<span class="sig-prename descclassname"><span class="pre">heapq.</span></span><span class="sig-name descname"><span class="pre">heappush</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="heapq.html#heapq.heappush" title="Link to this definition">¶</a></dt>
+<dd><p><em>item</em> を <em>heap</em> に push します。ヒープ不変式を保ちます。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="heapq.heappop">
+<span class="sig-prename descclassname"><span class="pre">heapq.</span></span><span class="sig-name descname"><span class="pre">heappop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heap</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="heapq.html#heapq.heappop" title="Link to this definition">¶</a></dt>
+<dd><p>pop を行い、 <em>heap</em> から最小の要素を返します。ヒープ不変式は保たれます。ヒープが空の場合、 <a class="reference internal" href="exceptions.html#IndexError" title="IndexError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> が送出されます。pop せずに最小の要素にアクセスするには、 <code class="docutils literal notranslate"><span class="pre">heap[0]</span></code> を使ってください。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="heapq.heappushpop">
+<span class="sig-prename descclassname"><span class="pre">heapq.</span></span><span class="sig-name descname"><span class="pre">heappushpop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="heapq.html#heapq.heappushpop" title="Link to this definition">¶</a></dt>
+<dd><p><em>item</em> を <em>heap</em> に push した後、pop を行って <em>heap</em> から最初の要素を返します。この一続きの動作を <a class="reference internal" href="heapq.html#heapq.heappush" title="heapq.heappush"><code class="xref py py-func docutils literal notranslate"><span class="pre">heappush()</span></code></a> に引き続いて <a class="reference internal" href="heapq.html#heapq.heappop" title="heapq.heappop"><code class="xref py py-func docutils literal notranslate"><span class="pre">heappop()</span></code></a> を別々に呼び出すよりも効率的に実行します。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="heapq.heapify">
+<span class="sig-prename descclassname"><span class="pre">heapq.</span></span><span class="sig-name descname"><span class="pre">heapify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="heapq.html#heapq.heapify" title="Link to this definition">¶</a></dt>
+<dd><p>リスト <em>x</em> をインプレース処理し、線形時間でヒープに変換します。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="heapq.heapreplace">
+<span class="sig-prename descclassname"><span class="pre">heapq.</span></span><span class="sig-name descname"><span class="pre">heapreplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">heap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="heapq.html#heapq.heapreplace" title="Link to this definition">¶</a></dt>
+<dd><p><em>heap</em> から最小の要素を pop して返し、新たに <em>item</em> を push します。ヒープのサイズは変更されません。ヒープが空の場合、 <a class="reference internal" href="exceptions.html#IndexError" title="IndexError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> が送出されます。</p>
+<p>この一息の演算は <a class="reference internal" href="heapq.html#heapq.heappop" title="heapq.heappop"><code class="xref py py-func docutils literal notranslate"><span class="pre">heappop()</span></code></a> に次いで <a class="reference internal" href="heapq.html#heapq.heappush" title="heapq.heappush"><code class="xref py py-func docutils literal notranslate"><span class="pre">heappush()</span></code></a> を送出するよりも効率的で、固定サイズのヒープを用いている場合にはより適しています。 pop/push の組み合わせは必ずヒープから要素を一つ返し、それを <em>item</em> と置き換えます。</p>
+<p>返される値は加えられた <em>item</em> よりも大きくなるかもしれません。それを望まないなら、代わりに <a class="reference internal" href="heapq.html#heapq.heappushpop" title="heapq.heappushpop"><code class="xref py py-func docutils literal notranslate"><span class="pre">heappushpop()</span></code></a> を使うことを考えてください。この push/pop の組み合わせは二つの値の小さい方を返し、大きい方の値をヒープに残します。</p>
+</dd></dl>
+
+<p>このモジュールではさらに3つのヒープに基く汎用関数を提供します。</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="heapq.merge">
+<span class="sig-prename descclassname"><span class="pre">heapq.</span></span><span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">iterables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reverse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="heapq.html#heapq.merge" title="Link to this definition">¶</a></dt>
+<dd><p>複数のソートされた入力をマージ(merge)して一つのソートされた出力にします (たとえば、複数のログファイルの時刻の入ったエントリーをマージします)。ソートされた値にわたる <a class="reference internal" href="../glossary.html#term-iterator"><span class="xref std std-term">iterator</span></a> を返します。</p>
+<p><code class="docutils literal notranslate"><span class="pre">sorted(itertools.chain(*iterables))</span></code> と似ていますが、イテレータを返し、一度にはデータをメモリに読み込まず、それぞれの入力ストリームが予め(最小から最大へ)ソートされていることを仮定します。</p>
+<p>2 つのオプション引数があり、これらはキーワード引数として指定されなければなりません。</p>
+<p><em>key</em> は 1 つの引数からなる <a class="reference internal" href="../glossary.html#term-key-function"><span class="xref std std-term">key function</span></a> を指定します。この関数は、入力の各要素から比較のキーを取り出すのに使われます。デフォルト値は <code class="docutils literal notranslate"><span class="pre">None</span></code> です (要素を直接比較します)。</p>
+<p><em>reverse</em> は真偽値です。 <code class="docutils literal notranslate"><span class="pre">True</span></code> を設定した場合、挿入要素は逆向きに比較されたかのように結合されます。  <code class="docutils literal notranslate"><span class="pre">sorted(itertools.chain(*iterables),</span> <span class="pre">reverse=True)</span></code> でこれに似た挙動を実現するには、全てのイテラブルは降順で並んでいなければなりません。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.5 で変更: </span>オプションの <em>key</em> 引数および <em>reverse</em> 引数を追加.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="heapq.nlargest">
+<span class="sig-prename descclassname"><span class="pre">heapq.</span></span><span class="sig-name descname"><span class="pre">nlargest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="heapq.html#heapq.nlargest" title="Link to this definition">¶</a></dt>
+<dd><p><em>iterable</em> で定義されるデータセットのうち、最大値から降順に <em>n</em> 個の値のリストを返します。(あたえられた場合) <em>key</em> は、引数を一つとる、<em>iterable</em> のそれぞれの要素から比較キーを生成する関数を指定します(例 <code class="docutils literal notranslate"><span class="pre">key=str.lower</span></code>)。以下のコードと同等です: <code class="docutils literal notranslate"><span class="pre">sorted(iterable,</span> <span class="pre">key=key,</span> <span class="pre">reverse=True)[:n]</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="heapq.nsmallest">
+<span class="sig-prename descclassname"><span class="pre">heapq.</span></span><span class="sig-name descname"><span class="pre">nsmallest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="heapq.html#heapq.nsmallest" title="Link to this definition">¶</a></dt>
+<dd><p><em>iterable</em> で定義されるデータセットのうち、最小値から昇順に <em>n</em> 個の値のリストを返します。(あたえられた場合) <em>key</em> は、引数を一つとる、<em>iterable</em> のそれぞれの要素から比較キーを生成する関数を指定します(例 <code class="docutils literal notranslate"><span class="pre">key=str.lower</span></code>)。以下のコードと同等です: <code class="docutils literal notranslate"><span class="pre">sorted(iterable,</span> <span class="pre">key=key)[:n]</span></code></p>
+</dd></dl>
+
+<p>後ろ二つの関数は <em>n</em> の値が小さな場合に最適な動作をします。大きな値の時には <a class="reference internal" href="functions.html#sorted" title="sorted"><code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code></a> 関数の方が効率的です。さらに、 <code class="docutils literal notranslate"><span class="pre">n==1</span></code> の時には <a class="reference internal" href="functions.html#min" title="min"><code class="xref py py-func docutils literal notranslate"><span class="pre">min()</span></code></a> および <a class="reference internal" href="functions.html#max" title="max"><code class="xref py py-func docutils literal notranslate"><span class="pre">max()</span></code></a> 関数の方が効率的です。この関数を繰り返し使うことが必要なら、iterable を実際のヒープに変えることを考えてください。</p>
+<section id="basic-examples">
+<h2>基本的な例<a class="headerlink" href="heapq.html#basic-examples" title="Link to this heading">¶</a></h2>
+<p>すべての値をヒープに push してから最小値を 1 つずつ pop することで、<a class="reference external" href="https://ja.wikipedia.org/wiki/%E3%83%92%E3%83%BC%E3%83%97%E3%82%BD%E3%83%BC%E3%83%88">ヒープソート</a> を実装できます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">heapsort</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">h</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="n">heappush</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="p">[</span><span class="n">heappop</span><span class="p">(</span><span class="n">h</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">h</span><span class="p">))]</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heapsort</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="go">[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
+</pre></div>
+</div>
+<p>これは <code class="docutils literal notranslate"><span class="pre">sorted(iterable)</span></code> に似ていますが、 <a class="reference internal" href="functions.html#sorted" title="sorted"><code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code></a> とは異なり、この実装はステーブルソートではありません。</p>
+<p>ヒープの要素はタプルに出来ます。これは、追跡される主レコードとは別に (タスクの優先度のような) 比較値を指定するときに便利です:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">h</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heappush</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;write code&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heappush</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;release product&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heappush</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;write spec&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heappush</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;create tests&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">heappop</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+<span class="go">(1, &#39;write spec&#39;)</span>
+</pre></div>
+</div>
+</section>
+<section id="priority-queue-implementation-notes">
+<h2>優先度キュー実装の注釈<a class="headerlink" href="heapq.html#priority-queue-implementation-notes" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://ja.wikipedia.org/wiki/%E5%84%AA%E5%85%88%E5%BA%A6%E3%81%A4%E3%81%8D%E3%82%AD%E3%83%A5%E3%83%BC">優先度つきキュー</a> は、ヒープの一般的な使い方で、実装にはいくつか困難な点があります:</p>
+<ul class="simple">
+<li><p>ソート安定性: 優先度が等しい二つのタスクが、もともと追加された順序で返されるためにはどうしたらいいでしょうか？</p></li>
+<li><p>(priority, task) ペアに対するタプルの比較は、priority が同じで task がデフォルトの比較順を持たないときに破綻します。</p></li>
+<li><p>あるタスクの優先度が変化したら、どうやってそれをヒープの新しい位置に移動させるのでしょうか？</p></li>
+<li><p>未解決のタスクが削除される必要があるとき、どのようにそれをキューから探して削除するのでしょうか？</p></li>
+</ul>
+<p>最初の二つの困難の解決策は、項目を優先度、項目番号、そしてタスクを含む 3 要素のリストとして保存することです。この項目番号は、同じ優先度の二つのタスクが、追加された順序で返されるようにするための同点決勝戦として働きます。そして二つの項目番号が等しくなることはありませんので、タプルの比較が二つのタスクを直接比べようとすることはありえません。</p>
+<p>比較できないタスク問題のもう一つの解決法は、タスクアイテムを無視して優先順序フィールドだけで比較するラッパークラスです:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span>
+
+<span class="nd">@dataclass</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">PrioritizedItem</span><span class="p">:</span>
+    <span class="n">priority</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">item</span><span class="p">:</span> <span class="n">Any</span><span class="o">=</span><span class="n">field</span><span class="p">(</span><span class="n">compare</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>残りの困難は主に、未解決のタスクを探して、その優先度を変更したり、完全に削除することです。タスクを探すことは、キュー内の項目を指し示す辞書によってなされます。</p>
+<p>項目を削除したり、優先度を変更することは、ヒープ構造の不変関係を壊すことになるので、もっと難しいです。ですから、可能な解決策は、その項目が無効であるものとしてマークし、必要なら変更された優先度の項目を加えることです:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">pq</span> <span class="o">=</span> <span class="p">[]</span>                         <span class="c1"># list of entries arranged in a heap</span>
+<span class="n">entry_finder</span> <span class="o">=</span> <span class="p">{}</span>               <span class="c1"># mapping of tasks to entries</span>
+<span class="n">REMOVED</span> <span class="o">=</span> <span class="s1">&#39;&lt;removed-task&gt;&#39;</span>      <span class="c1"># placeholder for a removed task</span>
+<span class="n">counter</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>     <span class="c1"># unique sequence count</span>
+
+<span class="k">def</span> <span class="nf">add_task</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">priority</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="s1">&#39;Add a new task or update the priority of an existing task&#39;</span>
+    <span class="k">if</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">entry_finder</span><span class="p">:</span>
+        <span class="n">remove_task</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">counter</span><span class="p">)</span>
+    <span class="n">entry</span> <span class="o">=</span> <span class="p">[</span><span class="n">priority</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">task</span><span class="p">]</span>
+    <span class="n">entry_finder</span><span class="p">[</span><span class="n">task</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span>
+    <span class="n">heappush</span><span class="p">(</span><span class="n">pq</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">remove_task</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+    <span class="s1">&#39;Mark an existing task as REMOVED.  Raise KeyError if not found.&#39;</span>
+    <span class="n">entry</span> <span class="o">=</span> <span class="n">entry_finder</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+    <span class="n">entry</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">REMOVED</span>
+
+<span class="k">def</span> <span class="nf">pop_task</span><span class="p">():</span>
+    <span class="s1">&#39;Remove and return the lowest priority task. Raise KeyError if empty.&#39;</span>
+    <span class="k">while</span> <span class="n">pq</span><span class="p">:</span>
+        <span class="n">priority</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">task</span> <span class="o">=</span> <span class="n">heappop</span><span class="p">(</span><span class="n">pq</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">task</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">REMOVED</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">entry_finder</span><span class="p">[</span><span class="n">task</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">task</span>
+    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;pop from an empty priority queue&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="theory">
+<h2>理論<a class="headerlink" href="heapq.html#theory" title="Link to this heading">¶</a></h2>
+<p>ヒープとは、全ての <em>k</em> について、要素を 0 から数えたときに、<code class="docutils literal notranslate"><span class="pre">a[k]</span> <span class="pre">&lt;=</span> <span class="pre">a[2*k+1]</span></code> かつ  <code class="docutils literal notranslate"><span class="pre">a[k]</span> <span class="pre">&lt;=</span> <span class="pre">a[2*k+2]</span></code> となる配列です。比較のために、存在しない要素を無限大と考えます。ヒープの興味深い属性は <code class="docutils literal notranslate"><span class="pre">a[0]</span></code> が常に最小の要素になることです。</p>
+<p>上記の奇妙な不変式は、勝ち抜き戦判定の際に効率的なメモリ表現を行うためのものです。以下の番号は <code class="docutils literal notranslate"><span class="pre">a[k]</span></code> ではなく <em>k</em> とします:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span>                               <span class="mi">0</span>
+
+              <span class="mi">1</span>                                 <span class="mi">2</span>
+
+      <span class="mi">3</span>               <span class="mi">4</span>                <span class="mi">5</span>               <span class="mi">6</span>
+
+  <span class="mi">7</span>       <span class="mi">8</span>       <span class="mi">9</span>       <span class="mi">10</span>      <span class="mi">11</span>      <span class="mi">12</span>      <span class="mi">13</span>      <span class="mi">14</span>
+
+<span class="mi">15</span> <span class="mi">16</span>   <span class="mi">17</span> <span class="mi">18</span>   <span class="mi">19</span> <span class="mi">20</span>   <span class="mi">21</span> <span class="mi">22</span>   <span class="mi">23</span> <span class="mi">24</span>   <span class="mi">25</span> <span class="mi">26</span>   <span class="mi">27</span> <span class="mi">28</span>   <span class="mi">29</span> <span class="mi">30</span>
+</pre></div>
+</div>
+<p>上の木構造では、各セル <em>k</em> は <code class="docutils literal notranslate"><span class="pre">2*k+1</span></code> および <code class="docutils literal notranslate"><span class="pre">2*k+2</span></code> を最大値としています。スポーツに見られるような通常の 2 つ組勝ち抜き戦では、各セルはその下にある二つのセルに対する勝者となっていて、個々のセルの勝者を追跡していくことにより、そのセルに対する全ての相手を見ることができます。しかしながら、このような勝ち抜き戦を使う計算機アプリケーションの多くでは、勝歴を追跡する必要はりません。メモリ効率をより高めるために、勝者が上位に進級した際、下のレベルから持ってきて置き換えることにすると、あるセルとその下位にある二つのセルは異なる三つの要素を含み、かつ上位のセルは二つの下位のセルに対して &quot;勝者と&quot; なります。</p>
+<p>このヒープ不変式が常に守られれば、インデックス 0 は明らかに最勝者となります。最勝者の要素を除去し、&quot;次の&quot; 勝者を見つけるための最も単純なアルゴリズム的手法は、ある敗者要素 (ここでは上図のセル 30 とします) を 0 の場所に持っていき、この新しい 0 を濾過するようにしてツリーを下らせて値を交換してゆきます。不変関係が再構築されるまでこれを続けます。この操作は明らかに、ツリー内の全ての要素数に対して対数的な計算量となります。全ての要素について繰り返すと、 <em>O</em>(<em>n</em> log <em>n</em>) のソートになります。</p>
+<p>このソートの良い点は、新たに挿入する要素が、最後に取り出された 0 番目の要素よりも &quot;良い値&quot; でない限り、ソートを行っている最中に新たな要素を効率的に追加できるというところです。この性質は、シミュレーション的な状況で、ツリーで全ての入力イベントを保持し、&quot;勝者&quot; の状況を最小のスケジュール時刻にするような場合に特に便利です。あるイベントが他のイベント群の実行をスケジュールする際、それらは未来にスケジュールされることになるので、それらのイベント群を容易にヒープに積むことができます。すなわち、ヒープはスケジューラを実装する上で良いデータ構造であるといえます (私はこれを MIDI シーケンサで使っています :-)。</p>
+<p>これまで、スケジューラを実装するための様々なデータ構造が広範に研究されてきました。ヒープは、十分高速で、速度はおおむね一定であり、最悪の場合でも平均的な速度とさほど変わらないため、良いデータ構造といえます。しかし、最悪の場合にひどい速度になるとしても、全体的にはより効率の高い他のデータ構造表現も存在します。</p>
+<p>ヒープはまた、巨大なディスクのソートでも非常に有用です。おそらくご存知のように、巨大なソートを行うと、複数の &quot;ラン (run)&quot; (予めソートされた配列で、そのサイズは通常 CPU メモリの量に関係しています) が生成され、続いて統合処理 (merging) がこれらのランを判定します。この統合処理はしばしば非常に巧妙に組織されています <a class="footnote-reference brackets" href="heapq.html#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>。重要なのは、最初のソートが可能な限り長いランを生成することです。勝ち抜き戦はこれを達成するための良い方法です。もし利用可能な全てのメモリを使って勝ち抜き戦を行い、要素を置換および濾過処理して現在のランに収めれば、ランダムな入力に対してメモリの二倍のサイズのランを生成することになり、大体順序づけがなされている入力に対してはもっと高い効率になります。</p>
+<p>さらに、ディスク上の 0 番目の要素を出力して、現在の勝ち抜き戦に (最後に出力した値に &quot;勝って&quot; しまうために) 収められない入力を得たなら、ヒープには収まらないため、ヒープのサイズは減少します。解放されたメモリは二つ目のヒープを段階的に構築するために巧妙に再利用することができ、この二つ目のヒープは最初のヒープが崩壊していくのと同じ速度で成長します。最初のヒープが完全に消滅したら、ヒープを切り替えて新たなランを開始します。なんと巧妙で効率的なのでしょう！</p>
+<p>一言で言うと、ヒープは知って得するメモリ構造です。私はいくつかのアプリケーションでヒープを使っていて、'ヒープ' モジュールを常備するのはいい事だと考えています。:-)</p>
+<p class="rubric">脚注</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="heapq.html#id1">1</a><span class="fn-bracket">]</span></span>
+<p>現在使われているディスクバランス化アルゴリズムは、最近ではもはや巧妙というよりも目障りになっています。これは、ディスクのシーク機能が向上した結果です。巨大な容量を持つテープドライブなど、シーク不能なデバイスでは、事情は全く異なります。テープの 1 つ 1 つの動きが可能な限り効率的に行われるように非常に巧妙な処理を (相当前もって) 確保しなければなりません (統合処理の &quot;進行&quot; に最も多く使用させます)。テープによっては逆方向に読むことさえでき、巻き戻しに時間を取られるのを避けるために使うこともできます。正直、本当に良いテープソートは見ていて素晴らしく驚異的なものです！ソートというのは常に偉大な芸術なのです！:-)</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="heapq.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">heapq</span></code> --- ヒープキューアルゴリズム</a><ul>
+<li><a class="reference internal" href="heapq.html#basic-examples">基本的な例</a></li>
+<li><a class="reference internal" href="heapq.html#priority-queue-implementation-notes">優先度キュー実装の注釈</a></li>
+<li><a class="reference internal" href="heapq.html#theory">理論</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="collections.abc.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">collections.abc</span></code> --- コンテナの抽象基底クラス</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="bisect.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bisect</span></code> --- 配列二分法アルゴリズム</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/heapq.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="bisect.html" title="bisect --- 配列二分法アルゴリズム"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="collections.abc.html" title="collections.abc --- コンテナの抽象基底クラス"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="datatypes.html" >データ型</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="heapq.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">heapq</span></code> --- ヒープキューアルゴリズム</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

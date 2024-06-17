@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="1. はじめに" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/reference/introduction.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="このリファレンスマニュアルは、Python プログラミング言語自体に関する記述です。チュートリアルとして書かれたものではありません。 私は本マニュアルをできるだけ正確に書こうとする一方で、文法や字句解析以外の全てについて、形式化された仕様記述ではなく英語を使うことにしました。そうすることで、このドキュメントが平均的な読者にとってより読みやすくなっているはずですが、ややあいまいな部分も残ってい..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="このリファレンスマニュアルは、Python プログラミング言語自体に関する記述です。チュートリアルとして書かれたものではありません。 私は本マニュアルをできるだけ正確に書こうとする一方で、文法や字句解析以外の全てについて、形式化された仕様記述ではなく英語を使うことにしました。そうすることで、このドキュメントが平均的な読者にとってより読みやすくなっているはずですが、ややあいまいな部分も残ってい..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>1. はじめに &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="2. 字句解析" href="lexical_analysis.html" />
+    <link rel="prev" title="Python 言語リファレンス" href="index.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/reference/introduction.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="introduction.html#">1. はじめに</a><ul>
+<li><a class="reference internal" href="introduction.html#alternate-implementations">1.1. 別のPythonの実装</a></li>
+<li><a class="reference internal" href="introduction.html#notation">1.2. 本マニュアルにおける表記法</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="index.html"
+                          title="前の章へ">Python 言語リファレンス</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="lexical_analysis.html"
+                          title="次の章へ"><span class="section-number">2. </span>字句解析</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/reference/introduction.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="lexical_analysis.html" title="2. 字句解析"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Python 言語リファレンス"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Python 言語リファレンス</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="introduction.html"><span class="section-number">1. </span>はじめに</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="introduction">
+<span id="id1"></span><h1><span class="section-number">1. </span>はじめに<a class="headerlink" href="introduction.html#introduction" title="Link to this heading">¶</a></h1>
+<p>このリファレンスマニュアルは、Python プログラミング言語自体に関する記述です。チュートリアルとして書かれたものではありません。</p>
+<p>私は本マニュアルをできるだけ正確に書こうとする一方で、文法や字句解析以外の全てについて、形式化された仕様記述ではなく英語を使うことにしました。そうすることで、このドキュメントが平均的な読者にとってより読みやすくなっているはずですが、ややあいまいな部分も残っていることでしょう。従って、もし読者のあなたが火星から来ている人で、このドキュメントだけから Python を再度実装しようとしているのなら、色々と推測しなければならないことがあり、実際にはおそらく全く別の言語を実装する羽目になるでしょう。逆に、あなたが Python を利用しており、Python 言語のある特定の領域において、厳密な規則が何か疑問に思った場合、その答えはこのドキュメントで確実に見つけられることでしょう。もしより形式化された言語定義をお望みなら、あなたの時間を提供していただいてかまいません --- もしくは、クローン生成装置でも発明してください :-)。</p>
+<p>実装に関する詳細を言語リファレンスのドキュメントに載せすぎるのは危険なことです --- 実装は変更されるかもしれず、同じ言語でも異なる実装は異なった動作をするかもしれないからです。一方、CPython が広く使われている一つの Python 実装 (別の実装も支持され続けていますが) なので、特定のクセについては、特に実装によって何らかの制限が加えられている場合には、触れておく価値があります。従って、このテキスト全体にわたって短い &quot;実装に関する注釈 (imprementation notes)&quot; がちりばめられています。</p>
+<p>Python 実装はいずれも、数々の組み込みモジュールと標準モジュールが付属します。それらについては、 <a class="reference internal" href="../library/index.html#library-index"><span class="std std-ref">Python 標準ライブラリ</span></a> でドキュメント化されています。いくつかの組み込みモジュールについては、言語定義と重要なかかわりをもっているときについて触れています。</p>
+<section id="alternate-implementations">
+<span id="implementations"></span><h2><span class="section-number">1.1. </span>別のPythonの実装<a class="headerlink" href="introduction.html#alternate-implementations" title="Link to this heading">¶</a></h2>
+<p>Pythonの実装としては、群を抜いて有名な実装がひとつ存在しています。それ以外の実装に関しても、特定のユーザ間で興味が持たれています。</p>
+<p>よく知られている実装には以下のものがあります:</p>
+<dl class="simple">
+<dt>CPython</dt><dd><p>これは最も保守されている初代のPython実装で、C言語で書かれています。ほとんどの場合、言語の新機能がいち早く実装されます。</p>
+</dd>
+<dt>Jython</dt><dd><p>Javaで実装されたPythonです。この実装はJavaアプリケーションのためのスクリプト言語として、もしくはJavaクラスライブラリを使ったアプリケーションを作成するために使用することができます。また、Javaライブラリのテストを作成するためにもしばしば使用されています。さらなる情報については <a class="reference external" href="https://www.jython.org/">the Jython website</a> を参照してください。</p>
+</dd>
+<dt>Python for .NET</dt><dd><p>この実装は内部ではCPythonを使用していますが、 .NETアプリケーションによって管理されているので、 .NETライブラリを参照することが可能です。この実装はBrian Lloydによって作成されました。さらなる情報については、 <a class="reference external" href="https://pythonnet.github.io/">Python for .NET home page</a> を参照してください。</p>
+</dd>
+<dt>IronPython</dt><dd><p>.NETでPythonを使用するためのもう一つの実装です。Python.NETとは異なり、完全にILを生成することができるPythonの実装あり、直接Pythonコードを.NETアセンブリにコンパイルします。これはJythonの初代の開発者であるJim Huguninによって作られました。さらなる情報については <a class="reference external" href="https://ironpython.net/">the IronPython website</a> を参照してください。</p>
+</dd>
+<dt>PyPy</dt><dd><p>An implementation of Python written completely in Python. It supports several
+advanced features not found in other implementations like stackless support
+and a Just in Time compiler. One of the goals of the project is to encourage
+experimentation with the language itself by making it easier to modify the
+interpreter (since it is written in Python).  Additional information is
+available on <a class="reference external" href="https://www.pypy.org/">the PyPy project's home page</a>.</p>
+</dd>
+</dl>
+<p>これらの各実装はこのマニュアルで文書化された言語とは多少異なっている、もしくは、標準のPythonドキュメントと何処が異なっているかを定めた情報が公開されているでしょう。あなたが使用している実装上で、代替手段を使う必要があるかどうかを判断するためには、各実装の仕様書を参照してください。</p>
+</section>
+<section id="notation">
+<span id="id2"></span><h2><span class="section-number">1.2. </span>本マニュアルにおける表記法<a class="headerlink" href="introduction.html#notation" title="Link to this heading">¶</a></h2>
+<p id="index-0">The descriptions of lexical analysis and syntax use a modified
+<a class="reference external" href="https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form">Backus–Naur form (BNF)</a> grammar
+notation.  This uses the following style of definition:</p>
+<pre>
+<strong id="grammar-token-notation-name">name     </strong> ::=  <a class="reference internal" href="introduction.html#grammar-token-notation-lc_letter"><code class="xref docutils literal notranslate"><span class="pre">lc_letter</span></code></a> (<a class="reference internal" href="introduction.html#grammar-token-notation-lc_letter"><code class="xref docutils literal notranslate"><span class="pre">lc_letter</span></code></a> | &quot;_&quot;)*
+<strong id="grammar-token-notation-lc_letter">lc_letter</strong> ::=  &quot;a&quot;...&quot;z&quot;
+</pre>
+<p>最初の行は、<code class="docutils literal notranslate"><span class="pre">name</span></code> が <code class="docutils literal notranslate"><span class="pre">lc_letter</span></code> の後ろにゼロ個またはそれ以上の <code class="docutils literal notranslate"><span class="pre">lc_letter</span></code> とアンダースコアが続いたものであることを示しています。そして、<code class="docutils literal notranslate"><span class="pre">lc_letter</span></code> は <code class="docutils literal notranslate"><span class="pre">'a'</span></code> から <code class="docutils literal notranslate"><span class="pre">'z'</span></code> までの何らかの文字一字であることを示します。 (この規則は、このドキュメントに記述されている字句規則と構文規則において定義されている名前 (name) で一貫して使われています)。</p>
+<p>各規則は name (規則によって定義されているものの名前) と <code class="docutils literal notranslate"><span class="pre">::=</span></code> から始まります。垂直線 (<code class="docutils literal notranslate"><span class="pre">|</span></code>) は、複数の選択項目を分かち書きするときに使います; この記号は、この記法において最も結合優先度の低い演算子です。アスタリスク (<code class="docutils literal notranslate"><span class="pre">*</span></code>) は、直前にくる要素のゼロ個以上の繰り返しを表します; 同様に、プラス (<code class="docutils literal notranslate"><span class="pre">+</span></code>) は一個以上の繰り返しで、角括弧 (<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">]</span></code>) に囲われた字句は、字句がゼロ個か一個出現する (別の言い方をすれば、囲いの中の字句はオプションである) ことを示します。<code class="docutils literal notranslate"><span class="pre">*</span></code> および <code class="docutils literal notranslate"><span class="pre">+</span></code> 演算子の結合範囲は可能な限り狭くなっています; 字句のグループ化には丸括弧を使います。リテラル文字列はクオートで囲われます。空白はトークンを分割しているときのみ意味を持ちます。規則は通常、一行中に収められています; 多数の選択肢のある規則は、最初の行につづいて、垂直線の後ろに各々別の行として記述されます。</p>
+<p id="index-1">(上の例のような) 字句定義では、他に二つの慣習が使われています: 三つのドットで区切られている二つのリテラル文字は、二つの文字の ASCII 文字コードにおける (包含的な) 範囲から文字を一字選ぶことを示します。各カッコ中の字句 (<code class="docutils literal notranslate"><span class="pre">&lt;...&gt;</span></code>) は、定義済みのシンボルを記述する非形式的なやりかたです; 例えば、'制御文字' を書き表す必要があるときなどに使われることがあります。</p>
+<p>字句と構文規則の定義の間で使われている表記はほとんど同じですが、その意味には大きな違いがあります: 字句定義は入力ソース中の個々の文字を取り扱いますが、構文定義は字句解析で生成された一連のトークンを取り扱います。次節 (&quot;字句解析&quot;) における BNF はすべて字句定義のためのものです; それ以降の章では、構文定義のために使っています。</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="introduction.html#">1. はじめに</a><ul>
+<li><a class="reference internal" href="introduction.html#alternate-implementations">1.1. 別のPythonの実装</a></li>
+<li><a class="reference internal" href="introduction.html#notation">1.2. 本マニュアルにおける表記法</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="index.html"
+                          title="前の章へ">Python 言語リファレンス</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="lexical_analysis.html"
+                          title="次の章へ"><span class="section-number">2. </span>字句解析</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/reference/introduction.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="lexical_analysis.html" title="2. 字句解析"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Python 言語リファレンス"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 言語リファレンス</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="introduction.html"><span class="section-number">1. </span>はじめに</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="5. Mac で Python を使う" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/using/mac.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="著者, Bob Savage < bobsavage@mac.com>,. macOS が動作している Mac 上の Python は原則的には他の Unix プラットフォーム上の Python と非常によく似ていますが、 統合開発環境 (IDE) やパッケージ・マネージャなどの指摘すべき追加要素があります。 Python の入手とインストール: macOS used to come wit..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="著者, Bob Savage < bobsavage@mac.com>,. macOS が動作している Mac 上の Python は原則的には他の Unix プラットフォーム上の Python と非常によく似ていますが、 統合開発環境 (IDE) やパッケージ・マネージャなどの指摘すべき追加要素があります。 Python の入手とインストール: macOS used to come wit..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>5. Mac で Python を使う &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="6. エディタと IDE" href="editors.html" />
+    <link rel="prev" title="4. Windows で Python を使う" href="windows.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/using/mac.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="mac.html#">5. Mac で Python を使う</a><ul>
+<li><a class="reference internal" href="mac.html#getting-and-installing-python">5.1. Python の入手とインストール</a><ul>
+<li><a class="reference internal" href="mac.html#how-to-run-a-python-script">5.1.1. Python スクリプトの実行方法</a></li>
+<li><a class="reference internal" href="mac.html#running-scripts-with-a-gui">5.1.2. GUI でスクリプトを実行</a></li>
+<li><a class="reference internal" href="mac.html#configuration">5.1.3. Configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="mac.html#the-ide">5.2. IDE</a></li>
+<li><a class="reference internal" href="mac.html#installing-additional-python-packages">5.3. 追加の Python パッケージのインストール</a></li>
+<li><a class="reference internal" href="mac.html#gui-programming">5.4. GUI プログラミング</a></li>
+<li><a class="reference internal" href="mac.html#distributing-python-applications">5.5. Distributing Python Applications</a></li>
+<li><a class="reference internal" href="mac.html#other-resources">5.6. 他のリソース</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="windows.html"
+                          title="前の章へ"><span class="section-number">4. </span>Windows で Python を使う</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="editors.html"
+                          title="次の章へ"><span class="section-number">6. </span>エディタと IDE</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/using/mac.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="editors.html" title="6. エディタと IDE"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="windows.html" title="4. Windows で Python を使う"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Python のセットアップと利用</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="mac.html"><span class="section-number">5. </span>Mac で Python を使う</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="using-python-on-a-mac">
+<span id="using-on-mac"></span><h1><span class="section-number">5. </span>Mac で Python を使う<a class="headerlink" href="mac.html#using-python-on-a-mac" title="Link to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">著者<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Bob Savage &lt;<a class="reference external" href="mailto:bobsavage&#37;&#52;&#48;mac&#46;com">bobsavage<span>&#64;</span>mac<span>&#46;</span>com</a>&gt;</p>
+</dd>
+</dl>
+<p>macOS が動作している Mac 上の Python は原則的には他の Unix プラットフォーム上の Python と非常によく似ていますが、 統合開発環境 (IDE) やパッケージ・マネージャなどの指摘すべき追加要素があります。</p>
+<section id="getting-and-installing-python">
+<span id="getting-and-installing-macpython"></span><span id="getting-osx"></span><h2><span class="section-number">5.1. </span>Python の入手とインストール<a class="headerlink" href="mac.html#getting-and-installing-python" title="Link to this heading">¶</a></h2>
+<p>macOS used to come with Python 2.7 pre-installed between versions
+10.8 and <a class="reference external" href="https://developer.apple.com/documentation/macos-release-notes/macos-12_3-release-notes#Python">12.3</a>.
+You are invited to install the most recent version of Python 3 from the <a class="reference external" href="https://www.python.org/downloads/macos/">Python
+website</a>.
+A current &quot;universal2 binary&quot; build of Python, which runs natively on the Mac's
+new Apple Silicon and legacy Intel processors, is available there.</p>
+<p>インストールを行うといくつかのものが手に入ります:</p>
+<ul class="simple">
+<li><p>A <code class="docutils literal notranslate"><span class="pre">Python</span> <span class="pre">3.12</span></code> folder in your <code class="file docutils literal notranslate"><span class="pre">Applications</span></code> folder. In here
+you find IDLE, the development environment that is a standard part of official
+Python distributions; and <strong class="program">Python Launcher</strong>, which handles double-clicking Python
+scripts from the Finder.</p></li>
+<li><p>A framework <code class="file docutils literal notranslate"><span class="pre">/Library/Frameworks/Python.framework</span></code>, which includes the
+Python executable and libraries. The installer adds this location to your shell
+path. To uninstall Python, you can remove these three things. A
+symlink to the Python executable is placed in <code class="file docutils literal notranslate"><span class="pre">/usr/local/bin/</span></code>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>On macOS 10.8-12.3, the Apple-provided build of Python is installed in
+<code class="file docutils literal notranslate"><span class="pre">/System/Library/Frameworks/Python.framework</span></code> and <code class="file docutils literal notranslate"><span class="pre">/usr/bin/python</span></code>,
+respectively. You should never modify or delete these, as they are
+Apple-controlled and are used by Apple- or third-party software.  Remember that
+if you choose to install a newer Python version from python.org, you will have
+two different but functional Python installations on your computer, so it will
+be important that your paths and usages are consistent with what you want to do.</p>
+</div>
+<p>IDLE includes a Help menu that allows you to access Python documentation. If you
+are completely new to Python you should start reading the tutorial introduction
+in that document.</p>
+<p>もし他の Unix プラットフォームで Python を使い慣れている場合には Unix シェルからの Python スクリプトの実行についての節を読むことをおすすめします。</p>
+<section id="how-to-run-a-python-script">
+<h3><span class="section-number">5.1.1. </span>Python スクリプトの実行方法<a class="headerlink" href="mac.html#how-to-run-a-python-script" title="Link to this heading">¶</a></h3>
+<p>Your best way to get started with Python on macOS is through the IDLE
+integrated development environment; see section <a class="reference internal" href="mac.html#ide"><span class="std std-ref">IDE</span></a> and use the Help menu
+when the IDE is running.</p>
+<p>If you want to run Python scripts from the Terminal window command line or from
+the Finder you first need an editor to create your script. macOS comes with a
+number of standard Unix command line editors, <strong class="program">vim</strong>
+<strong class="program">nano</strong> among them. If you want a more Mac-like editor,
+<strong class="program">BBEdit</strong> from Bare Bones Software (see
+<a class="reference external" href="https://www.barebones.com/products/bbedit/index.html">https://www.barebones.com/products/bbedit/index.html</a>) are good choices, as is
+<strong class="program">TextMate</strong> (see <a class="reference external" href="https://macromates.com">https://macromates.com</a>). Other editors include
+<strong class="program">MacVim</strong> (<a class="reference external" href="https://macvim.org">https://macvim.org</a>) and <strong class="program">Aquamacs</strong>
+(<a class="reference external" href="https://aquamacs.org">https://aquamacs.org</a>).</p>
+<p>ターミナルからスクリプトを実行するには <code class="file docutils literal notranslate"><span class="pre">/usr/local/bin</span></code> がシェルのパスに含まれていることを確認してください。</p>
+<p>Finder からスクリプトを実行するのには 2 つの方法があります:</p>
+<ul class="simple">
+<li><p>Drag it to <strong class="program">Python Launcher</strong>.</p></li>
+<li><p>Select <strong class="program">Python Launcher</strong> as the default application to open your
+script (or any <code class="docutils literal notranslate"><span class="pre">.py</span></code> script) through the finder Info window and double-click it.
+<strong class="program">Python Launcher</strong> has various preferences to control how your script is
+launched. Option-dragging allows you to change these for one invocation, or use
+its Preferences menu to change things globally.</p></li>
+</ul>
+</section>
+<section id="running-scripts-with-a-gui">
+<span id="osx-gui-scripts"></span><h3><span class="section-number">5.1.2. </span>GUI でスクリプトを実行<a class="headerlink" href="mac.html#running-scripts-with-a-gui" title="Link to this heading">¶</a></h3>
+<p>古いバージョンの Python には、気を付けておかないといけない macOS の癖があります: Aqua ウィンドウマネージャとやりとりをする (別の言い方をすると GUI を持つ) プログラムは特別な方法で実行する必要があります。
+そのようなスクリプトを実行するには <strong class="program">python</strong> ではなく <strong class="program">pythonw</strong> を使ってください。</p>
+<p>Python 3.9 では、 <strong class="program">python</strong> と <strong class="program">pythonw</strong> のどちらでも使えます。</p>
+</section>
+<section id="configuration">
+<h3><span class="section-number">5.1.3. </span>Configuration<a class="headerlink" href="mac.html#configuration" title="Link to this heading">¶</a></h3>
+<p>Python on macOS honors all standard Unix environment variables such as
+<span class="target" id="index-0"></span><a class="reference internal" href="cmdline.html#envvar-PYTHONPATH"><code class="xref std std-envvar docutils literal notranslate"><span class="pre">PYTHONPATH</span></code></a>, but setting these variables for programs started from the
+Finder is non-standard as the Finder does not read your <code class="file docutils literal notranslate"><span class="pre">.profile</span></code> or
+<code class="file docutils literal notranslate"><span class="pre">.cshrc</span></code> at startup. You need to create a file
+<code class="file docutils literal notranslate"><span class="pre">~/.MacOSX/environment.plist</span></code>. See Apple's
+<a class="reference external" href="https://developer.apple.com/library/archive/qa/qa1067/_index.html">Technical Q&amp;A QA1067</a>
+for details.</p>
+<p>Python パッケージのインストールについてのさらなる情報は、 <a class="reference internal" href="mac.html#mac-package-manager"><span class="std std-ref">追加の Python パッケージのインストール</span></a> 節を参照してください。</p>
+</section>
+</section>
+<section id="the-ide">
+<span id="ide"></span><h2><span class="section-number">5.2. </span>IDE<a class="headerlink" href="mac.html#the-ide" title="Link to this heading">¶</a></h2>
+<p>Python には標準の IDLE 開発環境が付いてきます。 <a class="reference external" href="https://www.hashcollision.org/hkn/python/idle_intro/index.html">https://www.hashcollision.org/hkn/python/idle_intro/index.html</a> に IDLE を使うための良い入門があります。</p>
+</section>
+<section id="installing-additional-python-packages">
+<span id="mac-package-manager"></span><h2><span class="section-number">5.3. </span>追加の Python パッケージのインストール<a class="headerlink" href="mac.html#installing-additional-python-packages" title="Link to this heading">¶</a></h2>
+<p>このセクションは <a class="reference external" href="https://packaging.python.org/en/latest/tutorials/installing-packages/">Python Packaging User Guide</a> に移動されました。</p>
+</section>
+<section id="gui-programming">
+<span id="gui-programming-on-the-mac"></span><h2><span class="section-number">5.4. </span>GUI プログラミング<a class="headerlink" href="mac.html#gui-programming" title="Link to this heading">¶</a></h2>
+<p>Python で Mac 上の GUI アプリケーションをビルドする方法がいくつかあります。</p>
+<p><em>PyObjC</em> は Mac の最新の開発基盤である Apple の Objective-C/Cocoa フレームワークへの Python バインディングです。PyObjC の情報は <a class="reference external" href="https://pypi.org/project/pyobjc/">pyobjc</a> にあります。</p>
+<p>Python 標準の GUI ツールキットは、クロスプラットフォームの Tk ツールキット (<a class="reference external" href="https://www.tcl.tk">https://www.tcl.tk</a>) 上に構築された <a class="reference internal" href="../library/tkinter.html#module-tkinter" title="tkinter: Interface to Tcl/Tk for graphical user interfaces"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter</span></code></a> です。 Tk の Aqua ネイティブバージョンは Apple が macOS にバンドルしており、最新バージョンは <a class="reference external" href="https://www.activestate.com">https://www.activestate.com</a> からダウンロードおよびインストールできます; またソースからビルドすることもできます。</p>
+<p>A number of alternative macOS GUI toolkits are available:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.qt.io/qt-for-python">PySide</a>: Official Python bindings to the
+<a class="reference external" href="https://qt.io">Qt GUI toolkit</a>.</p></li>
+<li><p><a class="reference external" href="https://riverbankcomputing.com/software/pyqt/intro">PyQt</a>: Alternative
+Python bindings to Qt.</p></li>
+<li><p><a class="reference external" href="https://kivy.org">Kivy</a>: A cross-platform GUI toolkit that supports
+desktop and mobile platforms.</p></li>
+<li><p><a class="reference external" href="https://toga.readthedocs.io">Toga</a>: Part of the <a class="reference external" href="https://beeware.org">BeeWare Project</a>; supports desktop, mobile, web and console apps.</p></li>
+<li><p><a class="reference external" href="https://www.wxpython.org">wxPython</a>: A cross-platform toolkit that
+supports desktop operating systems.</p></li>
+</ul>
+</section>
+<section id="distributing-python-applications">
+<span id="distributing-python-applications-on-the-mac"></span><h2><span class="section-number">5.5. </span>Distributing Python Applications<a class="headerlink" href="mac.html#distributing-python-applications" title="Link to this heading">¶</a></h2>
+<p>A range of tools exist for converting your Python code into a standalone
+distributable application:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pypi.org/project/py2app/">py2app</a>: Supports creating macOS <code class="docutils literal notranslate"><span class="pre">.app</span></code>
+bundles from a Python project.</p></li>
+<li><p><a class="reference external" href="https://briefcase.readthedocs.io">Briefcase</a>: Part of the <a class="reference external" href="https://beeware.org">BeeWare Project</a>; a cross-platform packaging tool that supports
+creation of <code class="docutils literal notranslate"><span class="pre">.app</span></code> bundles on macOS, as well as managing signing and
+notarization.</p></li>
+<li><p><a class="reference external" href="https://pyinstaller.org/">PyInstaller</a>: A cross-platform packaging tool that creates
+a single file or folder as a distributable artifact.</p></li>
+</ul>
+</section>
+<section id="other-resources">
+<h2><span class="section-number">5.6. </span>他のリソース<a class="headerlink" href="mac.html#other-resources" title="Link to this heading">¶</a></h2>
+<p>Pythonmac-SIG メーリングリストは Mac での Python ユーザや開発者にとって素晴しいサポートリソースです:</p>
+<p><a class="reference external" href="https://www.python.org/community/sigs/current/pythonmac-sig/">https://www.python.org/community/sigs/current/pythonmac-sig/</a></p>
+<p>他の役に立つリソースは MacPython wiki です:</p>
+<p><a class="reference external" href="https://wiki.python.org/moin/MacPython">https://wiki.python.org/moin/MacPython</a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="mac.html#">5. Mac で Python を使う</a><ul>
+<li><a class="reference internal" href="mac.html#getting-and-installing-python">5.1. Python の入手とインストール</a><ul>
+<li><a class="reference internal" href="mac.html#how-to-run-a-python-script">5.1.1. Python スクリプトの実行方法</a></li>
+<li><a class="reference internal" href="mac.html#running-scripts-with-a-gui">5.1.2. GUI でスクリプトを実行</a></li>
+<li><a class="reference internal" href="mac.html#configuration">5.1.3. Configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="mac.html#the-ide">5.2. IDE</a></li>
+<li><a class="reference internal" href="mac.html#installing-additional-python-packages">5.3. 追加の Python パッケージのインストール</a></li>
+<li><a class="reference internal" href="mac.html#gui-programming">5.4. GUI プログラミング</a></li>
+<li><a class="reference internal" href="mac.html#distributing-python-applications">5.5. Distributing Python Applications</a></li>
+<li><a class="reference internal" href="mac.html#other-resources">5.6. 他のリソース</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="windows.html"
+                          title="前の章へ"><span class="section-number">4. </span>Windows で Python を使う</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="editors.html"
+                          title="次の章へ"><span class="section-number">6. </span>エディタと IDE</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/using/mac.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="editors.html" title="6. エディタと IDE"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="windows.html" title="4. Windows で Python を使う"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python のセットアップと利用</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="mac.html"><span class="section-number">5. </span>Mac で Python を使う</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

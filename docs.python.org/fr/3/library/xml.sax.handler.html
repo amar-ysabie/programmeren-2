@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="xml.sax.handler --- Base classes for SAX handlers" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/xml.sax.handler.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="Code source : Lib/xml/sax/handler.py L'API SAX définit cinq types de gestionnaires : les gestionnaires de contenu, les gestionnaires de DTD, les gestionnaires d'erreurs, les résolveurs d'entités et..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="Code source : Lib/xml/sax/handler.py L'API SAX définit cinq types de gestionnaires : les gestionnaires de contenu, les gestionnaires de DTD, les gestionnaires d'erreurs, les résolveurs d'entités et..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>xml.sax.handler --- Base classes for SAX handlers &#8212; Documentation Python 3.12.4</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?v=bb723527" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css?v=b20cc3f5" />
+    
+    <script src="../_static/documentation_options.js?v=6f87fcbb"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=bf059b8c"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Recherchez dans Documentation Python 3.12.4"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="À propos de ces documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="xml.sax.saxutils --- SAX Utilities" href="xml.sax.utils.html" />
+    <link rel="prev" title="xml.sax --- Support for SAX2 parsers" href="xml.sax.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="https://docs.python.org/3/library/xml.sax.handler.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" />
+                <input type="submit" value="Go"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">Table des matières</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax.handler</span></code> --- Base classes for SAX handlers</a><ul>
+<li><a class="reference internal" href="#contenthandler-objects">Objets <em>ContentHandler</em></a></li>
+<li><a class="reference internal" href="#dtdhandler-objects">Objets <em>DTDHandler</em></a></li>
+<li><a class="reference internal" href="#entityresolver-objects">Objets <em>EntityResolver</em></a></li>
+<li><a class="reference internal" href="#errorhandler-objects">Objets <em>ErrorHandler</em></a></li>
+<li><a class="reference internal" href="#lexicalhandler-objects">Objets <em>LexicalHandler</em></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Sujet précédent</h4>
+    <p class="topless"><a href="xml.sax.html"
+                          title="Chapitre précédent"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax</span></code> --- Support for SAX2 parsers</a></p>
+  </div>
+  <div>
+    <h4>Sujet suivant</h4>
+    <p class="topless"><a href="xml.sax.utils.html"
+                          title="Chapitre suivant"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax.saxutils</span></code> --- SAX Utilities</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Signalement de bogue</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/xml.sax.handler.rst"
+            rel="nofollow">Voir la source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xml.sax.utils.html" title="xml.sax.saxutils --- SAX Utilities"
+             accesskey="N">suivant</a> |</li>
+        <li class="right" >
+          <a href="xml.sax.html" title="xml.sax --- Support for SAX2 parsers"
+             accesskey="P">précédent</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >La bibliothèque standard</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="markup.html" accesskey="U">Outils de traitement de balises structurées</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax.handler</span></code> --- Base classes for SAX handlers</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-xml.sax.handler">
+<span id="xml-sax-handler-base-classes-for-sax-handlers"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax.handler</span></code> --- Base classes for SAX handlers<a class="headerlink" href="#module-xml.sax.handler" title="Lien vers cette rubrique">¶</a></h1>
+<p><strong>Code source :</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/xml/sax/handler.py">Lib/xml/sax/handler.py</a></p>
+<hr class="docutils" />
+<p>L'API <em>SAX</em> définit cinq types de gestionnaires : les gestionnaires de contenu, les gestionnaires de <em>DTD</em>, les gestionnaires d'erreurs, les résolveurs d'entités et les gestionnaires lexicaux. Les applications n'ont normalement besoin d'implémenter que les interfaces dont les événements les intéressent ; elles peuvent implémenter les interfaces dans un seul objet ou dans plusieurs objets. Les implémentations de gestionnaires doivent hériter des classes mères fournies dans le module <a class="reference internal" href="#module-xml.sax.handler" title="xml.sax.handler: Base classes for SAX event handlers."><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax.handler</span></code></a>, afin que toutes les méthodes aient des implémentations par défaut.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">ContentHandler</span></span><a class="headerlink" href="#xml.sax.handler.ContentHandler" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Il s'agit de l'interface de rappel principale de <em>SAX</em> et de la plus importante pour les applications. L'ordre des événements dans cette interface reflète l'ordre des informations dans le document.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xml.sax.handler.DTDHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">DTDHandler</span></span><a class="headerlink" href="#xml.sax.handler.DTDHandler" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gestionnaires d'évènements <em>DTD</em></p>
+<p>Cette interface concerne uniquement les événements <em>DTD</em> requis pour une analyse basique (entités et attributs non analysés).</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xml.sax.handler.EntityResolver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">EntityResolver</span></span><a class="headerlink" href="#xml.sax.handler.EntityResolver" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Interface de base pour résoudre les entités. Si vous créez un objet implémentant cette interface, puis enregistrez l'objet auprès de votre analyseur, l'analyseur appellera la méthode de votre objet pour résoudre toutes les entités externes.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xml.sax.handler.ErrorHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">ErrorHandler</span></span><a class="headerlink" href="#xml.sax.handler.ErrorHandler" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Interface utilisée par l'analyseur pour présenter des messages d'erreur et d'avertissement à l'application. Les méthodes de cet objet permettent de choisir si les erreurs doivent être immédiatement converties en exceptions ou si elles doivent être traitées d'une autre manière.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xml.sax.handler.LexicalHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">LexicalHandler</span></span><a class="headerlink" href="#xml.sax.handler.LexicalHandler" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Interface utilisée par l'analyseur pour représenter des événements rares qui n'intéressent que peu d'applications.</p>
+</dd></dl>
+
+<p>En plus de ces classes, <a class="reference internal" href="#module-xml.sax.handler" title="xml.sax.handler: Base classes for SAX event handlers."><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax.handler</span></code></a> fournit des constantes symboliques pour les noms de fonctionnalités et de propriétés.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.feature_namespaces">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">feature_namespaces</span></span><a class="headerlink" href="#xml.sax.handler.feature_namespaces" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">valeur : <code class="docutils literal notranslate"><span class="pre">&quot;http://xml.org/sax/features/namespaces&quot;</span></code></div>
+<div class="line">vrai : effectue le traitement de l'espace de noms.</div>
+<div class="line">faux : n'effectue pas le traitement des espaces de noms (implique <em>namespace-prefixes</em> ; valeur par défaut).</div>
+<div class="line">accès : (lors de l'analyse) en lecture seule ; (hors de l'analyse) lecture-écriture</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.feature_namespace_prefixes">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">feature_namespace_prefixes</span></span><a class="headerlink" href="#xml.sax.handler.feature_namespace_prefixes" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">valeur : <code class="docutils literal notranslate"><span class="pre">&quot;http://xml.org/sax/features/namespace-prefixes&quot;</span></code></div>
+<div class="line">vrai : renvoie les noms et attributs avec les préfixes originaux utilisés dans les déclarations d'espaces de noms.</div>
+<div class="line">faux : ne renvoie pas les attributs utilisés pour les déclarations d'espaces de noms et, éventuellement, ne signale pas les noms avec les préfixes originaux (par défaut).</div>
+<div class="line">accès : (lors de l'analyse) en lecture seule ; (hors de l'analyse) lecture-écriture</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.feature_string_interning">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">feature_string_interning</span></span><a class="headerlink" href="#xml.sax.handler.feature_string_interning" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">valeur : <code class="docutils literal notranslate"><span class="pre">&quot;http://xml.org/sax/features/string-interning&quot;</span></code></div>
+<div class="line">vrai : tous les noms d'éléments, préfixes, noms d'attributs, URI d'espace de noms et noms locaux sont rendus internes à l'aide de la fonction native correspondante.</div>
+<div class="line">faux : les noms ne sont pas nécessairement rendus internes, bien qu'ils puissent l'être (par défaut).</div>
+<div class="line">accès : (lors de l'analyse) en lecture seule ; (hors de l'analyse) lecture-écriture</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.feature_validation">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">feature_validation</span></span><a class="headerlink" href="#xml.sax.handler.feature_validation" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">valeur : <code class="docutils literal notranslate"><span class="pre">&quot;http://xml.org/sax/features/validation&quot;</span></code></div>
+<div class="line">vrai : signale toutes les erreurs de validation (implique <em>external-general-entities</em> et <em>external-parameter-entities</em>).</div>
+<div class="line">faux : ne signale pas les erreurs de validation.</div>
+<div class="line">accès : (lors de l'analyse) en lecture seule ; (hors de l'analyse) lecture-écriture</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.feature_external_ges">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">feature_external_ges</span></span><a class="headerlink" href="#xml.sax.handler.feature_external_ges" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">valeur : <code class="docutils literal notranslate"><span class="pre">&quot;http://xml.org/sax/features/external-general-entities&quot;</span></code></div>
+<div class="line">vrai : Inclut toutes les entités générales (texte) externes.</div>
+<div class="line">faux : n'inclut pas les entités générales externes.</div>
+<div class="line">accès : (lors de l'analyse) en lecture seule ; (hors de l'analyse) lecture-écriture</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.feature_external_pes">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">feature_external_pes</span></span><a class="headerlink" href="#xml.sax.handler.feature_external_pes" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">valeur : <code class="docutils literal notranslate"><span class="pre">&quot;http://xml.org/sax/features/external-parameter-entities&quot;</span></code></div>
+<div class="line">vrai : Inclut toutes les entités de paramètres externes, y compris les sous-ensembles <em>DTD</em> externes.</div>
+<div class="line">faux : n'inclue aucune entité de paramètre externe, même les sous-ensembles <em>DTD</em> externes.</div>
+<div class="line">accès : (lors de l'analyse) en lecture seule ; (hors de l'analyse) lecture-écriture</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.all_features">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">all_features</span></span><a class="headerlink" href="#xml.sax.handler.all_features" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Liste de toutes les fonctionnalités.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.property_lexical_handler">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">property_lexical_handler</span></span><a class="headerlink" href="#xml.sax.handler.property_lexical_handler" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">valeur : <code class="docutils literal notranslate"><span class="pre">&quot;http://xml.org/sax/properties/lexical-handler&quot;</span></code></div>
+<div class="line">type de données : xml.sax.handler.LexicalHandler (non pris en charge dans Python 2)</div>
+<div class="line">description : gestionnaire d'extension facultatif pour les événements lexicaux tels que les commentaires.</div>
+<div class="line">accès : lecture-écriture</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.property_declaration_handler">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">property_declaration_handler</span></span><a class="headerlink" href="#xml.sax.handler.property_declaration_handler" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">valeur : <code class="docutils literal notranslate"><span class="pre">&quot;http://xml.org/sax/properties/declaration-handler&quot;</span></code></div>
+<div class="line">type de données : xml.sax.sax2lib.DeclHandler (non pris en charge dans Python 2)</div>
+<div class="line">description : gestionnaire d'extension facultatif pour les événements liés à la <em>DTD</em> autres que les notations et les entités non analysées.</div>
+<div class="line">accès : lecture-écriture</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.property_dom_node">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">property_dom_node</span></span><a class="headerlink" href="#xml.sax.handler.property_dom_node" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">valeur : <code class="docutils literal notranslate"><span class="pre">&quot;http://xml.org/sax/properties/dom-node&quot;</span></code></div>
+<div class="line">type de données : org.w3c.dom.Node (non pris en charge dans Python 2)</div>
+<div class="line">description : lors de l'analyse, le nœud DOM actuel visité s'il s'agit d'un itérateur DOM ; hors de l'analyse, le nœud racine du DOM pour l'itération.</div>
+<div class="line">accès : (lors de l'analyse) en lecture seule ; (hors de l'analyse) lecture-écriture</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.property_xml_string">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">property_xml_string</span></span><a class="headerlink" href="#xml.sax.handler.property_xml_string" title="Lien vers cette définition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">valeur : <code class="docutils literal notranslate"><span class="pre">&quot;http://xml.org/sax/properties/xml-string&quot;</span></code></div>
+<div class="line">type de données : octets</div>
+<div class="line">description : chaîne littérale de caractères qui était la source de l'événement en cours.</div>
+<div class="line">accès : lecture seule</div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.sax.handler.all_properties">
+<span class="sig-prename descclassname"><span class="pre">xml.sax.handler.</span></span><span class="sig-name descname"><span class="pre">all_properties</span></span><a class="headerlink" href="#xml.sax.handler.all_properties" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Liste de tous les noms de propriétés connus.</p>
+</dd></dl>
+
+<section id="contenthandler-objects">
+<span id="content-handler-objects"></span><h2>Objets <em>ContentHandler</em><a class="headerlink" href="#contenthandler-objects" title="Lien vers cette rubrique">¶</a></h2>
+<p>Les utilisateurs doivent sous-classer <a class="reference internal" href="#xml.sax.handler.ContentHandler" title="xml.sax.handler.ContentHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ContentHandler</span></code></a> dans leur application. Les méthodes suivantes sont appelées par l'analyseur pour notifier les événements appropriés dans le document d'entrée :</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.setDocumentLocator">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">setDocumentLocator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locator</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.setDocumentLocator" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Appelé par l'analyseur pour donner à l'application un localisateur permettant de localiser l'origine des événements du document.</p>
+<p>Les analyseurs <em>SAX</em> sont fortement encouragés (bien que ce ne soit pas absolument obligatoire) à fournir un localisateur : s'ils le font, ils doivent fournir le localisateur à l'application en appelant cette méthode avant d'invoquer l'une des autres méthodes de l'interface <em>DocumentHandler</em>.</p>
+<p>Le localisateur permet à l'application de déterminer la position finale de tout événement lié au document, même si l'analyseur ne signale pas d'erreur. En règle générale, l'application utilise ces informations pour signaler ses propres erreurs (telles que le contenu d'un champ texte qui ne correspond pas aux règles métier d'une application). Les informations renvoyées par le localisateur ne sont probablement pas suffisantes pour être utilisées avec un moteur de recherche.</p>
+<p>Notez que le localisateur renvoie des informations correctes pendant la durée de l'invocation des événements dans cette interface. L'application ne doit pas tenter de l'utiliser à un autre moment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.startDocument">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">startDocument</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.startDocument" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Reçoit la notification correspondant au début du document.</p>
+<p>L'analyseur <em>SAX</em> invoque cette méthode une seule fois, avant toute autre méthode dans cette interface ou dans <em>DTDHandler</em> (sauf pour <a class="reference internal" href="#xml.sax.handler.ContentHandler.setDocumentLocator" title="xml.sax.handler.ContentHandler.setDocumentLocator"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setDocumentLocator()</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.endDocument">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">endDocument</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.endDocument" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Reçoit la notification correspondant à la fin du document.</p>
+<p>L'analyseur <em>SAX</em> n'invoque cette méthode qu'une seule fois et c'est la dernière méthode invoquée lors de l'analyse. L'analyseur ne doit pas invoquer cette méthode tant qu'il n'a pas abandonné l'analyse (en raison d'une erreur irrécupérable) ou atteint la fin de l'entrée.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.startPrefixMapping">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">startPrefixMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uri</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.startPrefixMapping" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Commence la portée d’une correspondance d’espace de noms préfixe-URI.</p>
+<p>Les informations de cet événement ne sont pas nécessaires au traitement normal des espaces de noms : le lecteur XML <em>SAX</em> remplace automatiquement les préfixes des noms d'éléments et d'attributs lorsque la fonctionnalité <code class="docutils literal notranslate"><span class="pre">feature_namespaces</span></code> est activée (la valeur par défaut).</p>
+<p>Il existe cependant des cas où les applications doivent utiliser des préfixes dans des champs textes ou dans les valeurs d'attribut, où ils ne peuvent pas être développés automatiquement en toute sécurité ; les événements <a class="reference internal" href="#xml.sax.handler.ContentHandler.startPrefixMapping" title="xml.sax.handler.ContentHandler.startPrefixMapping"><code class="xref py py-meth docutils literal notranslate"><span class="pre">startPrefixMapping()</span></code></a> et <a class="reference internal" href="#xml.sax.handler.ContentHandler.endPrefixMapping" title="xml.sax.handler.ContentHandler.endPrefixMapping"><code class="xref py py-meth docutils literal notranslate"><span class="pre">endPrefixMapping()</span></code></a> fournissent les informations à l'application pour développer elle-même les préfixes dans ces contextes, si nécessaire.</p>
+<p>Notez qu'il n'est pas garanti que les événements <a class="reference internal" href="#xml.sax.handler.ContentHandler.startPrefixMapping" title="xml.sax.handler.ContentHandler.startPrefixMapping"><code class="xref py py-meth docutils literal notranslate"><span class="pre">startPrefixMapping()</span></code></a> et <a class="reference internal" href="#xml.sax.handler.ContentHandler.endPrefixMapping" title="xml.sax.handler.ContentHandler.endPrefixMapping"><code class="xref py py-meth docutils literal notranslate"><span class="pre">endPrefixMapping()</span></code></a> soient correctement imbriqués les uns par rapport aux autres : tout événement <a class="reference internal" href="#xml.sax.handler.ContentHandler.startPrefixMapping" title="xml.sax.handler.ContentHandler.startPrefixMapping"><code class="xref py py-meth docutils literal notranslate"><span class="pre">startPrefixMapping()</span></code></a> se produit avant l'événement <a class="reference internal" href="#xml.sax.handler.ContentHandler.startElement" title="xml.sax.handler.ContentHandler.startElement"><code class="xref py py-meth docutils literal notranslate"><span class="pre">startElement()</span></code></a> correspondant, et tout événement <a class="reference internal" href="#xml.sax.handler.ContentHandler.endPrefixMapping" title="xml.sax.handler.ContentHandler.endPrefixMapping"><code class="xref py py-meth docutils literal notranslate"><span class="pre">endPrefixMapping()</span></code></a> se produit après l'événement <a class="reference internal" href="#xml.sax.handler.ContentHandler.endElement" title="xml.sax.handler.ContentHandler.endElement"><code class="xref py py-meth docutils literal notranslate"><span class="pre">endElement()</span></code></a> correspondant, mais leur ordre n'est pas garanti.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.endPrefixMapping">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">endPrefixMapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.endPrefixMapping" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Termine la portée d’une correspondance préfixe-URI.</p>
+<p>Voir <a class="reference internal" href="#xml.sax.handler.ContentHandler.startPrefixMapping" title="xml.sax.handler.ContentHandler.startPrefixMapping"><code class="xref py py-meth docutils literal notranslate"><span class="pre">startPrefixMapping()</span></code></a> pour plus de détails. Cet événement se produit toujours après l'événement <a class="reference internal" href="#xml.sax.handler.ContentHandler.endElement" title="xml.sax.handler.ContentHandler.endElement"><code class="xref py py-meth docutils literal notranslate"><span class="pre">endElement()</span></code></a> correspondant, mais l'ordre des événements <a class="reference internal" href="#xml.sax.handler.ContentHandler.endPrefixMapping" title="xml.sax.handler.ContentHandler.endPrefixMapping"><code class="xref py py-meth docutils literal notranslate"><span class="pre">endPrefixMapping()</span></code></a> n'est pas garanti entre eux.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.startElement">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">startElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.startElement" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Signale le début d’un élément en mode sans espaces de noms.</p>
+<p>Le paramètre <em>name</em> contient le nom brut XML 1.0 du type d'élément sous forme de chaîne et le paramètre <em>attrs</em> contient un objet de l'interface <code class="xref py py-class docutils literal notranslate"><span class="pre">Attributes</span></code> (voir <a class="reference internal" href="xml.sax.reader.html#attributes-objects"><span class="std std-ref">The Attributes Interface</span></a>) contenant les attributs de l'élément. L'objet passé comme <em>attrs</em> peut être réutilisé par l'analyseur ; conserver une référence à celui-ci n’est pas un moyen fiable de conserver une copie des attributs. Pour conserver une copie des attributs, utilisez la méthode <a class="reference internal" href="copy.html#module-copy" title="copy: Shallow and deep copy operations."><code class="xref py py-meth docutils literal notranslate"><span class="pre">copy()</span></code></a> de l'objet <em>attrs</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.endElement">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">endElement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.endElement" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Signale la fin d'un élément en mode sans espaces de noms.</p>
+<p>Le paramètre <em>name</em> contient le nom du type d'élément, tout comme pour l'événement <a class="reference internal" href="#xml.sax.handler.ContentHandler.startElement" title="xml.sax.handler.ContentHandler.startElement"><code class="xref py py-meth docutils literal notranslate"><span class="pre">startElement()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.startElementNS">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">startElementNS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attrs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.startElementNS" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Signale le début d’un élément en mode avec espaces de noms.</p>
+<p>Le paramètre <em>name</em> contient le nom du type d'élément sous forme de <em>n</em>-uplet <code class="docutils literal notranslate"><span class="pre">(uri,</span> <span class="pre">localname)</span></code>, le paramètre <em>qname</em> contient le nom XML 1.0 brut utilisé dans le document source et le paramètre <em>attrs</em> contient une instance de l'interface <code class="xref py py-class docutils literal notranslate"><span class="pre">AttributesNS</span></code> (voir <a class="reference internal" href="xml.sax.reader.html#attributes-ns-objects"><span class="std std-ref">The AttributesNS Interface</span></a>) contenant les attributs de l'élément. Si aucun espace de noms n'est associé à l'élément, le composant <em>uri</em> de <em>name</em> est <code class="docutils literal notranslate"><span class="pre">None</span></code>. L'objet passé comme <em>attrs</em> peut être réutilisé par l'analyseur ; conserver une référence à celui-ci n’est pas un moyen fiable de conserver une copie des attributs. Pour conserver une copie des attributs, utilisez la méthode <a class="reference internal" href="copy.html#module-copy" title="copy: Shallow and deep copy operations."><code class="xref py py-meth docutils literal notranslate"><span class="pre">copy()</span></code></a> de l'objet <em>attrs</em>.</p>
+<p>Les analyseurs peuvent définir le paramètre <em>qname</em> à <code class="docutils literal notranslate"><span class="pre">None</span></code>, à moins que la fonctionnalité <code class="docutils literal notranslate"><span class="pre">feature_namespace_prefixes</span></code> ne soit activée.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.endElementNS">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">endElementNS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.endElementNS" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Signale la fin d'un élément en mode avec espaces de noms.</p>
+<p>Le paramètre <em>name</em> contient le nom du type d'élément, tout comme avec la méthode <a class="reference internal" href="#xml.sax.handler.ContentHandler.startElementNS" title="xml.sax.handler.ContentHandler.startElementNS"><code class="xref py py-meth docutils literal notranslate"><span class="pre">startElementNS()</span></code></a>, de même que le paramètre <em>qname</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.characters">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">characters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.characters" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Reçoit une notification correspondant à des données de type caractère.</p>
+<p>L'analyseur appelle cette méthode pour signaler chaque morceau de données de caractères. Les analyseurs <em>SAX</em> peuvent renvoyer toutes les données de caractères contiguës en un seul morceau ou ils peuvent les diviser en plusieurs morceaux ; cependant, tous les caractères d'un événement doivent provenir de la même entité externe afin que le localisateur fournisse des informations utiles.</p>
+<p><em>content</em> peut être une instance de chaîne ou d'octets ; le module lecteur <code class="docutils literal notranslate"><span class="pre">expat</span></code> produit toujours des chaînes.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>l'interface <em>SAX 1</em> précédente fournie par Python XML utilisait une interface plus proche de Java pour cette méthode. Étant donné que la plupart des analyseurs utilisés à partir de Python ne tiraient pas parti de l’ancienne interface, la signature la plus simple a été choisie pour la remplacer. Pour convertir l'ancien code vers la nouvelle interface, utilisez <em>content</em> au lieu de découper le contenu avec les anciens paramètres <em>offset</em> et <em>length</em>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.ignorableWhitespace">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">ignorableWhitespace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">whitespace</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.ignorableWhitespace" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Reçoit une notification en cas d'espaces pouvant être ignorées dans le contenu de l'élément.</p>
+<p>Les analyseurs validateurs doivent utiliser cette méthode pour signaler chaque morceau d'espaces pouvant être ignorées (voir la recommandation W3C XML 1.0, section 2.10) : les analyseurs non validateurs peuvent également utiliser cette méthode s'ils sont capables d'analyser et d'utiliser des modèles de contenu.</p>
+<p>Les analyseurs <em>SAX</em> peuvent renvoyer tous les espaces contigües en un seul morceau ou ils peuvent le diviser en plusieurs morceaux ; cependant, tous les caractères d'un événement doivent provenir de la même entité externe, afin que le localisateur fournisse des informations utiles.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.processingInstruction">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">processingInstruction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.processingInstruction" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Reçoit une notification correspondant à une instruction de traitement.</p>
+<p>L'analyseur invoque cette méthode une fois pour chaque instruction de traitement trouvée : notez que les instructions de traitement peuvent survenir avant ou après l'élément principal du document.</p>
+<p>Un analyseur <em>SAX</em> ne doit jamais rapporter une déclaration XML (XML 1.0, section 2.8) ou une déclaration texte (XML 1.0, section 4.3.1) en utilisant cette méthode.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ContentHandler.skippedEntity">
+<span class="sig-prename descclassname"><span class="pre">ContentHandler.</span></span><span class="sig-name descname"><span class="pre">skippedEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ContentHandler.skippedEntity" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Reçoit une notification correspondant à une entité ignorée.</p>
+<p>L'analyseur invoque cette méthode une fois pour chaque entité ignorée. Les processeurs non validateurs peuvent ignorer les entités s'ils n'ont pas vu les déclarations (parce que, par exemple, l'entité a été déclarée dans un sous-ensemble <em>DTD</em> externe). Tous les processeurs peuvent ignorer les entités externes, en fonction des valeurs des propriétés <code class="docutils literal notranslate"><span class="pre">feature_external_ges</span></code> et <code class="docutils literal notranslate"><span class="pre">feature_external_pes</span></code>.</p>
+</dd></dl>
+
+</section>
+<section id="dtdhandler-objects">
+<span id="dtd-handler-objects"></span><h2>Objets <em>DTDHandler</em><a class="headerlink" href="#dtdhandler-objects" title="Lien vers cette rubrique">¶</a></h2>
+<p>Les instances <a class="reference internal" href="#xml.sax.handler.DTDHandler" title="xml.sax.handler.DTDHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">DTDHandler</span></code></a> fournissent les méthodes suivantes :</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.DTDHandler.notationDecl">
+<span class="sig-prename descclassname"><span class="pre">DTDHandler.</span></span><span class="sig-name descname"><span class="pre">notationDecl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">publicId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">systemId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.DTDHandler.notationDecl" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère un événement de déclaration de notation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.DTDHandler.unparsedEntityDecl">
+<span class="sig-prename descclassname"><span class="pre">DTDHandler.</span></span><span class="sig-name descname"><span class="pre">unparsedEntityDecl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">publicId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">systemId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.DTDHandler.unparsedEntityDecl" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Gère un événement de déclaration d'entité non analysé.</p>
+</dd></dl>
+
+</section>
+<section id="entityresolver-objects">
+<span id="entity-resolver-objects"></span><h2>Objets <em>EntityResolver</em><a class="headerlink" href="#entityresolver-objects" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.EntityResolver.resolveEntity">
+<span class="sig-prename descclassname"><span class="pre">EntityResolver.</span></span><span class="sig-name descname"><span class="pre">resolveEntity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">publicId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">systemId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.EntityResolver.resolveEntity" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Résout l'identifiant système d'une entité et renvoie soit l'identifiant système à partir duquel lire sous forme de chaîne, soit un <em>InputSource</em> à partir duquel lire. L'implémentation par défaut renvoie <em>systemId</em>.</p>
+</dd></dl>
+
+</section>
+<section id="errorhandler-objects">
+<span id="sax-error-handler"></span><h2>Objets <em>ErrorHandler</em><a class="headerlink" href="#errorhandler-objects" title="Lien vers cette rubrique">¶</a></h2>
+<p>Objects with this interface are used to receive error and warning information
+from the <a class="reference internal" href="xml.sax.reader.html#xml.sax.xmlreader.XMLReader" title="xml.sax.xmlreader.XMLReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XMLReader</span></code></a>.  If you create an object that
+implements this interface, then register the object with your
+<a class="reference internal" href="xml.sax.reader.html#xml.sax.xmlreader.XMLReader" title="xml.sax.xmlreader.XMLReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XMLReader</span></code></a>, the parser
+will call the methods in your object to report all warnings and errors. There
+are three levels of errors available: warnings, (possibly) recoverable errors,
+and unrecoverable errors.  All methods take a <a class="reference internal" href="xml.sax.html#xml.sax.SAXParseException" title="xml.sax.SAXParseException"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SAXParseException</span></code></a> as the
+only parameter.  Errors and warnings may be converted to an exception by raising
+the passed-in exception object.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ErrorHandler.error">
+<span class="sig-prename descclassname"><span class="pre">ErrorHandler.</span></span><span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exception</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ErrorHandler.error" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Appelée lorsque l'analyseur rencontre une erreur récupérable. Si cette méthode ne génère pas d'exception, l'analyse peut continuer, mais l'application ne doit pas attendre d'autres informations concernant le document. Autoriser l'analyseur à continuer peut permettre de découvrir des erreurs supplémentaires dans le document d'entrée.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ErrorHandler.fatalError">
+<span class="sig-prename descclassname"><span class="pre">ErrorHandler.</span></span><span class="sig-name descname"><span class="pre">fatalError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exception</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ErrorHandler.fatalError" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Appelée lorsque l'analyseur rencontre une erreur irrécupérable ; l'analyse devrait se terminer au retour de cette méthode.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.ErrorHandler.warning">
+<span class="sig-prename descclassname"><span class="pre">ErrorHandler.</span></span><span class="sig-name descname"><span class="pre">warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exception</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.ErrorHandler.warning" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Appelée lorsque l'analyseur présente des informations d'avertissement mineures à l'application. L'analyse devrait se poursuivre lorsque cette méthode termine et les informations du document continueront d'être transmises à l'application. La levée d’une exception dans cette méthode entraîne la fin de l’analyse.</p>
+</dd></dl>
+
+</section>
+<section id="lexicalhandler-objects">
+<span id="lexical-handler-objects"></span><h2>Objets <em>LexicalHandler</em><a class="headerlink" href="#lexicalhandler-objects" title="Lien vers cette rubrique">¶</a></h2>
+<p>Gestionnaire <em>SAX2</em> facultatif pour les événements lexicaux.</p>
+<p>Ce gestionnaire est utilisé pour obtenir des informations lexicales relatives à un document XML. Les informations lexicales incluent des informations décrivant le codage du document utilisé et les commentaires XML intégrés dans le document, ainsi que les limites des sections pour la <em>DTD</em> et pour toutes les sections <em>CDATA</em>. Les gestionnaires lexicaux sont utilisés de la même manière que les gestionnaires de contenu.</p>
+<p>Définissez le <em>LexicalHandler</em> d'un <em>XMLReader</em> en utilisant la méthode <em>setProperty</em> avec l'identifiant de propriété <code class="docutils literal notranslate"><span class="pre">'http://xml.org/sax/properties/lexical-handler'</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.LexicalHandler.comment">
+<span class="sig-prename descclassname"><span class="pre">LexicalHandler.</span></span><span class="sig-name descname"><span class="pre">comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.LexicalHandler.comment" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Signale un commentaire n'importe où dans le document (y compris la <em>DTD</em> et en dehors de l'élément de document).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.LexicalHandler.startDTD">
+<span class="sig-prename descclassname"><span class="pre">LexicalHandler.</span></span><span class="sig-name descname"><span class="pre">startDTD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.LexicalHandler.startDTD" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Signale le début des déclarations <em>DTD</em> si le document a une <em>DTD</em> associée.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.LexicalHandler.endDTD">
+<span class="sig-prename descclassname"><span class="pre">LexicalHandler.</span></span><span class="sig-name descname"><span class="pre">endDTD</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.LexicalHandler.endDTD" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Signale la fin de la déclaration de la <em>DTD</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.LexicalHandler.startCDATA">
+<span class="sig-prename descclassname"><span class="pre">LexicalHandler.</span></span><span class="sig-name descname"><span class="pre">startCDATA</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.LexicalHandler.startCDATA" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Signale le début d’une section marquée <em>CDATA</em>.</p>
+<p>Le contenu de la section marquée <em>CDATA</em> est signalé via le gestionnaire de données de type caractère.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.sax.handler.LexicalHandler.endCDATA">
+<span class="sig-prename descclassname"><span class="pre">LexicalHandler.</span></span><span class="sig-name descname"><span class="pre">endCDATA</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xml.sax.handler.LexicalHandler.endCDATA" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Signale la fin d’une section marquée <em>CDATA</em>.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">Table des matières</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax.handler</span></code> --- Base classes for SAX handlers</a><ul>
+<li><a class="reference internal" href="#contenthandler-objects">Objets <em>ContentHandler</em></a></li>
+<li><a class="reference internal" href="#dtdhandler-objects">Objets <em>DTDHandler</em></a></li>
+<li><a class="reference internal" href="#entityresolver-objects">Objets <em>EntityResolver</em></a></li>
+<li><a class="reference internal" href="#errorhandler-objects">Objets <em>ErrorHandler</em></a></li>
+<li><a class="reference internal" href="#lexicalhandler-objects">Objets <em>LexicalHandler</em></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Sujet précédent</h4>
+    <p class="topless"><a href="xml.sax.html"
+                          title="Chapitre précédent"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax</span></code> --- Support for SAX2 parsers</a></p>
+  </div>
+  <div>
+    <h4>Sujet suivant</h4>
+    <p class="topless"><a href="xml.sax.utils.html"
+                          title="Chapitre suivant"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax.saxutils</span></code> --- SAX Utilities</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Signalement de bogue</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/xml.sax.handler.rst"
+            rel="nofollow">Voir la source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="Réduire la barre latérale">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="xml.sax.utils.html" title="xml.sax.saxutils --- SAX Utilities"
+             >suivant</a> |</li>
+        <li class="right" >
+          <a href="xml.sax.html" title="xml.sax --- Support for SAX2 parsers"
+             >précédent</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >La bibliothèque standard</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="markup.html" >Outils de traitement de balises structurées</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax.handler</span></code> --- Base classes for SAX handlers</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="/license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      Mis à jour le Jun 09, 2024 (22:21 UTC).
+    
+      <a href="/bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

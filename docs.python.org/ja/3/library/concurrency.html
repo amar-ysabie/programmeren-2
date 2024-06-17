@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="並行実行" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/concurrency.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="この章で記述されているモジュールは、コードの並行実行のサポートを提供します。ツールの適切な選択は、実行されるタスク(IO bound vs CPU bound) や推奨される開発スタイル (イベントドリブンな協調的マルチタスク vs プリエンプティブマルチタスク) に依存します。ここに概観を示します: threading--- スレッドベースの並列処理- スレッドローカルデータ, Threa..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="この章で記述されているモジュールは、コードの並行実行のサポートを提供します。ツールの適切な選択は、実行されるタスク(IO bound vs CPU bound) や推奨される開発スタイル (イベントドリブンな協調的マルチタスク vs プリエンプティブマルチタスク) に依存します。ここに概観を示します: threading--- スレッドベースの並列処理- スレッドローカルデータ, Threa..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>並行実行 &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?v=bb723527" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css?v=b20cc3f5" />
+    
+    <script src="../_static/documentation_options.js?v=7e11ab17"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="threading --- スレッドベースの並列処理" href="threading.html" />
+    <link rel="prev" title="ctypes --- Python 用の外部関数ライブラリ" href="ctypes.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="https://docs.python.org/3/library/concurrency.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="ctypes.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ctypes</span></code> --- Python 用の外部関数ライブラリ</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="threading.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">threading</span></code> --- スレッドベースの並列処理</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/concurrency.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="threading.html" title="threading --- スレッドベースの並列処理"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="ctypes.html" title="ctypes --- Python 用の外部関数ライブラリ"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Python 標準ライブラリ</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">並行実行</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="concurrent-execution">
+<span id="concurrency"></span><h1>並行実行<a class="headerlink" href="#concurrent-execution" title="Link to this heading">¶</a></h1>
+<p>この章で記述されているモジュールは、コードの並行実行のサポートを提供します。ツールの適切な選択は、実行されるタスク(IO bound vs CPU bound) や推奨される開発スタイル (イベントドリブンな協調的マルチタスク vs プリエンプティブマルチタスク) に依存します。ここに概観を示します:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="threading.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">threading</span></code> --- スレッドベースの並列処理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="threading.html#thread-local-data">スレッドローカルデータ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threading.html#thread-objects">Thread オブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threading.html#lock-objects">Lock オブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threading.html#rlock-objects">RLock オブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threading.html#condition-objects">Condition オブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threading.html#semaphore-objects">Semaphore オブジェクト</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="threading.html#semaphore-example"><code class="xref py py-class docutils literal notranslate"><span class="pre">Semaphore</span></code> の例</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="threading.html#event-objects">Event オブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threading.html#timer-objects">Timer オブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threading.html#barrier-objects">バリアオブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="threading.html#using-locks-conditions-and-semaphores-in-the-with-statement"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code> 文でのロック・条件変数・セマフォの使い方</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiprocessing.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code> --- プロセスベースの並列処理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multiprocessing.html#introduction">はじめに</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#the-process-class"><code class="xref py py-class docutils literal notranslate"><span class="pre">Process</span></code> クラス</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#contexts-and-start-methods">コンテキストと開始方式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#exchanging-objects-between-processes">プロセス間でのオブジェクト交換</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#synchronization-between-processes">プロセス間の同期</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#sharing-state-between-processes">プロセス間での状態の共有</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#using-a-pool-of-workers">ワーカープロセスのプールを使用</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="multiprocessing.html#reference">リファレンス</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#process-and-exceptions"><code class="xref py py-class docutils literal notranslate"><span class="pre">Process</span></code> クラスと例外</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#pipes-and-queues">パイプ (Pipe) とキュー (Queue)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#miscellaneous">その他</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#connection-objects">Connection オブジェクト</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#synchronization-primitives">同期プリミティブ</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#shared-ctypes-objects">共有 <code class="xref py py-mod docutils literal notranslate"><span class="pre">ctypes</span></code> オブジェクト</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="multiprocessing.html#module-multiprocessing.sharedctypes"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing.sharedctypes</span></code> モジュール</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#managers">マネージャー</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="multiprocessing.html#customized-managers">カスタマイズされたマネージャー</a></li>
+<li class="toctree-l4"><a class="reference internal" href="multiprocessing.html#using-a-remote-manager">リモートマネージャーを使用する</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#proxy-objects">Proxy オブジェクト</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="multiprocessing.html#cleanup">クリーンアップ</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#module-multiprocessing.pool">プロセスプール</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#module-multiprocessing.connection">リスナーとクライアント</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="multiprocessing.html#address-formats">アドレスフォーマット</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#authentication-keys">認証キー</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#logging">ログ記録</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#module-multiprocessing.dummy"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing.dummy</span></code> モジュール</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="multiprocessing.html#programming-guidelines">プログラミングガイドライン</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#all-start-methods">すべての開始方式について</a></li>
+<li class="toctree-l3"><a class="reference internal" href="multiprocessing.html#the-spawn-and-forkserver-start-methods">開始方式が <em>spawn</em> および <em>forkserver</em> の場合</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="multiprocessing.html#examples">使用例</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="multiprocessing.shared_memory.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing.shared_memory</span></code> --- プロセス間で直接アクセス可能な共有メモリ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concurrent.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent</span></code> パッケージ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concurrent.futures.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">concurrent.futures</span></code> --- 並列タスク実行</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="concurrent.futures.html#executor-objects">Executor オブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concurrent.futures.html#threadpoolexecutor">ThreadPoolExecutor</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="concurrent.futures.html#threadpoolexecutor-example">ThreadPoolExecutor の例</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="concurrent.futures.html#processpoolexecutor">ProcessPoolExecutor</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="concurrent.futures.html#processpoolexecutor-example">ProcessPoolExecutor の例</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="concurrent.futures.html#future-objects">Future オブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concurrent.futures.html#module-functions">モジュール関数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concurrent.futures.html#exception-classes">例外クラス</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="subprocess.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">subprocess</span></code> --- サブプロセス管理</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="subprocess.html#using-the-subprocess-module"><code class="xref py py-mod docutils literal notranslate"><span class="pre">subprocess</span></code> モジュールを使う</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#frequently-used-arguments">よく使われる引数</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#popen-constructor">Popen コンストラクター</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#exceptions">例外</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="subprocess.html#security-considerations">セキュリティで考慮すべき点</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subprocess.html#popen-objects">Popen オブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subprocess.html#windows-popen-helpers">Windows Popen ヘルパー</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#windows-constants">Windows Constants</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="subprocess.html#older-high-level-api">古い高水準 API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subprocess.html#replacing-older-functions-with-the-subprocess-module">古い関数を <code class="xref py py-mod docutils literal notranslate"><span class="pre">subprocess</span></code> モジュールで置き換える</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#replacing-bin-sh-shell-command-substitution">Replacing <strong class="program">/bin/sh</strong> shell command substitution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#replacing-shell-pipeline">シェルのパイプラインを置き換える</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#replacing-os-system"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.system()</span></code> を置き換える</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#replacing-the-os-spawn-family"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.spawn</span></code> 関数群を置き換える</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#replacing-os-popen-os-popen2-os-popen3"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.popen()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">os.popen2()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">os.popen3()</span></code> を置き換える</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#replacing-functions-from-the-popen2-module">Replacing functions from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">popen2</span></code> module</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="subprocess.html#legacy-shell-invocation-functions">レガシーなシェル呼び出し関数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="subprocess.html#notes">注釈</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#converting-an-argument-sequence-to-a-string-on-windows">Windows における引数シーケンスから文字列への変換</a></li>
+<li class="toctree-l3"><a class="reference internal" href="subprocess.html#disabling-use-of-vfork-or-posix-spawn">Disabling use of <code class="docutils literal notranslate"><span class="pre">vfork()</span></code> or <code class="docutils literal notranslate"><span class="pre">posix_spawn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="sched.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sched</span></code> --- イベントスケジューラー</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="sched.html#scheduler-objects">スケジューラオブジェクト</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="queue.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">queue</span></code> --- 同期キュークラス</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="queue.html#queue-objects">キューオブジェクト</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue.html#simplequeue-objects">SimpleQueue オブジェクト</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contextvars.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">contextvars</span></code> --- コンテキスト変数</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contextvars.html#context-variables">コンテキスト変数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contextvars.html#manual-context-management">マニュアルでのコンテキスト管理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contextvars.html#asyncio-support">asyncio サポート</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>以下のモジュールは上記のサービスの一部で使われるサポートモジュールです:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_thread.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">_thread</span></code> --- 低水準なスレッド API</a></li>
+</ul>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="ctypes.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ctypes</span></code> --- Python 用の外部関数ライブラリ</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="threading.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">threading</span></code> --- スレッドベースの並列処理</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/concurrency.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="threading.html" title="threading --- スレッドベースの並列処理"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="ctypes.html" title="ctypes --- Python 用の外部関数ライブラリ"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">並行実行</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="/license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="/bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+
+<html lang="ko" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="Sorting Techniques" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/howto/sorting.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="저자, Andrew Dalke와 Raymond Hettinger,. 파이썬 리스트에는 리스트를 제자리에서(in-place) 수정하는 내장 list.sort() 메서드가 있습니다. 또한, 이터러블로부터 새로운 정렬된 리스트를 만드는 sorted() 내장 함수가 있습니다. 이 문서에서는, 파이썬을 사용하여 데이터를 정렬하는 다양한 기술을 살펴봅니다. 정렬..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="저자, Andrew Dalke와 Raymond Hettinger,. 파이썬 리스트에는 리스트를 제자리에서(in-place) 수정하는 내장 list.sort() 메서드가 있습니다. 또한, 이터러블로부터 새로운 정렬된 리스트를 만드는 sorted() 내장 함수가 있습니다. 이 문서에서는, 파이썬을 사용하여 데이터를 정렬하는 다양한 기술을 살펴봅니다. 정렬..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>Sorting Techniques &#8212; Python 3.12.4 문서</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?v=bb723527" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css?v=b20cc3f5" />
+    
+    <script src="../_static/documentation_options.js?v=3050f571"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=b5f768d8"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 문서에서 찾기"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="이 문서 정보" href="../about.html" />
+    <link rel="index" title="색인" href="../genindex.html" />
+    <link rel="search" title="검색" href="../search.html" />
+    <link rel="copyright" title="저작권" href="../copyright.html" />
+    <link rel="next" title="유니코드 HOWTO" href="unicode.html" />
+    <link rel="prev" title="소켓 프로그래밍 HOWTO" href="sockets.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="https://docs.python.org/3/howto/sorting.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="빠른 검색" aria-label="빠른 검색" type="search" name="q" />
+                <input type="submit" value="이동"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">목차</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Sorting Techniques</a><ul>
+<li><a class="reference internal" href="#sorting-basics">정렬 기초</a></li>
+<li><a class="reference internal" href="#key-functions">키 함수</a></li>
+<li><a class="reference internal" href="#operator-module-functions-and-partial-function-evaluation">Operator Module Functions and Partial Function Evaluation</a></li>
+<li><a class="reference internal" href="#ascending-and-descending">오름차순과 내림차순</a></li>
+<li><a class="reference internal" href="#sort-stability-and-complex-sorts">정렬 안정성과 복잡한 정렬</a></li>
+<li><a class="reference internal" href="#decorate-sort-undecorate">Decorate-Sort-Undecorate</a></li>
+<li><a class="reference internal" href="#comparison-functions">Comparison Functions</a></li>
+<li><a class="reference internal" href="#odds-and-ends">Odds and Ends</a></li>
+<li><a class="reference internal" href="#partial-sorts">Partial Sorts</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>이전 항목</h4>
+    <p class="topless"><a href="sockets.html"
+                          title="이전 장">소켓 프로그래밍 HOWTO</a></p>
+  </div>
+  <div>
+    <h4>다음 항목</h4>
+    <p class="topless"><a href="unicode.html"
+                          title="다음 장">유니코드 HOWTO</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>이 페이지</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">버그 보고하기</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/howto/sorting.rst"
+            rel="nofollow">소스 보기
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>탐색</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="일반 색인"
+             accesskey="I">색인</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 모듈 목록"
+             >모듈</a> |</li>
+        <li class="right" >
+          <a href="unicode.html" title="유니코드 HOWTO"
+             accesskey="N">다음</a> |</li>
+        <li class="right" >
+          <a href="sockets.html" title="소켓 프로그래밍 HOWTO"
+             accesskey="P">이전</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">파이썬 HOWTO</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Sorting Techniques</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="빠른 검색" aria-label="빠른 검색" type="search" name="q" id="search-box" />
+          <input type="submit" value="이동" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="sorting-techniques">
+<span id="sortinghowto"></span><h1>Sorting Techniques<a class="headerlink" href="#sorting-techniques" title="Link to this heading">¶</a></h1>
+<dl class="field-list simple">
+<dt class="field-odd">저자<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Andrew Dalke와 Raymond Hettinger</p>
+</dd>
+</dl>
+<p>파이썬 리스트에는 리스트를 제자리에서(in-place) 수정하는 내장 <a class="reference internal" href="../library/stdtypes.html#list.sort" title="list.sort"><code class="xref py py-meth docutils literal notranslate"><span class="pre">list.sort()</span></code></a> 메서드가 있습니다. 또한, 이터러블로부터 새로운 정렬된 리스트를 만드는 <a class="reference internal" href="../library/functions.html#sorted" title="sorted"><code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code></a> 내장 함수가 있습니다.</p>
+<p>이 문서에서는, 파이썬을 사용하여 데이터를 정렬하는 다양한 기술을 살펴봅니다.</p>
+<section id="sorting-basics">
+<h2>정렬 기초<a class="headerlink" href="#sorting-basics" title="Link to this heading">¶</a></h2>
+<p>A simple ascending sort is very easy: just call the <a class="reference internal" href="../library/functions.html#sorted" title="sorted"><code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code></a> function. It
+returns a new sorted list:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">[1, 2, 3, 4, 5]</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../library/stdtypes.html#list.sort" title="list.sort"><code class="xref py py-meth docutils literal notranslate"><span class="pre">list.sort()</span></code></a> 메서드를 사용할 수도 있습니다. 리스트를 제자리에서 수정합니다 (그리고 혼동을 피하고자 <code class="docutils literal notranslate"><span class="pre">None</span></code>을 반환합니다). 일반적으로 <a class="reference internal" href="../library/functions.html#sorted" title="sorted"><code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code></a>보다 덜 편리합니다 - 하지만 원래 목록이 필요하지 않다면, 이것이 약간 더 효율적입니다.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">[1, 2, 3, 4, 5]</span>
+</pre></div>
+</div>
+<p>또 다른 점은 <a class="reference internal" href="../library/stdtypes.html#list.sort" title="list.sort"><code class="xref py py-meth docutils literal notranslate"><span class="pre">list.sort()</span></code></a> 메서드가 리스트에게만 정의된다는 것입니다. 이와 달리, <a class="reference internal" href="../library/functions.html#sorted" title="sorted"><code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code></a> 함수는 모든 이터러블을 받아들입니다.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">({</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">})</span>
+<span class="go">[1, 2, 3, 4, 5]</span>
+</pre></div>
+</div>
+</section>
+<section id="key-functions">
+<h2>키 함수<a class="headerlink" href="#key-functions" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="../library/stdtypes.html#list.sort" title="list.sort"><code class="xref py py-meth docutils literal notranslate"><span class="pre">list.sort()</span></code></a>와 <a class="reference internal" href="../library/functions.html#sorted" title="sorted"><code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code></a>는 모두 비교하기 전에 각 리스트 요소에 대해 호출할 함수(또는 다른 콜러블)를 지정하는 <em>key</em> 매개 변수를 가지고 있습니다.</p>
+<p>예를 들어, 다음은 대소 문자를 구분하지 않는 문자열 비교입니다:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="s2">&quot;This is a test string from Andrew&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="nb">str</span><span class="o">.</span><span class="n">casefold</span><span class="p">)</span>
+<span class="go">[&#39;a&#39;, &#39;Andrew&#39;, &#39;from&#39;, &#39;is&#39;, &#39;string&#39;, &#39;test&#39;, &#39;This&#39;]</span>
+</pre></div>
+</div>
+<p><em>key</em> 매개 변수의 값은 단일 인자를 취하고 정렬 목적으로 사용할 키를 반환하는 함수(또는 다른 콜러블)여야 합니다. 키 함수가 각 입력 레코드에 대해 정확히 한 번 호출되기 때문에 이 기법은 빠릅니다.</p>
+<p>일반적인 패턴은 객체의 인덱스 중 일부를 키로 사용하여 복잡한 객체를 정렬하는 것입니다. 예를 들어:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">student_tuples</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s1">&#39;john&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s1">&#39;jane&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">(</span><span class="s1">&#39;dave&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">student_tuples</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">student</span><span class="p">:</span> <span class="n">student</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>   <span class="c1"># sort by age</span>
+<span class="go">[(&#39;dave&#39;, &#39;B&#39;, 10), (&#39;jane&#39;, &#39;B&#39;, 12), (&#39;john&#39;, &#39;A&#39;, 15)]</span>
+</pre></div>
+</div>
+<p>같은 기법이 이름있는 어트리뷰트를 갖는 객체에서도 작동합니다. 예를 들어:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Student</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">grade</span><span class="p">,</span> <span class="n">age</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">grade</span> <span class="o">=</span> <span class="n">grade</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">=</span> <span class="n">age</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="nb">repr</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grade</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span><span class="p">))</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">student_objects</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="n">Student</span><span class="p">(</span><span class="s1">&#39;john&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">Student</span><span class="p">(</span><span class="s1">&#39;jane&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">Student</span><span class="p">(</span><span class="s1">&#39;dave&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">student_objects</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">student</span><span class="p">:</span> <span class="n">student</span><span class="o">.</span><span class="n">age</span><span class="p">)</span>   <span class="c1"># sort by age</span>
+<span class="go">[(&#39;dave&#39;, &#39;B&#39;, 10), (&#39;jane&#39;, &#39;B&#39;, 12), (&#39;john&#39;, &#39;A&#39;, 15)]</span>
+</pre></div>
+</div>
+<p>Objects with named attributes can be made by a regular class as shown
+above, or they can be instances of <a class="reference internal" href="../library/dataclasses.html#dataclasses.dataclass" title="dataclasses.dataclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataclass</span></code></a> or
+a <a class="reference internal" href="../glossary.html#term-named-tuple"><span class="xref std std-term">named tuple</span></a>.</p>
+</section>
+<section id="operator-module-functions-and-partial-function-evaluation">
+<h2>Operator Module Functions and Partial Function Evaluation<a class="headerlink" href="#operator-module-functions-and-partial-function-evaluation" title="Link to this heading">¶</a></h2>
+<p>The <a class="reference internal" href="../glossary.html#term-key-function"><span class="xref std std-term">key function</span></a> patterns shown above are very common, so Python provides
+convenience functions to make accessor functions easier and faster. The
+<a class="reference internal" href="../library/operator.html#module-operator" title="operator: Functions corresponding to the standard operators."><code class="xref py py-mod docutils literal notranslate"><span class="pre">operator</span></code></a> module has <a class="reference internal" href="../library/operator.html#operator.itemgetter" title="operator.itemgetter"><code class="xref py py-func docutils literal notranslate"><span class="pre">itemgetter()</span></code></a>,
+<a class="reference internal" href="../library/operator.html#operator.attrgetter" title="operator.attrgetter"><code class="xref py py-func docutils literal notranslate"><span class="pre">attrgetter()</span></code></a>, and a <a class="reference internal" href="../library/operator.html#operator.methodcaller" title="operator.methodcaller"><code class="xref py py-func docutils literal notranslate"><span class="pre">methodcaller()</span></code></a> function.</p>
+<p>이러한 함수를 사용하면, 위의 예제가 더 간단 해지고 빨라집니다:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span><span class="p">,</span> <span class="n">attrgetter</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">student_tuples</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">[(&#39;dave&#39;, &#39;B&#39;, 10), (&#39;jane&#39;, &#39;B&#39;, 12), (&#39;john&#39;, &#39;A&#39;, 15)]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">student_objects</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">))</span>
+<span class="go">[(&#39;dave&#39;, &#39;B&#39;, 10), (&#39;jane&#39;, &#39;B&#39;, 12), (&#39;john&#39;, &#39;A&#39;, 15)]</span>
+</pre></div>
+</div>
+<p>operator 모듈 함수는 다중 수준의 정렬을 허용합니다. 예를 들어, 먼저 <em>grade</em>로 정렬한 다음 <em>age</em>로 정렬하려면, 이렇게 합니다:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">student_tuples</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="go">[(&#39;john&#39;, &#39;A&#39;, 15), (&#39;dave&#39;, &#39;B&#39;, 10), (&#39;jane&#39;, &#39;B&#39;, 12)]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">student_objects</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;grade&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">))</span>
+<span class="go">[(&#39;john&#39;, &#39;A&#39;, 15), (&#39;dave&#39;, &#39;B&#39;, 10), (&#39;jane&#39;, &#39;B&#39;, 12)]</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="../library/functools.html#module-functools" title="functools: Higher-order functions and operations on callable objects."><code class="xref py py-mod docutils literal notranslate"><span class="pre">functools</span></code></a> module provides another helpful tool for making
+key-functions.  The <a class="reference internal" href="../library/functools.html#functools.partial" title="functools.partial"><code class="xref py py-func docutils literal notranslate"><span class="pre">partial()</span></code></a> function can reduce the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Arity">arity</a> of a multi-argument
+function making it suitable for use as a key-function.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">unicodedata</span> <span class="kn">import</span> <span class="n">normalize</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">names</span> <span class="o">=</span> <span class="s1">&#39;Zoë Åbjørn Núñez Élana Zeke Abe Nubia Eloise&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">normalize</span><span class="p">,</span> <span class="s1">&#39;NFD&#39;</span><span class="p">))</span>
+<span class="go">[&#39;Abe&#39;, &#39;Åbjørn&#39;, &#39;Eloise&#39;, &#39;Élana&#39;, &#39;Nubia&#39;, &#39;Núñez&#39;, &#39;Zeke&#39;, &#39;Zoë&#39;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">normalize</span><span class="p">,</span> <span class="s1">&#39;NFC&#39;</span><span class="p">))</span>
+<span class="go">[&#39;Abe&#39;, &#39;Eloise&#39;, &#39;Nubia&#39;, &#39;Núñez&#39;, &#39;Zeke&#39;, &#39;Zoë&#39;, &#39;Åbjørn&#39;, &#39;Élana&#39;]</span>
+</pre></div>
+</div>
+</section>
+<section id="ascending-and-descending">
+<h2>오름차순과 내림차순<a class="headerlink" href="#ascending-and-descending" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="../library/stdtypes.html#list.sort" title="list.sort"><code class="xref py py-meth docutils literal notranslate"><span class="pre">list.sort()</span></code></a>와 <a class="reference internal" href="../library/functions.html#sorted" title="sorted"><code class="xref py py-func docutils literal notranslate"><span class="pre">sorted()</span></code></a>는 모두 불리언 값을 갖는 <em>reverse</em> 매개 변수를 받아들입니다. 내림차순 정렬을 지정하는 데 사용됩니다. 예를 들어, 학생 데이터를 역 <em>age</em> 순서로 얻으려면, 이렇게 합니다:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">student_tuples</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">[(&#39;john&#39;, &#39;A&#39;, 15), (&#39;jane&#39;, &#39;B&#39;, 12), (&#39;dave&#39;, &#39;B&#39;, 10)]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">student_objects</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">[(&#39;john&#39;, &#39;A&#39;, 15), (&#39;jane&#39;, &#39;B&#39;, 12), (&#39;dave&#39;, &#39;B&#39;, 10)]</span>
+</pre></div>
+</div>
+</section>
+<section id="sort-stability-and-complex-sorts">
+<h2>정렬 안정성과 복잡한 정렬<a class="headerlink" href="#sort-stability-and-complex-sorts" title="Link to this heading">¶</a></h2>
+<p>정렬은 <a class="reference external" href="https://en.wikipedia.org/wiki/Sorting_algorithm#Stability">안정적</a>임이 보장됩니다. 즉, 여러 레코드가 같은 키를 가질 때, 원래의 순서가 유지됩니다.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="go">[(&#39;blue&#39;, 1), (&#39;blue&#39;, 2), (&#39;red&#39;, 1), (&#39;red&#39;, 2)]</span>
+</pre></div>
+</div>
+<p><em>blue</em>에 대한 두 레코드가 원래 순서를 유지해서 <code class="docutils literal notranslate"><span class="pre">('blue',</span> <span class="pre">1)</span></code>이 <code class="docutils literal notranslate"><span class="pre">('blue',</span> <span class="pre">2)</span></code>보다 앞에 나옴이 보장됨에 유의하십시오.</p>
+<p>이 멋진 속성은 일련의 정렬 단계로 복잡한 정렬을 만들 수 있도록 합니다. 예를 들어, 학생 데이터를 <em>grade</em>의 내림차순으로 정렬한 다음, <em>age</em>의 오름차순으로 정렬하려면, 먼저 <em>age</em> 정렬을 수행한 다음 <em>grade</em>를 사용하여 다시 정렬합니다:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">student_objects</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">))</span>     <span class="c1"># sort on secondary key</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="s1">&#39;grade&#39;</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>       <span class="c1"># now sort on primary key, descending</span>
+<span class="go">[(&#39;dave&#39;, &#39;B&#39;, 10), (&#39;jane&#39;, &#39;B&#39;, 12), (&#39;john&#39;, &#39;A&#39;, 15)]</span>
+</pre></div>
+</div>
+<p>이것은 다중 패스로 정렬하기 위해 필드와 순서의 튜플 리스트를 받을 수 있는 래퍼 함수로 추상화할 수 있습니다.</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">multisort</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">specs</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">reverse</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">specs</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="n">xs</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">attrgetter</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="n">reverse</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">return</span> <span class="n">xs</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">multisort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">student_objects</span><span class="p">),</span> <span class="p">((</span><span class="s1">&#39;grade&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;age&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)))</span>
+<span class="go">[(&#39;dave&#39;, &#39;B&#39;, 10), (&#39;jane&#39;, &#39;B&#39;, 12), (&#39;john&#39;, &#39;A&#39;, 15)]</span>
+</pre></div>
+</div>
+<p>파이썬에서 사용된 <a class="reference external" href="https://en.wikipedia.org/wiki/Timsort">Timsort</a> 알고리즘은 데이터 집합에 이미 존재하는 순서를 활용할 수 있으므로 효율적으로 여러 번의 정렬을 수행합니다.</p>
+</section>
+<section id="decorate-sort-undecorate">
+<h2>Decorate-Sort-Undecorate<a class="headerlink" href="#decorate-sort-undecorate" title="Link to this heading">¶</a></h2>
+<p>이 관용구는 그것의 세 단계를 따라 장식-정렬-복원(Decorate-Sort-Undecorate)이라고 합니다:</p>
+<ul class="simple">
+<li><p>첫째, 초기 리스트가 정렬 순서를 제어하는 새로운 값으로 장식됩니다.</p></li>
+<li><p>둘째, 장식된 리스트를 정렬합니다.</p></li>
+<li><p>마지막으로, 장식을 제거하여, 새 순서로 초깃값만 포함하는 리스트를 만듭니다.</p></li>
+</ul>
+<p>예를 들어, DSU 방식을 사용하여 <em>grade</em>로 학생 데이터를 정렬하려면 다음과 같이 합니다:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">decorated</span> <span class="o">=</span> <span class="p">[(</span><span class="n">student</span><span class="o">.</span><span class="n">grade</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">student</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">student</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">student_objects</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">decorated</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="n">student</span> <span class="k">for</span> <span class="n">grade</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">student</span> <span class="ow">in</span> <span class="n">decorated</span><span class="p">]</span>               <span class="c1"># undecorate</span>
+<span class="go">[(&#39;john&#39;, &#39;A&#39;, 15), (&#39;jane&#39;, &#39;B&#39;, 12), (&#39;dave&#39;, &#39;B&#39;, 10)]</span>
+</pre></div>
+</div>
+<p>이 관용구는 튜플이 사전식으로 비교되기 때문에 작동합니다; 첫 번째 항목이 비교됩니다; 그들이 같으면 두 번째 항목이 비교되고, 이런 식으로 계속됩니다.</p>
+<p>모든 경우에 장식된 리스트에 인덱스 <em>i</em>를 포함할 필요는 없지만, 두 가지 이점이 있습니다:</p>
+<ul class="simple">
+<li><p>정렬이 안정적입니다 – 두 항목이 같은 키를 가지면, 그 들의 순서가 정렬된 리스트에 유지됩니다.</p></li>
+<li><p>장식된 튜플의 순서는 최대 처음 두 항목에 의해 결정되므로 원래 항목은 비교 가능할 필요가 없습니다. 그래서 예를 들어, 원래 리스트에는 직접 정렬될 수 없는 복소수가 포함될 수 있습니다.</p></li>
+</ul>
+<p>이 관용구의 또 다른 이름은 펄 프로그래머들 사이에서 이것을 대중화한 Randal L. Schwartz의 이름을 딴 <a class="reference external" href="https://en.wikipedia.org/wiki/Schwartzian_transform">Schwartzian 변환</a>입니다.</p>
+<p>이제 파이썬 정렬이 키 함수를 제공하기 때문에, 이 기법은 자주 필요하지 않습니다.</p>
+</section>
+<section id="comparison-functions">
+<h2>Comparison Functions<a class="headerlink" href="#comparison-functions" title="Link to this heading">¶</a></h2>
+<p>Unlike key functions that return an absolute value for sorting, a comparison
+function computes the relative ordering for two inputs.</p>
+<p>For example, a <a class="reference external" href="https://upload.wikimedia.org/wikipedia/commons/1/17/Balance_à_tabac_1850.JPG">balance scale</a>
+compares two samples giving a relative ordering: lighter, equal, or heavier.
+Likewise, a comparison function such as <code class="docutils literal notranslate"><span class="pre">cmp(a,</span> <span class="pre">b)</span></code> will return a negative
+value for less-than, zero if the inputs are equal, or a positive value for
+greater-than.</p>
+<p>It is common to encounter comparison functions when translating algorithms from
+other languages.  Also, some libraries provide comparison functions as part of
+their API.  For example, <a class="reference internal" href="../library/locale.html#locale.strcoll" title="locale.strcoll"><code class="xref py py-func docutils literal notranslate"><span class="pre">locale.strcoll()</span></code></a> is a comparison function.</p>
+<p>To accommodate those situations, Python provides
+<a class="reference internal" href="../library/functools.html#functools.cmp_to_key" title="functools.cmp_to_key"><code class="xref py py-class docutils literal notranslate"><span class="pre">functools.cmp_to_key</span></code></a> to wrap the comparison function
+to make it usable as a key function:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="nb">sorted</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">cmp_to_key</span><span class="p">(</span><span class="n">strcoll</span><span class="p">))</span>  <span class="c1"># locale-aware sort order</span>
+</pre></div>
+</div>
+</section>
+<section id="odds-and-ends">
+<h2>Odds and Ends<a class="headerlink" href="#odds-and-ends" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>For locale aware sorting, use <a class="reference internal" href="../library/locale.html#locale.strxfrm" title="locale.strxfrm"><code class="xref py py-func docutils literal notranslate"><span class="pre">locale.strxfrm()</span></code></a> for a key function or
+<a class="reference internal" href="../library/locale.html#locale.strcoll" title="locale.strcoll"><code class="xref py py-func docutils literal notranslate"><span class="pre">locale.strcoll()</span></code></a> for a comparison function.  This is necessary
+because “alphabetical” sort orderings can vary across cultures even
+if the underlying alphabet is the same.</p></li>
+<li><p><em>reverse</em> 매개 변수는 여전히 정렬 안정성을 유지합니다 (그래서 같은 키를 갖는 레코드는 원래 순서를 유지합니다). 흥미롭게도, 그 효과는 내장 <a class="reference internal" href="../library/functions.html#reversed" title="reversed"><code class="xref py py-func docutils literal notranslate"><span class="pre">reversed()</span></code></a> 함수를 두 번 사용하여 매개 변수 없이 흉내 낼 수 있습니다:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">standard_way</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">double_reversed</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">0</span><span class="p">))))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">standard_way</span> <span class="o">==</span> <span class="n">double_reversed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">standard_way</span>
+<span class="go">[(&#39;red&#39;, 1), (&#39;red&#39;, 2), (&#39;blue&#39;, 1), (&#39;blue&#39;, 2)]</span>
+</pre></div>
+</div>
+</li>
+<li><p>The sort routines use <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> when making comparisons
+between two objects. So, it is easy to add a standard sort order to a class by
+defining an <a class="reference internal" href="../reference/datamodel.html#object.__lt__" title="object.__lt__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__lt__()</span></code></a> method:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Student</span><span class="o">.</span><span class="fm">__lt__</span> <span class="o">=</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">age</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">age</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">student_objects</span><span class="p">)</span>
+<span class="go">[(&#39;dave&#39;, &#39;B&#39;, 10), (&#39;jane&#39;, &#39;B&#39;, 12), (&#39;john&#39;, &#39;A&#39;, 15)]</span>
+</pre></div>
+</div>
+<p>However, note that <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> can fall back to using <a class="reference internal" href="../reference/datamodel.html#object.__gt__" title="object.__gt__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__gt__()</span></code></a> if
+<a class="reference internal" href="../reference/datamodel.html#object.__lt__" title="object.__lt__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__lt__()</span></code></a> is not implemented (see <a class="reference internal" href="../reference/datamodel.html#object.__lt__" title="object.__lt__"><code class="xref py py-func docutils literal notranslate"><span class="pre">object.__lt__()</span></code></a>
+for details on the mechanics).  To avoid surprises, <span class="target" id="index-0"></span><a class="pep reference external" href="https://peps.python.org/pep-0008/"><strong>PEP 8</strong></a>
+recommends that all six comparison methods be implemented.
+The <a class="reference internal" href="../library/functools.html#functools.total_ordering" title="functools.total_ordering"><code class="xref py py-func docutils literal notranslate"><span class="pre">total_ordering()</span></code></a> decorator is provided to make that
+task easier.</p>
+</li>
+<li><p>키 함수는 정렬되는 객체에 직접 의존할 필요가 없습니다. 키 함수는 외부 자원에 액세스할 수도 있습니다. 예를 들어, 학생 성적이 딕셔너리에 저장되어 있다면, 학생 이름의 별도 리스트를 정렬하는 데 사용할 수 있습니다:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">students</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;dave&#39;</span><span class="p">,</span> <span class="s1">&#39;john&#39;</span><span class="p">,</span> <span class="s1">&#39;jane&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newgrades</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;john&#39;</span><span class="p">:</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;jane&#39;</span><span class="p">:</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;dave&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">students</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">newgrades</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">)</span>
+<span class="go">[&#39;jane&#39;, &#39;dave&#39;, &#39;john&#39;]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="partial-sorts">
+<h2>Partial Sorts<a class="headerlink" href="#partial-sorts" title="Link to this heading">¶</a></h2>
+<p>Some applications require only some of the data to be ordered.  The standard
+library provides several tools that do less work than a full sort:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../library/functions.html#min" title="min"><code class="xref py py-func docutils literal notranslate"><span class="pre">min()</span></code></a> and <a class="reference internal" href="../library/functions.html#max" title="max"><code class="xref py py-func docutils literal notranslate"><span class="pre">max()</span></code></a> return the smallest and largest values,
+respectively.  These functions make a single pass over the input data and
+require almost no auxiliary memory.</p></li>
+<li><p><a class="reference internal" href="../library/heapq.html#heapq.nsmallest" title="heapq.nsmallest"><code class="xref py py-func docutils literal notranslate"><span class="pre">heapq.nsmallest()</span></code></a> and <a class="reference internal" href="../library/heapq.html#heapq.nlargest" title="heapq.nlargest"><code class="xref py py-func docutils literal notranslate"><span class="pre">heapq.nlargest()</span></code></a> return
+the <em>n</em> smallest and largest values, respectively.  These functions
+make a single pass over the data keeping only <em>n</em> elements in memory
+at a time.  For values of <em>n</em> that are small relative to the number of
+inputs, these functions make far fewer comparisons than a full sort.</p></li>
+<li><p><a class="reference internal" href="../library/heapq.html#heapq.heappush" title="heapq.heappush"><code class="xref py py-func docutils literal notranslate"><span class="pre">heapq.heappush()</span></code></a> and <a class="reference internal" href="../library/heapq.html#heapq.heappop" title="heapq.heappop"><code class="xref py py-func docutils literal notranslate"><span class="pre">heapq.heappop()</span></code></a> create and maintain a
+partially sorted arrangement of data that keeps the smallest element
+at position <code class="docutils literal notranslate"><span class="pre">0</span></code>.  These functions are suitable for implementing
+priority queues which are commonly used for task scheduling.</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">목차</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Sorting Techniques</a><ul>
+<li><a class="reference internal" href="#sorting-basics">정렬 기초</a></li>
+<li><a class="reference internal" href="#key-functions">키 함수</a></li>
+<li><a class="reference internal" href="#operator-module-functions-and-partial-function-evaluation">Operator Module Functions and Partial Function Evaluation</a></li>
+<li><a class="reference internal" href="#ascending-and-descending">오름차순과 내림차순</a></li>
+<li><a class="reference internal" href="#sort-stability-and-complex-sorts">정렬 안정성과 복잡한 정렬</a></li>
+<li><a class="reference internal" href="#decorate-sort-undecorate">Decorate-Sort-Undecorate</a></li>
+<li><a class="reference internal" href="#comparison-functions">Comparison Functions</a></li>
+<li><a class="reference internal" href="#odds-and-ends">Odds and Ends</a></li>
+<li><a class="reference internal" href="#partial-sorts">Partial Sorts</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>이전 항목</h4>
+    <p class="topless"><a href="sockets.html"
+                          title="이전 장">소켓 프로그래밍 HOWTO</a></p>
+  </div>
+  <div>
+    <h4>다음 항목</h4>
+    <p class="topless"><a href="unicode.html"
+                          title="다음 장">유니코드 HOWTO</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>이 페이지</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">버그 보고하기</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/howto/sorting.rst"
+            rel="nofollow">소스 보기
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="사이드바 닫기">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>탐색</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="일반 색인"
+             >색인</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 모듈 목록"
+             >모듈</a> |</li>
+        <li class="right" >
+          <a href="unicode.html" title="유니코드 HOWTO"
+             >다음</a> |</li>
+        <li class="right" >
+          <a href="sockets.html" title="소켓 프로그래밍 HOWTO"
+             >이전</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >파이썬 HOWTO</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Sorting Techniques</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="빠른 검색" aria-label="빠른 검색" type="search" name="q" id="search-box" />
+          <input type="submit" value="이동" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    저작권
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="/license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      최종 업데이트: Jun 09, 2024 (17:23 UTC)
+    
+      <a href="/bugs.html">Found a bug</a>?
+    
+    <br />
+
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7 버전으로 생성되었습니다.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

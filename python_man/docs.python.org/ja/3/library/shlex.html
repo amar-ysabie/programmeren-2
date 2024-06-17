@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="shlex --- 単純な字句解析" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/shlex.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/shlex.py shlex クラスは Unix シェルに似た、単純な構文に対する字句解析器を簡単に書けるようにします。このクラスはしばしば、 Python アプリケーションのための実行制御ファイルのような小規模言語を書く上で便利です。 shlex モジュールは以下の関数を定義しています: shlex モジュールは以下のクラスを定義します。 shlex オブジェクト:..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/shlex.py shlex クラスは Unix シェルに似た、単純な構文に対する字句解析器を簡単に書けるようにします。このクラスはしばしば、 Python アプリケーションのための実行制御ファイルのような小規模言語を書く上で便利です。 shlex モジュールは以下の関数を定義しています: shlex モジュールは以下のクラスを定義します。 shlex オブジェクト:..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>shlex --- 単純な字句解析 &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Tk を用いたグラフィカルユーザーインターフェース" href="tk.html" />
+    <link rel="prev" title="cmd --- 行指向のコマンドインタープリターのサポート" href="cmd.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/shlex.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="shlex.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">shlex</span></code> --- 単純な字句解析</a><ul>
+<li><a class="reference internal" href="shlex.html#shlex-objects">shlex オブジェクト</a></li>
+<li><a class="reference internal" href="shlex.html#parsing-rules">解析規則</a></li>
+<li><a class="reference internal" href="shlex.html#improved-compatibility-with-shells">Improved Compatibility with Shells</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="cmd.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cmd</span></code> --- 行指向のコマンドインタープリターのサポート</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="tk.html"
+                          title="次の章へ">Tk を用いたグラフィカルユーザーインターフェース</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/shlex.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="tk.html" title="Tk を用いたグラフィカルユーザーインターフェース"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="cmd.html" title="cmd --- 行指向のコマンドインタープリターのサポート"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="frameworks.html" accesskey="U">プログラムのフレームワーク</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="shlex.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">shlex</span></code> --- 単純な字句解析</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-shlex">
+<span id="shlex-simple-lexical-analysis"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">shlex</span></code> --- 単純な字句解析<a class="headerlink" href="shlex.html#module-shlex" title="Link to this heading">¶</a></h1>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/shlex.py">Lib/shlex.py</a></p>
+<hr class="docutils" />
+<p><a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> クラスは Unix シェルに似た、単純な構文に対する字句解析器を簡単に書けるようにします。このクラスはしばしば、 Python アプリケーションのための実行制御ファイルのような小規模言語を書く上で便利です。</p>
+<p><a class="reference internal" href="shlex.html#module-shlex" title="shlex: Simple lexical analysis for Unix shell-like languages."><code class="xref py py-mod docutils literal notranslate"><span class="pre">shlex</span></code></a> モジュールは以下の関数を定義しています:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="shlex.split">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.split" title="Link to this definition">¶</a></dt>
+<dd><p>シェルに似た文法を使って、文字列 <em>s</em> を分割します。 <em>comments</em> が <a class="reference internal" href="constants.html#False" title="False"><code class="xref py py-const docutils literal notranslate"><span class="pre">False</span></code></a> (デフォルト値) の場合、受理した文字列内のコメントを解析しません (<a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> インスタンスの <a class="reference internal" href="shlex.html#shlex.shlex.commenters" title="shlex.shlex.commenters"><code class="xref py py-attr docutils literal notranslate"><span class="pre">commenters</span></code></a> メンバの値を空文字列にします)。この関数はデフォルトでは POSIX モードで動作し、 <em>posix</em> 引数が偽の場合は非 POSIX モードで動作します。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.12 で変更: </span>Passing <code class="docutils literal notranslate"><span class="pre">None</span></code> for <em>s</em> argument now raises an exception, rather than
+reading <a class="reference internal" href="sys.html#sys.stdin" title="sys.stdin"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.stdin</span></code></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shlex.join">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">split_command</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.join" title="Link to this definition">¶</a></dt>
+<dd><p>Concatenate the tokens of the list <em>split_command</em> and return a string.
+This function is the inverse of <a class="reference internal" href="shlex.html#shlex.split" title="shlex.split"><code class="xref py py-func docutils literal notranslate"><span class="pre">split()</span></code></a>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">shlex</span> <span class="kn">import</span> <span class="n">join</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;echo&#39;</span><span class="p">,</span> <span class="s1">&#39;-n&#39;</span><span class="p">,</span> <span class="s1">&#39;Multiple words&#39;</span><span class="p">]))</span>
+<span class="go">echo -n &#39;Multiple words&#39;</span>
+</pre></div>
+</div>
+<p>The returned value is shell-escaped to protect against injection
+vulnerabilities (see <a class="reference internal" href="shlex.html#shlex.quote" title="shlex.quote"><code class="xref py py-func docutils literal notranslate"><span class="pre">quote()</span></code></a>).</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.8.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="shlex.quote">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">quote</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.quote" title="Link to this definition">¶</a></dt>
+<dd><p>文字列 <em>s</em> をシェルエスケープして返します。戻り値は、リストを使えないようなケースで、シェルコマンドライン内で一つのトークンとして安全に利用出来る文字列です。</p>
+<div class="admonition warning" id="shlex-quote-warning">
+<p class="admonition-title">警告</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">shlex</span></code> module is <strong>only designed for Unix shells</strong>.</p>
+<p>The <a class="reference internal" href="shlex.html#shlex.quote" title="shlex.quote"><code class="xref py py-func docutils literal notranslate"><span class="pre">quote()</span></code></a> function is not guaranteed to be correct on non-POSIX
+compliant shells or shells from other operating systems such as Windows.
+Executing commands quoted by this module on such shells can open up the
+possibility of a command injection vulnerability.</p>
+<p>Consider using functions that pass command arguments with lists such as
+<a class="reference internal" href="subprocess.html#subprocess.run" title="subprocess.run"><code class="xref py py-func docutils literal notranslate"><span class="pre">subprocess.run()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">shell=False</span></code>.</p>
+</div>
+<p>以下のイディオムは安全ではないかもしれません:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;somefile; rm -rf ~&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;ls -l </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>  <span class="c1"># executed by a shell: boom!</span>
+<span class="go">ls -l somefile; rm -rf ~</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="shlex.html#shlex.quote" title="shlex.quote"><code class="xref py py-func docutils literal notranslate"><span class="pre">quote()</span></code></a> がそのセキュリティホールをふさぎます:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">shlex</span> <span class="kn">import</span> <span class="n">quote</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;ls -l </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">quote</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+<span class="go">ls -l &#39;somefile; rm -rf ~&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">remote_command</span> <span class="o">=</span> <span class="s1">&#39;ssh home </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">quote</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">remote_command</span><span class="p">)</span>
+<span class="go">ssh home &#39;ls -l &#39;&quot;&#39;&quot;&#39;somefile; rm -rf ~&#39;&quot;&#39;&quot;&#39;&#39;</span>
+</pre></div>
+</div>
+<p>クォーティングは UNIX シェルならびに <a class="reference internal" href="shlex.html#shlex.split" title="shlex.split"><code class="xref py py-func docutils literal notranslate"><span class="pre">split()</span></code></a> と互換です:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">shlex</span> <span class="kn">import</span> <span class="n">split</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">remote_command</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">remote_command</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">remote_command</span>
+<span class="go">[&#39;ssh&#39;, &#39;home&#39;, &quot;ls -l &#39;somefile; rm -rf ~&#39;&quot;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">command</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">remote_command</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">command</span>
+<span class="go">[&#39;ls&#39;, &#39;-l&#39;, &#39;somefile; rm -rf ~&#39;]</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.3.</span></p>
+</div>
+</dd></dl>
+
+<p><a class="reference internal" href="shlex.html#module-shlex" title="shlex: Simple lexical analysis for Unix shell-like languages."><code class="xref py py-mod docutils literal notranslate"><span class="pre">shlex</span></code></a> モジュールは以下のクラスを定義します。</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="shlex.shlex">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">shlex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instream</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">infile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">punctuation_chars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.shlex" title="Link to this definition">¶</a></dt>
+<dd><p>A <a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> instance or subclass instance is a lexical analyzer
+object.  The initialization argument, if present, specifies where to read
+characters from.  It must be a file-/stream-like object with
+<a class="reference internal" href="io.html#io.TextIOBase.read" title="io.TextIOBase.read"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code></a> and <a class="reference internal" href="io.html#io.TextIOBase.readline" title="io.TextIOBase.readline"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readline()</span></code></a> methods, or
+a string.  If no argument is given, input will be taken from <code class="docutils literal notranslate"><span class="pre">sys.stdin</span></code>.
+The second optional argument is a filename string, which sets the initial
+value of the <a class="reference internal" href="shlex.html#shlex.shlex.infile" title="shlex.shlex.infile"><code class="xref py py-attr docutils literal notranslate"><span class="pre">infile</span></code></a> attribute.  If the <em>instream</em>
+argument is omitted or equal to <code class="docutils literal notranslate"><span class="pre">sys.stdin</span></code>, this second argument
+defaults to &quot;stdin&quot;.  The <em>posix</em> argument defines the operational mode:
+when <em>posix</em> is not true (default), the <a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> instance will
+operate in compatibility mode.  When operating in POSIX mode,
+<a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> will try to be as close as possible to the POSIX shell
+parsing rules.  The <em>punctuation_chars</em> argument provides a way to make the
+behaviour even closer to how real shells parse.  This can take a number of
+values: the default value, <code class="docutils literal notranslate"><span class="pre">False</span></code>, preserves the behaviour seen under
+Python 3.5 and earlier.  If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, then parsing of the characters
+<code class="docutils literal notranslate"><span class="pre">();&lt;&gt;|&amp;</span></code> is changed: any run of these characters (considered punctuation
+characters) is returned as a single token.  If set to a non-empty string of
+characters, those characters will be used as the punctuation characters.  Any
+characters in the <a class="reference internal" href="shlex.html#shlex.shlex.wordchars" title="shlex.shlex.wordchars"><code class="xref py py-attr docutils literal notranslate"><span class="pre">wordchars</span></code></a> attribute that appear in
+<em>punctuation_chars</em> will be removed from <a class="reference internal" href="shlex.html#shlex.shlex.wordchars" title="shlex.shlex.wordchars"><code class="xref py py-attr docutils literal notranslate"><span class="pre">wordchars</span></code></a>.  See
+<a class="reference internal" href="shlex.html#improved-shell-compatibility"><span class="std std-ref">Improved Compatibility with Shells</span></a> for more information. <em>punctuation_chars</em>
+can be set only upon <a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> instance creation and can't be
+modified later.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.6 で変更: </span><em>punctuation_chars</em> 引数が追加されました。</p>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<dl class="simple">
+<dt><a class="reference internal" href="configparser.html#module-configparser" title="configparser: Configuration file parser."><code class="xref py py-mod docutils literal notranslate"><span class="pre">configparser</span></code></a> モジュール</dt><dd><p>Windows <code class="file docutils literal notranslate"><span class="pre">.ini</span></code> ファイルに似た設定ファイルのパーザ。</p>
+</dd>
+</dl>
+</div>
+<section id="shlex-objects">
+<span id="id1"></span><h2>shlex オブジェクト<a class="headerlink" href="shlex.html#shlex-objects" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> インスタンスは以下のメソッドを持っています:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="shlex.shlex.get_token">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">get_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.shlex.get_token" title="Link to this definition">¶</a></dt>
+<dd><p>トークンを一つ返します。トークンが <a class="reference internal" href="shlex.html#shlex.shlex.push_token" title="shlex.shlex.push_token"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push_token()</span></code></a> で使ってスタックに積まれていた場合、トークンをスタックからポップします。そうでない場合、トークンを一つ入力ストリームから読み出します。読み出し即時にファイル終了子に遭遇した場合、 <a class="reference internal" href="shlex.html#shlex.shlex.eof" title="shlex.shlex.eof"><code class="xref py py-attr docutils literal notranslate"><span class="pre">eof</span></code></a> (非 POSIX モードでは空文字列 (<code class="docutils literal notranslate"><span class="pre">''</span></code>)、POSIX モードでは <code class="docutils literal notranslate"><span class="pre">None</span></code>) が返されます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shlex.shlex.push_token">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">push_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.shlex.push_token" title="Link to this definition">¶</a></dt>
+<dd><p>トークンスタックに引数文字列をスタックします。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shlex.shlex.read_token">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">read_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.shlex.read_token" title="Link to this definition">¶</a></dt>
+<dd><p>生 (raw) のトークンを読み出します。プッシュバックスタックを無視し、かつソースリクエストを解釈しません (通常これは便利なエントリポイントではありません。完全性のためにここで記述されています)。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shlex.shlex.sourcehook">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">sourcehook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.shlex.sourcehook" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> がソースリクエスト (下の <a class="reference internal" href="shlex.html#shlex.shlex.source" title="shlex.shlex.source"><code class="xref py py-attr docutils literal notranslate"><span class="pre">source</span></code></a> を参照してください) を検出した際、このメソッドはその後に続くトークンを引数として渡され、ファイル名と開かれたファイル類似オブジェクトからなるタプルを返すとされています。</p>
+<p>通常、このメソッドはまず引数から何らかのクオートを取り除きます。処理後の引数が絶対パス名であった場合か、以前に有効になったソースリクエストが存在しない場合か、以前のソースが (<code class="docutils literal notranslate"><span class="pre">sys.stdin</span></code> のような) ストリームであった場合、この結果はそのままにされます。そうでない場合で、処理後の引数が相対パス名の場合、ソースインクルードスタックにある直前のファイル名からディレクトリ部分が取り出され、相対パスの前の部分に追加されます (この動作は C 言語プリプロセッサにおける <code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&quot;file.h&quot;</span></code> の扱いと同様です)。</p>
+<p>これらの操作の結果はファイル名として扱われ、タプルの最初の要素として返されます。同時にこのファイル名で <a class="reference internal" href="functions.html#open" title="open"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> を呼び出した結果が二つ目の要素になります (注意: インスタンス初期化のときとは引数の並びが逆になっています！)</p>
+<p>このフックはディレクトリサーチパスや、ファイル拡張子の追加、その他の名前空間に関するハックを実装できるようにするために公開されています。 'close' フックに対応するものはありませんが、shlex インスタンスはソースリクエストされている入力ストリームが EOF を返した時には <a class="reference internal" href="io.html#io.IOBase.close" title="io.IOBase.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> を呼び出します。</p>
+<p>ソーススタックをより明示的に操作するには、 <a class="reference internal" href="shlex.html#shlex.shlex.push_source" title="shlex.shlex.push_source"><code class="xref py py-meth docutils literal notranslate"><span class="pre">push_source()</span></code></a> および <a class="reference internal" href="shlex.html#shlex.shlex.pop_source" title="shlex.shlex.pop_source"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pop_source()</span></code></a> メソッドを使ってください。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shlex.shlex.push_source">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">push_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newstream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.shlex.push_source" title="Link to this definition">¶</a></dt>
+<dd><p>入力ソースストリームを入力スタックにプッシュします。ファイル名引数が指定された場合、以後のエラーメッセージ中で利用することができます。 <a class="reference internal" href="shlex.html#shlex.shlex.sourcehook" title="shlex.shlex.sourcehook"><code class="xref py py-meth docutils literal notranslate"><span class="pre">sourcehook()</span></code></a> メソッドが内部で使用しているのと同じメソッドです。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shlex.shlex.pop_source">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">pop_source</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.shlex.pop_source" title="Link to this definition">¶</a></dt>
+<dd><p>最後にプッシュされた入力ソースを入力スタックからポップします。字句解析器がスタック上の入力ストリームの EOF に到達した際に利用するメソッドと同じです。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="shlex.shlex.error_leader">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">error_leader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineno</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="shlex.html#shlex.shlex.error_leader" title="Link to this definition">¶</a></dt>
+<dd><p>このメソッドはエラーメッセージの論述部分を Unix C コンパイラエラーラベルの形式で生成します; この書式は <code class="docutils literal notranslate"><span class="pre">'&quot;%s&quot;,</span> <span class="pre">line</span> <span class="pre">%d:</span> <span class="pre">'</span></code> で、 <code class="docutils literal notranslate"><span class="pre">%s</span></code> は現在のソースファイル名で置き換えられ、 <code class="docutils literal notranslate"><span class="pre">%d</span></code> は現在の入力行番号で置き換えられます (オプションの引数を使ってこれらを上書きすることもできます)。</p>
+<p>このやり方は、 <a class="reference internal" href="shlex.html#module-shlex" title="shlex: Simple lexical analysis for Unix shell-like languages."><code class="xref py py-mod docutils literal notranslate"><span class="pre">shlex</span></code></a> のユーザに対して、Emacs やその他の Unix ツール群が解釈できる一般的な書式でのメッセージを生成することを推奨するために提供されています。</p>
+</dd></dl>
+
+<p><a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> サブクラスのインスタンスは、字句解析を制御したり、デバッグに使えるような public なインスタンス変数を持っています:</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.commenters">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">commenters</span></span><a class="headerlink" href="shlex.html#shlex.shlex.commenters" title="Link to this definition">¶</a></dt>
+<dd><p>コメントの開始として認識される文字列です。コメントの開始から行末までのすべてのキャラクタ文字は無視されます。標準では単に <code class="docutils literal notranslate"><span class="pre">'#'</span></code> が入っています。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.wordchars">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">wordchars</span></span><a class="headerlink" href="shlex.html#shlex.shlex.wordchars" title="Link to this definition">¶</a></dt>
+<dd><p>The string of characters that will accumulate into multi-character tokens.  By
+default, includes all ASCII alphanumerics and underscore.  In POSIX mode, the
+accented characters in the Latin-1 set are also included.  If
+<a class="reference internal" href="shlex.html#shlex.shlex.punctuation_chars" title="shlex.shlex.punctuation_chars"><code class="xref py py-attr docutils literal notranslate"><span class="pre">punctuation_chars</span></code></a> is not empty, the characters <code class="docutils literal notranslate"><span class="pre">~-./*?=</span></code>, which can
+appear in filename specifications and command line parameters, will also be
+included in this attribute, and any characters which appear in
+<code class="docutils literal notranslate"><span class="pre">punctuation_chars</span></code> will be removed from <code class="docutils literal notranslate"><span class="pre">wordchars</span></code> if they are present
+there. If <a class="reference internal" href="shlex.html#shlex.shlex.whitespace_split" title="shlex.shlex.whitespace_split"><code class="xref py py-attr docutils literal notranslate"><span class="pre">whitespace_split</span></code></a> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, this will have no
+effect.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.whitespace">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">whitespace</span></span><a class="headerlink" href="shlex.html#shlex.shlex.whitespace" title="Link to this definition">¶</a></dt>
+<dd><p>空白と見なされ、読み飛ばされる文字群です。空白はトークンの境界を作ります。標準では、スペース、タブ、改行 (linefeed) および復帰 (carriage-return) が入っています。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.escape">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">escape</span></span><a class="headerlink" href="shlex.html#shlex.shlex.escape" title="Link to this definition">¶</a></dt>
+<dd><p>エスケープ文字と見なされる文字群です。これは POSIX モードでのみ使われ、デフォルトでは <code class="docutils literal notranslate"><span class="pre">'\'</span></code> だけが入っています。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.quotes">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">quotes</span></span><a class="headerlink" href="shlex.html#shlex.shlex.quotes" title="Link to this definition">¶</a></dt>
+<dd><p>文字列引用符と見なされる文字群です。トークンを構成する際、同じクオートが再び出現するまで文字をバッファに蓄積します (すなわち、異なるクオート形式はシェル中で互いに保護し合う関係にあります)。標準では、ASCII 単引用符および二重引用符が入っています。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.escapedquotes">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">escapedquotes</span></span><a class="headerlink" href="shlex.html#shlex.shlex.escapedquotes" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="shlex.html#shlex.shlex.quotes" title="shlex.shlex.quotes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">quotes</span></code></a> のうち、 <a class="reference internal" href="shlex.html#shlex.shlex.escape" title="shlex.shlex.escape"><code class="xref py py-attr docutils literal notranslate"><span class="pre">escape</span></code></a> で定義されたエスケープ文字を解釈する文字群です。これは POSIX モードでのみ使われ、デフォルトでは <code class="docutils literal notranslate"><span class="pre">'&quot;'</span></code> だけが入っています。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.whitespace_split">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">whitespace_split</span></span><a class="headerlink" href="shlex.html#shlex.shlex.whitespace_split" title="Link to this definition">¶</a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, tokens will only be split in whitespaces.  This is useful, for
+example, for parsing command lines with <a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a>, getting
+tokens in a similar way to shell arguments.  When used in combination with
+<a class="reference internal" href="shlex.html#shlex.shlex.punctuation_chars" title="shlex.shlex.punctuation_chars"><code class="xref py py-attr docutils literal notranslate"><span class="pre">punctuation_chars</span></code></a>, tokens will be split on whitespace in addition to
+those characters.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.8 で変更: </span>The <a class="reference internal" href="shlex.html#shlex.shlex.punctuation_chars" title="shlex.shlex.punctuation_chars"><code class="xref py py-attr docutils literal notranslate"><span class="pre">punctuation_chars</span></code></a> attribute was made compatible with the
+<a class="reference internal" href="shlex.html#shlex.shlex.whitespace_split" title="shlex.shlex.whitespace_split"><code class="xref py py-attr docutils literal notranslate"><span class="pre">whitespace_split</span></code></a> attribute.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.infile">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">infile</span></span><a class="headerlink" href="shlex.html#shlex.shlex.infile" title="Link to this definition">¶</a></dt>
+<dd><p>現在の入力ファイル名です。クラスのインスタンス化時に初期設定されるか、その後のソースリクエストでスタックされます。エラーメッセージを構成する際にこの値を調べると便利なことがあります。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.instream">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">instream</span></span><a class="headerlink" href="shlex.html#shlex.shlex.instream" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> インスタンスが文字を読み出している入力ストリームです。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.source">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">source</span></span><a class="headerlink" href="shlex.html#shlex.shlex.source" title="Link to this definition">¶</a></dt>
+<dd><p>このメンバ変数は標準で <a class="reference internal" href="constants.html#None" title="None"><code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code></a> を取ります。この値に文字列を代入すると、その文字列は多くのシェルにおける <code class="docutils literal notranslate"><span class="pre">source</span></code> キーワードに似た、字句解析レベルでのインクルード要求として認識されます。すなわち、その直後に現れるトークンをファイル名として新たなストリームを開き、そのストリームを入力として、EOF に到達するまで読み込まれます。新たなストリームの EOF に到達した時点で <a class="reference internal" href="io.html#io.IOBase.close" title="io.IOBase.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> が呼び出され、入力は元の入力ストリームに戻されます。ソースリクエストは任意のレベルの深さまでスタックしてかまいません。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.debug">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">debug</span></span><a class="headerlink" href="shlex.html#shlex.shlex.debug" title="Link to this definition">¶</a></dt>
+<dd><p>このメンバ変数が数値で、かつ <code class="docutils literal notranslate"><span class="pre">1</span></code> またはそれ以上の値の場合、 <a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> インスタンスは動作に関する冗長な進捗報告を出力します。この出力を使いたいなら、モジュールのソースコードを読めば詳細を学ぶことができます。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.lineno">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">lineno</span></span><a class="headerlink" href="shlex.html#shlex.shlex.lineno" title="Link to this definition">¶</a></dt>
+<dd><p>ソース行番号 (遭遇した改行の数に 1 を加えたもの) です。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.token">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">token</span></span><a class="headerlink" href="shlex.html#shlex.shlex.token" title="Link to this definition">¶</a></dt>
+<dd><p>トークンバッファです。例外を捕捉した際にこの値を調べると便利なことがあります。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.eof">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">eof</span></span><a class="headerlink" href="shlex.html#shlex.shlex.eof" title="Link to this definition">¶</a></dt>
+<dd><p>ファイルの終端を決定するのに使われるトークンです。非 POSIX モードでは空文字列 (<code class="docutils literal notranslate"><span class="pre">''</span></code>) 、POSIX モードでは <code class="docutils literal notranslate"><span class="pre">None</span></code> が入ります。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="shlex.shlex.punctuation_chars">
+<span class="sig-prename descclassname"><span class="pre">shlex.</span></span><span class="sig-name descname"><span class="pre">punctuation_chars</span></span><a class="headerlink" href="shlex.html#shlex.shlex.punctuation_chars" title="Link to this definition">¶</a></dt>
+<dd><p>A read-only property. Characters that will be considered punctuation. Runs of
+punctuation characters will be returned as a single token. However, note that no
+semantic validity checking will be performed: for example, '&gt;&gt;&gt;' could be
+returned as a token, even though it may not be recognised as such by shells.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6.</span></p>
+</div>
+</dd></dl>
+
+</section>
+<section id="parsing-rules">
+<span id="shlex-parsing-rules"></span><h2>解析規則<a class="headerlink" href="shlex.html#parsing-rules" title="Link to this heading">¶</a></h2>
+<p>非 POSIX モードで動作中の <a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> は以下の規則に従おうとします。</p>
+<ul class="simple">
+<li><p>ワード内の引用符を認識しない (<code class="docutils literal notranslate"><span class="pre">Do&quot;Not&quot;Separate</span></code> は単一ワード <code class="docutils literal notranslate"><span class="pre">Do&quot;Not&quot;Separate</span></code> として解析されます)</p></li>
+<li><p>エスケープ文字を認識しない</p></li>
+<li><p>引用符で囲まれた文字列は、引用符内の全ての文字リテラルを保持する</p></li>
+<li><p>閉じ引用符でワードを区切る (<code class="docutils literal notranslate"><span class="pre">&quot;Do&quot;Separate</span></code> は、 <code class="docutils literal notranslate"><span class="pre">&quot;Do&quot;</span></code> と <code class="docutils literal notranslate"><span class="pre">Separate</span></code> であると解析されます)</p></li>
+<li><p><a class="reference internal" href="shlex.html#shlex.shlex.whitespace_split" title="shlex.shlex.whitespace_split"><code class="xref py py-attr docutils literal notranslate"><span class="pre">whitespace_split</span></code></a> が <code class="docutils literal notranslate"><span class="pre">False</span></code> の場合、wordchar、 whitespace または quote として宣言されていない全ての文字を、単一の文字トークンとして返す。 <code class="docutils literal notranslate"><span class="pre">True</span></code> の場合、 <a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> は空白文字でのみ単語を区切る。</p></li>
+<li><p>空文字列 (<code class="docutils literal notranslate"><span class="pre">''</span></code>) で EOF を送出する</p></li>
+<li><p>引用符に囲んであっても、空文字列を解析しない</p></li>
+</ul>
+<p>POSIX モードで動作中の <a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> は以下の解析規則に従おうとします。</p>
+<ul class="simple">
+<li><p>引用符を取り除き、引用符で単語を分解しない (<code class="docutils literal notranslate"><span class="pre">&quot;Do&quot;Not&quot;Separate&quot;</span></code> は単一ワード <code class="docutils literal notranslate"><span class="pre">DoNotSeparate</span></code> として解析されます)</p></li>
+<li><p>引用符で囲まれないエスケープ文字群 (<code class="docutils literal notranslate"><span class="pre">'\'</span></code> など) は直後に続く文字のリテラル値を保持する</p></li>
+<li><p><a class="reference internal" href="shlex.html#shlex.shlex.escapedquotes" title="shlex.shlex.escapedquotes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">escapedquotes</span></code></a> でない引用符文字 (<code class="docutils literal notranslate"><span class="pre">&quot;'&quot;</span></code> など) で囲まれている全ての文字のリテラル値を保持する</p></li>
+<li><p>引用符に囲まれた <a class="reference internal" href="shlex.html#shlex.shlex.escapedquotes" title="shlex.shlex.escapedquotes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">escapedquotes</span></code></a> に含まれる文字 (<code class="docutils literal notranslate"><span class="pre">'&quot;'</span></code> など) は、 <a class="reference internal" href="shlex.html#shlex.shlex.escape" title="shlex.shlex.escape"><code class="xref py py-attr docutils literal notranslate"><span class="pre">escape</span></code></a> に含まれる文字を除き、全ての文字のリテラル値を保持する。エスケープ文字群は使用中の引用符、または、そのエスケープ文字自身が直後にある場合のみ、特殊な機能を保持する。他の場合にはエスケープ文字は普通の文字とみなされる。</p></li>
+<li><p><a class="reference internal" href="constants.html#None" title="None"><code class="xref py py-const docutils literal notranslate"><span class="pre">None</span></code></a> で EOF を送出する</p></li>
+<li><p>引用符に囲まれた空文字列 (<code class="docutils literal notranslate"><span class="pre">''</span></code>) を許す。</p></li>
+</ul>
+</section>
+<section id="improved-compatibility-with-shells">
+<span id="improved-shell-compatibility"></span><h2>Improved Compatibility with Shells<a class="headerlink" href="shlex.html#improved-compatibility-with-shells" title="Link to this heading">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6.</span></p>
+</div>
+<p>The <a class="reference internal" href="shlex.html#module-shlex" title="shlex: Simple lexical analysis for Unix shell-like languages."><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a> class provides compatibility with the parsing performed by
+common Unix shells like <code class="docutils literal notranslate"><span class="pre">bash</span></code>, <code class="docutils literal notranslate"><span class="pre">dash</span></code>, and <code class="docutils literal notranslate"><span class="pre">sh</span></code>.  To take advantage of
+this compatibility, specify the <code class="docutils literal notranslate"><span class="pre">punctuation_chars</span></code> argument in the
+constructor.  This defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code>, which preserves pre-3.6 behaviour.
+However, if it is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, then parsing of the characters <code class="docutils literal notranslate"><span class="pre">();&lt;&gt;|&amp;</span></code>
+is changed: any run of these characters is returned as a single token.  While
+this is short of a full parser for shells (which would be out of scope for the
+standard library, given the multiplicity of shells out there), it does allow
+you to perform processing of command lines more easily than you could
+otherwise.  To illustrate, you can see the difference in the following snippet:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">shlex</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;a &amp;&amp; b; c &amp;&amp; d || e; f &gt;&#39;abc&#39;; (def </span><span class="se">\&quot;</span><span class="s2">ghi</span><span class="se">\&quot;</span><span class="s2">)&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">shlex</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">posix</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">whitespace_split</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">[&#39;a&#39;, &#39;&amp;&amp;&#39;, &#39;b;&#39;, &#39;c&#39;, &#39;&amp;&amp;&#39;, &#39;d&#39;, &#39;||&#39;, &#39;e;&#39;, &#39;f&#39;, &#39;&gt;abc;&#39;, &#39;(def&#39;, &#39;ghi)&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">shlex</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">posix</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">punctuation_chars</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">whitespace_split</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">[&#39;a&#39;, &#39;&amp;&amp;&#39;, &#39;b&#39;, &#39;;&#39;, &#39;c&#39;, &#39;&amp;&amp;&#39;, &#39;d&#39;, &#39;||&#39;, &#39;e&#39;, &#39;;&#39;, &#39;f&#39;, &#39;&gt;&#39;, &#39;abc&#39;, &#39;;&#39;,</span>
+<span class="go">&#39;(&#39;, &#39;def&#39;, &#39;ghi&#39;, &#39;)&#39;]</span>
+</pre></div>
+</div>
+<p>Of course, tokens will be returned which are not valid for shells, and you'll
+need to implement your own error checks on the returned tokens.</p>
+<p>Instead of passing <code class="docutils literal notranslate"><span class="pre">True</span></code> as the value for the punctuation_chars parameter,
+you can pass a string with specific characters, which will be used to determine
+which characters constitute punctuation. For example:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">shlex</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">shlex</span><span class="p">(</span><span class="s2">&quot;a &amp;&amp; b || c&quot;</span><span class="p">,</span> <span class="n">punctuation_chars</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">[&#39;a&#39;, &#39;&amp;&#39;, &#39;&amp;&#39;, &#39;b&#39;, &#39;||&#39;, &#39;c&#39;]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">punctuation_chars</span></code> is specified, the <a class="reference internal" href="shlex.html#shlex.shlex.wordchars" title="shlex.shlex.wordchars"><code class="xref py py-attr docutils literal notranslate"><span class="pre">wordchars</span></code></a>
+attribute is augmented with the characters <code class="docutils literal notranslate"><span class="pre">~-./*?=</span></code>.  That is because these
+characters can appear in file names (including wildcards) and command-line
+arguments (e.g. <code class="docutils literal notranslate"><span class="pre">--color=auto</span></code>). Hence:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">shlex</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">shlex</span><span class="p">(</span><span class="s1">&#39;~/a &amp;&amp; b-c --color=auto || d *.py?&#39;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">punctuation_chars</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">[&#39;~/a&#39;, &#39;&amp;&amp;&#39;, &#39;b-c&#39;, &#39;--color=auto&#39;, &#39;||&#39;, &#39;d&#39;, &#39;*.py?&#39;]</span>
+</pre></div>
+</div>
+<p>However, to match the shell as closely as possible, it is recommended to
+always use <code class="docutils literal notranslate"><span class="pre">posix</span></code> and <a class="reference internal" href="shlex.html#shlex.shlex.whitespace_split" title="shlex.shlex.whitespace_split"><code class="xref py py-attr docutils literal notranslate"><span class="pre">whitespace_split</span></code></a> when using
+<a class="reference internal" href="shlex.html#shlex.shlex.punctuation_chars" title="shlex.shlex.punctuation_chars"><code class="xref py py-attr docutils literal notranslate"><span class="pre">punctuation_chars</span></code></a>, which will negate
+<a class="reference internal" href="shlex.html#shlex.shlex.wordchars" title="shlex.shlex.wordchars"><code class="xref py py-attr docutils literal notranslate"><span class="pre">wordchars</span></code></a> entirely.</p>
+</div>
+<p>For best effect, <code class="docutils literal notranslate"><span class="pre">punctuation_chars</span></code> should be set in conjunction with
+<code class="docutils literal notranslate"><span class="pre">posix=True</span></code>. (Note that <code class="docutils literal notranslate"><span class="pre">posix=False</span></code> is the default for
+<a class="reference internal" href="shlex.html#shlex.shlex" title="shlex.shlex"><code class="xref py py-class docutils literal notranslate"><span class="pre">shlex</span></code></a>.)</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="shlex.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">shlex</span></code> --- 単純な字句解析</a><ul>
+<li><a class="reference internal" href="shlex.html#shlex-objects">shlex オブジェクト</a></li>
+<li><a class="reference internal" href="shlex.html#parsing-rules">解析規則</a></li>
+<li><a class="reference internal" href="shlex.html#improved-compatibility-with-shells">Improved Compatibility with Shells</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="cmd.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cmd</span></code> --- 行指向のコマンドインタープリターのサポート</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="tk.html"
+                          title="次の章へ">Tk を用いたグラフィカルユーザーインターフェース</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/shlex.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="tk.html" title="Tk を用いたグラフィカルユーザーインターフェース"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="cmd.html" title="cmd --- 行指向のコマンドインタープリターのサポート"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="frameworks.html" >プログラムのフレームワーク</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="shlex.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">shlex</span></code> --- 単純な字句解析</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

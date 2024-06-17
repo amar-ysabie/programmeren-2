@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="logging.config --- ログ記録の環境設定" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/logging.config.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/logging/config.py Important: このページには、リファレンス情報だけが含まれています。チュートリアルは、以下のページを参照してください 基本チュートリアル, 上級チュートリアル, ロギングクックブック. この節は、logging モジュールを設定するための API を解説します。 環境設定のための関数: 以下の関数は logging モジュー..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/logging/config.py Important: このページには、リファレンス情報だけが含まれています。チュートリアルは、以下のページを参照してください 基本チュートリアル, 上級チュートリアル, ロギングクックブック. この節は、logging モジュールを設定するための API を解説します。 環境設定のための関数: 以下の関数は logging モジュー..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>logging.config --- ログ記録の環境設定 &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?v=bb723527" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css?v=b20cc3f5" />
+    
+    <script src="../_static/documentation_options.js?v=7e11ab17"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="logging.handlers --- ログ記録ハンドラー" href="logging.handlers.html" />
+    <link rel="prev" title="logging --- Python 用のログ記録手段" href="logging.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="https://docs.python.org/3/library/logging.config.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.config</span></code> --- ログ記録の環境設定</a><ul>
+<li><a class="reference internal" href="#configuration-functions">環境設定のための関数</a></li>
+<li><a class="reference internal" href="#security-considerations">セキュリティで考慮すべき点</a></li>
+<li><a class="reference internal" href="#configuration-dictionary-schema">環境設定辞書スキーマ</a><ul>
+<li><a class="reference internal" href="#dictionary-schema-details">辞書スキーマの詳細</a></li>
+<li><a class="reference internal" href="#incremental-configuration">増分設定</a></li>
+<li><a class="reference internal" href="#object-connections">オブジェクトの接続</a></li>
+<li><a class="reference internal" href="#user-defined-objects">ユーザ定義オブジェクト</a></li>
+<li><a class="reference internal" href="#handler-configuration-order">ハンドラの設定順序</a></li>
+<li><a class="reference internal" href="#access-to-external-objects">外部オブジェクトへのアクセス</a></li>
+<li><a class="reference internal" href="#access-to-internal-objects">内部オブジェクトへのアクセス</a></li>
+<li><a class="reference internal" href="#import-resolution-and-custom-importers">インポート解決とカスタムインポーター</a></li>
+<li><a class="reference internal" href="#configuring-queuehandler-and-queuelistener">Configuring QueueHandler and QueueListener</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuration-file-format">環境設定ファイルの書式</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="logging.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code> --- Python 用のログ記録手段</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="logging.handlers.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.handlers</span></code> --- ログ記録ハンドラー</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/logging.config.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="logging.handlers.html" title="logging.handlers --- ログ記録ハンドラー"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="logging.html" title="logging --- Python 用のログ記録手段"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="allos.html" accesskey="U">汎用オペレーティングシステムサービス</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.config</span></code> --- ログ記録の環境設定</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-logging.config">
+<span id="logging-config-logging-configuration"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.config</span></code> --- ログ記録の環境設定<a class="headerlink" href="#module-logging.config" title="Link to this heading">¶</a></h1>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/logging/config.py">Lib/logging/config.py</a></p>
+<aside class="sidebar">
+<p class="sidebar-title">Important</p>
+<p>このページには、リファレンス情報だけが含まれています。チュートリアルは、以下のページを参照してください</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../howto/logging.html#logging-basic-tutorial"><span class="std std-ref">基本チュートリアル</span></a></p></li>
+<li><p><a class="reference internal" href="../howto/logging.html#logging-advanced-tutorial"><span class="std std-ref">上級チュートリアル</span></a></p></li>
+<li><p><a class="reference internal" href="../howto/logging-cookbook.html#logging-cookbook"><span class="std std-ref">ロギングクックブック</span></a></p></li>
+</ul>
+</aside>
+<hr class="docutils" />
+<p>この節は、logging モジュールを設定するための API を解説します。</p>
+<section id="configuration-functions">
+<span id="logging-config-api"></span><h2>環境設定のための関数<a class="headerlink" href="#configuration-functions" title="Link to this heading">¶</a></h2>
+<p>以下の関数は logging モジュールの環境設定をします。これらの関数は、 <a class="reference internal" href="#module-logging.config" title="logging.config: Configuration of the logging module."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.config</span></code></a> にあります。これらの関数の使用はオプションです --- <a class="reference internal" href="logging.html#module-logging" title="logging: Flexible event logging system for applications."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> モジュールはこれらの関数を使うか、 (<a class="reference internal" href="logging.html#module-logging" title="logging: Flexible event logging system for applications."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> 自体で定義されている) 主要な API を呼び出し、 <a class="reference internal" href="logging.html#module-logging" title="logging: Flexible event logging system for applications."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> か <a class="reference internal" href="logging.handlers.html#module-logging.handlers" title="logging.handlers: Handlers for the logging module."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.handlers</span></code></a> で宣言されているハンドラを定義することで設定できます。</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="logging.config.dictConfig">
+<span class="sig-prename descclassname"><span class="pre">logging.config.</span></span><span class="sig-name descname"><span class="pre">dictConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#logging.config.dictConfig" title="Link to this definition">¶</a></dt>
+<dd><p>辞書からロギング環境設定を取得します。この辞書の内容は、以下の <a class="reference internal" href="#logging-config-dictschema"><span class="std std-ref">環境設定辞書スキーマ</span></a> で記述されています。</p>
+<p>環境設定中にエラーに遭遇すると、この関数は適宜メッセージを記述しつつ <a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a>, <a class="reference internal" href="exceptions.html#TypeError" title="TypeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a>, <a class="reference internal" href="exceptions.html#AttributeError" title="AttributeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a> または <a class="reference internal" href="exceptions.html#ImportError" title="ImportError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ImportError</span></code></a> を送出します。例外を送出する条件を (不完全かもしれませんが) 以下に列挙します:</p>
+<ul class="simple">
+<li><p>文字列でなかったり、実際のロギングレベルと関係ない文字列であったりする <code class="docutils literal notranslate"><span class="pre">level</span></code>。</p></li>
+<li><p>ブール値でない <code class="docutils literal notranslate"><span class="pre">propagate</span></code> の値。</p></li>
+<li><p>対応する行き先を持たない id。</p></li>
+<li><p>インクリメンタルな呼び出しの中で見つかった存在しないハンドラ id。</p></li>
+<li><p>無効なロガー名。</p></li>
+<li><p>内部や外部のオブジェクトに関わる不可能性。</p></li>
+</ul>
+<p>解析は <code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfigurator</span></code> クラスによって行われます。このクラスのコンストラクタは環境設定に使われる辞書に渡され、このクラスは <code class="xref py py-meth docutils literal notranslate"><span class="pre">configure()</span></code> メソッドを持ちます。 <a class="reference internal" href="#module-logging.config" title="logging.config: Configuration of the logging module."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.config</span></code></a> モジュールは、呼び出し可能属性 <code class="xref py py-attr docutils literal notranslate"><span class="pre">dictConfigClass</span></code> を持ち、これはまず <code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfigurator</span></code> に設定されます。 <code class="xref py py-attr docutils literal notranslate"><span class="pre">dictConfigClass</span></code> の値は適切な独自の実装で置き換えられます。</p>
+<p><a class="reference internal" href="#logging.config.dictConfig" title="logging.config.dictConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">dictConfig()</span></code></a> は <code class="xref py py-attr docutils literal notranslate"><span class="pre">dictConfigClass</span></code> を、指定された辞書を渡して呼び出し、それから返されたオブジェクトの <code class="xref py py-meth docutils literal notranslate"><span class="pre">configure()</span></code> メソッドを呼び出して、環境設定を作用させます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">dictConfig</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+    <span class="n">dictConfigClass</span><span class="p">(</span><span class="n">config</span><span class="p">)</span><span class="o">.</span><span class="n">configure</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>例えば、 <code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfigurator</span></code> のサブクラスは、自身の <code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__()</span></code> で <code class="docutils literal notranslate"><span class="pre">DictConfigurator.__init__()</span></code> を呼び出し、それから続く <code class="xref py py-meth docutils literal notranslate"><span class="pre">configure()</span></code> の呼び出しに使えるカスタムの接頭辞を設定できます。 <code class="xref py py-attr docutils literal notranslate"><span class="pre">dictConfigClass</span></code> は、この新しいサブクラスに束縛され、そして <a class="reference internal" href="#logging.config.dictConfig" title="logging.config.dictConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">dictConfig()</span></code></a> はちょうどデフォルトの、カスタマイズされていない状態のように呼び出せます。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="logging.config.fileConfig">
+<span class="sig-prename descclassname"><span class="pre">logging.config.</span></span><span class="sig-name descname"><span class="pre">fileConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disable_existing_loggers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#logging.config.fileConfig" title="Link to this definition">¶</a></dt>
+<dd><p>ログ記録の環境設定を <a class="reference internal" href="configparser.html#module-configparser" title="configparser: Configuration file parser."><code class="xref py py-mod docutils literal notranslate"><span class="pre">configparser</span></code></a> 形式ファイルから読み出します。そのファイルの形式は <a class="reference internal" href="#logging-config-fileformat"><span class="std std-ref">環境設定ファイルの書式</span></a> で記述されているとおりにしなければなりません。この関数はアプリケーションから何度も呼び出すことができ、これによって、 (設定を選択し、選択された設定を読み出す機構をデベロッパが提供していれば) 複数の準備済みの設定からエンドユーザが選択するようにできます。</p>
+<p>It will raise <a class="reference internal" href="exceptions.html#FileNotFoundError" title="FileNotFoundError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">FileNotFoundError</span></code></a> if the file
+doesn't exist and <a class="reference internal" href="exceptions.html#RuntimeError" title="RuntimeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> if the file is invalid or
+empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">パラメータ<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fname</strong> -- A filename, or a file-like object, or an instance derived
+from <a class="reference internal" href="configparser.html#configparser.RawConfigParser" title="configparser.RawConfigParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">RawConfigParser</span></code></a>. If a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">RawConfigParser</span></code>-derived instance is passed, it is used as
+is. Otherwise, a <a class="reference internal" href="configparser.html#configparser.ConfigParser" title="configparser.ConfigParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code></a> is
+instantiated, and the configuration read by it from the
+object passed in <code class="docutils literal notranslate"><span class="pre">fname</span></code>. If that has a <a class="reference internal" href="readline.html#module-readline" title="readline: GNU readline support for Python. (Unix)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readline()</span></code></a>
+method, it is assumed to be a file-like object and read using
+<a class="reference internal" href="configparser.html#configparser.ConfigParser.read_file" title="configparser.ConfigParser.read_file"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_file()</span></code></a>; otherwise,
+it is assumed to be a filename and passed to
+<a class="reference internal" href="configparser.html#configparser.ConfigParser.read" title="configparser.ConfigParser.read"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code></a>.</p></li>
+<li><p><strong>defaults</strong> -- Defaults to be passed to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigParser</span></code> can be specified
+in this argument.</p></li>
+<li><p><strong>disable_existing_loggers</strong> -- <code class="docutils literal notranslate"><span class="pre">False</span></code> が指定された場合は、この呼び出しが行われたときに存在するロガーは有効のまま残されます。後方互換性のあるやり方で古い振る舞いを保つので、デフォルト値は <code class="docutils literal notranslate"><span class="pre">True</span></code> になっています。そのような振る舞いでは、既存の非ルートロガーまたはそれらのロガーの先祖がロギング設定の中で明示的に名付けられていない限り、既存のロガーを無効にします。</p></li>
+<li><p><strong>encoding</strong> -- <em>fname</em> がファイル名の場合に、ファイルをオープンする時のエンコーディングです。</p></li>
+</ul>
+</dd>
+</dl>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.4 で変更: </span><code class="docutils literal notranslate"><span class="pre">fname</span></code> として <a class="reference internal" href="configparser.html#configparser.RawConfigParser" title="configparser.RawConfigParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">RawConfigParser</span></code></a> のサブクラスのインスタンスが渡せ得るようになっています。これによってこのようなことが容易になります:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>ロギングの設定が、アプリケーション全体の設定における単なる一部であるような設定ファイルの使用。</p></li>
+<li><p>ファイルから設定を読み込み、 <code class="docutils literal notranslate"><span class="pre">fileConfig</span></code> に通す前に(例えばコマンドラインパラメータやランタイム環境の他のなにかで)アプリケーションによって修正するようなこと。</p></li>
+</ul>
+</div></blockquote>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.10 で変更: </span>Added the <em>encoding</em> parameter.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.12 で変更: </span>An exception will be thrown if the provided file
+doesn't exist or is invalid or empty.</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="logging.config.listen">
+<span class="sig-prename descclassname"><span class="pre">logging.config.</span></span><span class="sig-name descname"><span class="pre">listen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">DEFAULT_LOGGING_CONFIG_PORT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verify</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#logging.config.listen" title="Link to this definition">¶</a></dt>
+<dd><p>指定されたポートでソケットサーバを起動し、新しい設定を待ち受けます。ポートが指定されなかった場合は、モジュールのデフォルトの <code class="xref py py-const docutils literal notranslate"><span class="pre">DEFAULT_LOGGING_CONFIG_PORT</span></code> が使用されます。ロギング設定は <a class="reference internal" href="#logging.config.dictConfig" title="logging.config.dictConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">dictConfig()</span></code></a> あるいは <a class="reference internal" href="#logging.config.fileConfig" title="logging.config.fileConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">fileConfig()</span></code></a> で処理できるファイルとして送信されます。 <a class="reference internal" href="threading.html#threading.Thread" title="threading.Thread"><code class="xref py py-class docutils literal notranslate"><span class="pre">Thread</span></code></a> インスタンスを返し、このインスタンスの <a class="reference internal" href="threading.html#threading.Thread.start" title="threading.Thread.start"><code class="xref py py-meth docutils literal notranslate"><span class="pre">start()</span></code></a> を呼び出してサーバを起動し、適切なところで <a class="reference internal" href="threading.html#threading.Thread.join" title="threading.Thread.join"><code class="xref py py-meth docutils literal notranslate"><span class="pre">join()</span></code></a> を呼び出すことができます。サーバを停止するには、 <a class="reference internal" href="#logging.config.stopListening" title="logging.config.stopListening"><code class="xref py py-func docutils literal notranslate"><span class="pre">stopListening()</span></code></a> を呼び出します。</p>
+<p><code class="docutils literal notranslate"><span class="pre">verify</span></code> 引数を指定する場合は、これはソケットを通して受け取ったバイト文字列が妥当であるか、処理すべきであるかどうかを検査する callable である必要があります。ソケットを通じて、暗号化または署名あるいはその両方を受け取ることがあります。そのような場合に、 <code class="docutils literal notranslate"><span class="pre">verify</span></code> callable が署名の正当性検査または暗号化の復号あるいはその両方を実施することが出来ます。 <code class="docutils literal notranslate"><span class="pre">verify</span></code> callable は単一引数で呼び出されます - ソケットを通じて受け取ったバイト文字列です - そして処理すべきバイト文字列、または捨て去られるべきであることを示すための <code class="docutils literal notranslate"><span class="pre">None</span></code> を返す必要があります。返却されるバイト文字列は(たとえば正当性検査だけが行われて)渡されたものと同じかもしれませんし、あるいは(おそらく暗号化の復号が行われて)まったく異なるものかもしれません。</p>
+<p>ソケットに設定を送るには、まず設定ファイルを読み、それを <code class="docutils literal notranslate"><span class="pre">struct.pack('&gt;L',</span> <span class="pre">n)</span></code> を使って長さ 4 バイトのバイナリにパックしたものを前に付けたバイト列としてソケットに送ります。</p>
+<div class="admonition note" id="logging-eval-security">
+<p class="admonition-title">注釈</p>
+<p>設定の一部は <a class="reference internal" href="functions.html#eval" title="eval"><code class="xref py py-func docutils literal notranslate"><span class="pre">eval()</span></code></a> を通じて渡されるため、この関数を利用することはユーザーをセキュリティ上のリスクにさらす可能性があります。この関数は <code class="docutils literal notranslate"><span class="pre">localhost</span></code> のソケットだけにバインドされており、リモートマシンからの接続を受け付けませんが、それでも <a class="reference internal" href="#logging.config.listen" title="logging.config.listen"><code class="xref py py-func docutils literal notranslate"><span class="pre">listen()</span></code></a> を呼び出したプロセスのアカウントのもとで信頼できないコードが実行されうるシナリオが存在します。特に、 <a class="reference internal" href="#logging.config.listen" title="logging.config.listen"><code class="xref py py-func docutils literal notranslate"><span class="pre">listen()</span></code></a> を呼び出したプロセスが複数のユーザーが利用するマシン上で実行されており、ユーザー同士が互いに信頼できない場合、悪意あるユーザーが被害者ユーザーのプロセス上で本質的に任意のコードを実行するように計画する可能性があります。攻撃は、単に被害者ユーザーの <a class="reference internal" href="#logging.config.listen" title="logging.config.listen"><code class="xref py py-func docutils literal notranslate"><span class="pre">listen()</span></code></a> ソケットに接続して、被害者ユーザーのプロセス上で攻撃者が実行したいコードが実行されるような設定を送り込むだけです。この攻撃はデフォルトのポートが使われている場合きわめて容易であり、異なるポートが使われている場合でもそれほど難しくはありません。このような事象が発生するリスクを回避するためには、 <a class="reference internal" href="#logging.config.listen" title="logging.config.listen"><code class="xref py py-func docutils literal notranslate"><span class="pre">listen()</span></code></a> の <code class="docutils literal notranslate"><span class="pre">verify</span></code> 引数を使って不正な設定が適用されるのを防ぐようにしてください。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.4 で変更: </span><code class="docutils literal notranslate"><span class="pre">verify</span></code> 引数が追加されました。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>既存のロガーを無効にしない構成をリスナーに送信する場合は、設定にはJSONフォーマットを使用する必要があります。これは、設定に <a class="reference internal" href="#logging.config.dictConfig" title="logging.config.dictConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">dictConfig()</span></code></a> を使用します。 このメソッドを使用すると、 <code class="docutils literal notranslate"><span class="pre">disable_existing_loggers</span></code> に <code class="docutils literal notranslate"><span class="pre">False</span></code> を指定した設定を送信できます。</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="logging.config.stopListening">
+<span class="sig-prename descclassname"><span class="pre">logging.config.</span></span><span class="sig-name descname"><span class="pre">stopListening</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#logging.config.stopListening" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#logging.config.listen" title="logging.config.listen"><code class="xref py py-func docutils literal notranslate"><span class="pre">listen()</span></code></a> を呼び出して作成された、待ち受け中のサーバを停止します。通常 <a class="reference internal" href="#logging.config.listen" title="logging.config.listen"><code class="xref py py-func docutils literal notranslate"><span class="pre">listen()</span></code></a> の戻り値に対して <code class="xref py py-meth docutils literal notranslate"><span class="pre">join()</span></code> が呼ばれる前に呼び出します。</p>
+</dd></dl>
+
+</section>
+<section id="security-considerations">
+<h2>セキュリティで考慮すべき点<a class="headerlink" href="#security-considerations" title="Link to this heading">¶</a></h2>
+<p>logging の設定機能は便利さを提供します。その便利さの一部は設定ファイル内のテキストを logging の設定に使われる Python オブジェクトに変換する機能を提供することによって実現されています - たとえば、 <a class="reference internal" href="#logging-config-dict-userdef"><span class="std std-ref">ユーザ定義オブジェクト</span></a> で説明されているような機能です。しかし、まさにこのメカニズム (実行可能オブジェクトをユーザー定義モジュールからインポートし、設定ファイルから読み込んだパラメータを使ってそれらを呼び出すこと) が任意のコードを呼び出すことに利用できる可能性があります。そして、この理由により、信頼できない情報源から取得した設定ファイルは <em>細心の注意</em> を払って取り扱わなければなりません。そのようなファイルをロードする場合、そのファイルがいかなる問題も起こさないと確認した上で実際にファイルをロードしてください。</p>
+</section>
+<section id="configuration-dictionary-schema">
+<span id="logging-config-dictschema"></span><h2>環境設定辞書スキーマ<a class="headerlink" href="#configuration-dictionary-schema" title="Link to this heading">¶</a></h2>
+<p>ロギング設定を記述するには、生成するさまざまなオブジェクトと、それらのつながりを列挙しなければなりません。例えば、 'console' という名前のハンドラを生成し、'startup' という名前のロガーがメッセージを 'console' ハンドラに送るというようなことを記述します。これらのオブジェクトは、 <a class="reference internal" href="logging.html#module-logging" title="logging: Flexible event logging system for applications."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> モジュールによって提供されるものに限らず、独自のフォーマッタやハンドラクラスを書くことも出来ます。このクラスへのパラメータは、 <code class="docutils literal notranslate"><span class="pre">sys.stderr</span></code> のような外部オブジェクトを必要とすることもあります。これらのオブジェクトとつながりを記述する構文は、以下の <a class="reference internal" href="#logging-config-dict-connections"><span class="std std-ref">オブジェクトの接続</span></a> で定義されています。</p>
+<section id="dictionary-schema-details">
+<h3>辞書スキーマの詳細<a class="headerlink" href="#dictionary-schema-details" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="#logging.config.dictConfig" title="logging.config.dictConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">dictConfig()</span></code></a> に渡される辞書は、以下のキーを含んでいなければなりません:</p>
+<ul class="simple">
+<li><p><em>version</em> - スキーマのバージョンを表す整数値に設定されます。現在有効な値は 1 だけですが、このキーがあることで、このスキーマは後方互換性を保ちながら発展できます。</p></li>
+</ul>
+<p>その他すべてのキーは省略可能ですが、与えられたなら以下に記述するように解釈されます。以下のすべての場合において、 '環境設定辞書' と記載されている所では、その辞書に特殊な <code class="docutils literal notranslate"><span class="pre">'()'</span></code> キーがあるかを調べることで、カスタムのインスタント化が必要であるか判断されます。その場合は、以下の <a class="reference internal" href="#logging-config-dict-userdef"><span class="std std-ref">ユーザ定義オブジェクト</span></a> で記述されている機構がインスタンス生成に使われます。そうでなければ、インスタンス化するべきものを決定するのにコンテキストが使われます。</p>
+<ul id="logging-config-dictschema-formatters">
+<li><p><em>formatters</em> - 対応する値は辞書で、そのそれぞれのキーがフォーマッタ id になり、それぞれの値が対応する <a class="reference internal" href="logging.html#logging.Formatter" title="logging.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></a> インスタンスをどのように環境設定するかを記述する辞書になります。</p>
+<p>設定辞書は <a class="reference internal" href="logging.html#logging.Formatter" title="logging.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></a>  オブジェクトを作成するときの引数に対応する、次のようなオプションキーがないか探索されます。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">format</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">datefmt</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">style</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate</span></code> (バージョン3.8以降)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">defaults</span></code> (since version &gt;=3.12)</p></li>
+</ul>
+<p>オプションの <code class="docutils literal notranslate"><span class="pre">class</span></code> キーはフォーマッタークラスの名前を表します（モジュールとクラス名をドットで繋げる）。インスタンス化時の引数は <a class="reference internal" href="logging.html#logging.Formatter" title="logging.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></a> と同じであるため、このキーは <a class="reference internal" href="logging.html#logging.Formatter" title="logging.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Formatter</span></code></a> をカスタマイズしたサブクラスのインスタンス化に使うのがもっとも便利です。例えばトレースバックにさらに情報を付加したり、情報を要約代替クラスを実装するといったことが想定されます。もし、自作のフォーマッターが異なる引数や追加の設定引数を持つ場合は、 <a class="reference internal" href="#logging-config-dict-userdef"><span class="std std-ref">ユーザ定義オブジェクト</span></a> を使うべきです。</p>
+</li>
+<li><p><em>filters</em> - 対応する値は辞書で、そのそれぞれのキーがフィルタ id になり、それぞれの値が対応する Filter インスタンスをどのように環境設定するかを記述する辞書になります。</p>
+<p>環境設定辞書は、(デフォルトが空文字列の) キー <code class="docutils literal notranslate"><span class="pre">name</span></code> を検索され、それらが <a class="reference internal" href="logging.html#logging.Filter" title="logging.Filter"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Filter</span></code></a> インスタンスを構成するのに使われます。</p>
+</li>
+<li><p><em>handlers</em> - 対応する値は辞書で、そのそれぞれのキーがハンドラ id になり、それぞれの値が対応する Handler インスタンスをどのように環境設定するかを記述する辞書になります。</p>
+<p>環境設定辞書は、以下のキーを検索されます:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">class</span></code> (必須)。これはハンドラクラスの完全に修飾された名前です。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">level</span></code> (任意)。ハンドラのレベルです。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">formatter</span></code> (任意)。このハンドラへのフォーマッタの id です。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filters</span></code> (任意)。このハンドラへのフィルタの id のリストです。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.11 で変更: </span><code class="docutils literal notranslate"><span class="pre">filters</span></code> は id に加えてフィルタのインスタンスを受け取ることができるようになりました。</p>
+</div>
+</li>
+</ul>
+<p>その他の <em>すべての</em> キーは、ハンドラのコンストラクタにキーワード引数として渡されます。例えば、以下のコード片が与えられたとすると:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">handlers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">console</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">class </span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging.StreamHandler</span>
+<span class="w">    </span><span class="nt">formatter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">brief</span>
+<span class="w">    </span><span class="nt">level   </span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INFO</span>
+<span class="w">    </span><span class="nt">filters</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">allow_foo</span><span class="p p-Indicator">]</span>
+<span class="w">    </span><span class="nt">stream  </span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ext://sys.stdout</span>
+<span class="w">  </span><span class="nt">file</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">class </span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging.handlers.RotatingFileHandler</span>
+<span class="w">    </span><span class="nt">formatter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">precise</span>
+<span class="w">    </span><span class="nt">filename</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logconfig.log</span>
+<span class="w">    </span><span class="nt">maxBytes</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span>
+<span class="w">    </span><span class="nt">backupCount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+</pre></div>
+</div>
+<p>id が <code class="docutils literal notranslate"><span class="pre">console</span></code> であるハンドラが、 <code class="docutils literal notranslate"><span class="pre">sys.stdout</span></code> を根底のストリームにして、 <a class="reference internal" href="logging.handlers.html#logging.StreamHandler" title="logging.StreamHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.StreamHandler</span></code></a> としてインスタンス化されます。id が <code class="docutils literal notranslate"><span class="pre">file</span></code> であるハンドラが、 <code class="docutils literal notranslate"><span class="pre">filename='logconfig.log',</span> <span class="pre">maxBytes=1024,</span> <span class="pre">backupCount=3</span></code> をキーワード引数にして、 <a class="reference internal" href="logging.handlers.html#logging.handlers.RotatingFileHandler" title="logging.handlers.RotatingFileHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.handlers.RotatingFileHandler</span></code></a> としてインスタンス化されます。</p>
+</li>
+<li><p><em>loggers</em> - 対応する値は辞書で、そのそれぞれのキーがロガー名になり、それぞれの値が対応する Logger インスタンスをどのように環境設定するかを記述する辞書になります。</p>
+<p>環境設定辞書は、以下のキーを検索されます:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">level</span></code> (任意)。ロガーのレベルです。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">propagate</span></code> (任意)。ロガーの伝播の設定です。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">filters</span></code> (任意)。このロガーへのフィルタの id のリストです。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.11 で変更: </span><code class="docutils literal notranslate"><span class="pre">filters</span></code> は id に加えてフィルタのインスタンスを受け取ることができるようになりました。</p>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">handlers</span></code> (任意)。このロガーへのハンドラの id のリストです。</p></li>
+</ul>
+<p>指定されたロガーは、指定されたレベル、伝播、ハンドラに従って環境設定されます。</p>
+</li>
+<li><p><em>root</em> - これは、ルートロガーへの設定になります。この環境設定の進行は、<code class="docutils literal notranslate"><span class="pre">propagate</span></code> 設定が適用されないことを除き、他のロガーと同じです。</p></li>
+<li><p><em>incremental</em> - この環境設定が既存の環境設定に対する増分として解釈されるかどうかです。この値のデフォルトは <code class="docutils literal notranslate"><span class="pre">False</span></code> で、指定された環境設定は、既存の <a class="reference internal" href="#logging.config.fileConfig" title="logging.config.fileConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">fileConfig()</span></code></a> API によって使われているのと同じ意味上で、既存の環境設定を置き換えます。</p>
+<p>指定された値が <code class="docutils literal notranslate"><span class="pre">True</span></code> なら、環境設定は <a class="reference internal" href="#logging-config-dict-incremental"><span class="std std-ref">増分設定</span></a> の節で記述されているように進行します。</p>
+</li>
+<li><p><em>disable_existing_loggers</em> - 既存の非ルートロガーをすべて無効にするべきかどうかです。この設定は、 <a class="reference internal" href="#logging.config.fileConfig" title="logging.config.fileConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">fileConfig()</span></code></a> における同じ名前のパラメータと同じです。設定されていなければ、このパラメータのデフォルトは <code class="docutils literal notranslate"><span class="pre">True</span></code> です。この値は、 <em>incremental</em> が <code class="docutils literal notranslate"><span class="pre">True</span></code> なら無視されます。</p></li>
+</ul>
+</section>
+<section id="incremental-configuration">
+<span id="logging-config-dict-incremental"></span><h3>増分設定<a class="headerlink" href="#incremental-configuration" title="Link to this heading">¶</a></h3>
+<p>増分設定に完全な柔軟性を提供するのは難しいです。例えば、フィルタやフォーマッタのようなオブジェクトは匿名なので、一旦環境設定がなされると、設定を拡張するときにそのような匿名オブジェクトを参照することができません。</p>
+<p>さらに、一旦環境設定がなされた後、実行時にロガー、ハンドラ、フィルタ、フォーマッタのオブジェクトグラフを任意に変えなければならない例もありません。ロガーとハンドラの冗長性は、レベル (または、ロガーの場合には、伝播フラグ) を設定することによってのみ制御できます。安全な方法でオブジェクトグラフを任意に変えることは、マルチスレッド環境で問題となります。不可能ではないですが、その効用は実装に加えられる複雑さに見合いません。</p>
+<p>従って、環境設定辞書の <code class="docutils literal notranslate"><span class="pre">incremental</span></code> キーが与えられ、これが <code class="docutils literal notranslate"><span class="pre">True</span></code> であるとき、システムは <code class="docutils literal notranslate"><span class="pre">formatters</span></code> と <code class="docutils literal notranslate"><span class="pre">filters</span></code> の項目を完全に無視し、<code class="docutils literal notranslate"><span class="pre">handlers</span></code> の項目の <code class="docutils literal notranslate"><span class="pre">level</span></code> 設定と、<code class="docutils literal notranslate"><span class="pre">loggers</span></code> と <code class="docutils literal notranslate"><span class="pre">root</span></code> の項目の <code class="docutils literal notranslate"><span class="pre">level</span></code> と <code class="docutils literal notranslate"><span class="pre">propagate</span></code> 設定のみを処理します。</p>
+<p>環境設定辞書の値を使うことで、設定は pickle 化された辞書としてネットワークを通してソケットリスナに送ることができます。これにより、長時間起動するアプリケーションのロギングの冗長性を、アプリケーションを止めて再起動する必要なしに、いつでも変更することができます。</p>
+</section>
+<section id="object-connections">
+<span id="logging-config-dict-connections"></span><h3>オブジェクトの接続<a class="headerlink" href="#object-connections" title="Link to this heading">¶</a></h3>
+<p>このスキーマは、ロギングオブジェクトの一揃い - ロガー、ハンドラ、フォーマッタ、フィルタ - について記述します。これらは、オブジェクトグラフ上でお互い接続されます。従って、このスキーマは、オブジェクト間の接続を表現しなければなりません。例えば、環境設定で、特定のロガーが特定のハンドラに取り付けられたとします。この議論では、ロガーとハンドラが、これら 2 つの接続のそれぞれ送信元と送信先であるといえます。もちろん、この設定オブジェクト中では、これはハンドラへの参照を保持しているロガーで表されます。設定辞書中で、これは次のようになされます。まず、送信先オブジェクトを曖昧さなく指定する id を与えます。そして、その id を送信元オブジェクトの環境設定で使い、送信元とその id をもつ送信先が接続されていることを示します。</p>
+<p>ですから、例えば、以下の YAML のコード片を例にとると:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">formatters</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">brief</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># configuration for formatter with id &#39;brief&#39; goes here</span>
+<span class="w">  </span><span class="nt">precise</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># configuration for formatter with id &#39;precise&#39; goes here</span>
+<span class="nt">handlers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">h1</span><span class="p">:</span><span class="w"> </span><span class="c1">#This is an id</span>
+<span class="w">   </span><span class="c1"># configuration of handler with id &#39;h1&#39; goes here</span>
+<span class="w">   </span><span class="nt">formatter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">brief</span>
+<span class="w">  </span><span class="nt">h2</span><span class="p">:</span><span class="w"> </span><span class="c1">#This is another id</span>
+<span class="w">   </span><span class="c1"># configuration of handler with id &#39;h2&#39; goes here</span>
+<span class="w">   </span><span class="nt">formatter</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">precise</span>
+<span class="nt">loggers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">foo.bar.baz</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># other configuration for logger &#39;foo.bar.baz&#39;</span>
+<span class="w">    </span><span class="nt">handlers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">h1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">h2</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p>(注釈: YAML がここで使われているのは、辞書の等価な Python 形式よりもこちらのほうが少し読みやすいからです。)</p>
+<p>ロガーの id は、プログラム上でロガーへの参照を得るために使われるロガー名で、たとえば <code class="docutils literal notranslate"><span class="pre">foo.bar.baz</span></code> です。フォーマッタとフィルタの id は、(上の <code class="docutils literal notranslate"><span class="pre">brief</span></code>, <code class="docutils literal notranslate"><span class="pre">precise</span></code> のような) 任意の文字列値にできます。これらは一時的なもので、環境設定辞書の処理にのみ意味があり、オブジェクト間の接続を決定するのに使われます。また、これらは設定の呼び出しが完了したとき、どこにも残りません。</p>
+<p>上記のコード片は、<code class="docutils literal notranslate"><span class="pre">foo.bar.baz</span></code> というの名ロガーに、ハンドラ id <code class="docutils literal notranslate"><span class="pre">h1</span></code> と <code class="docutils literal notranslate"><span class="pre">h2</span></code> で表される 2 つのハンドラを接続することを示します。<code class="docutils literal notranslate"><span class="pre">h1</span></code> のフォーマッタは id <code class="docutils literal notranslate"><span class="pre">brief</span></code> で記述されるもので、<code class="docutils literal notranslate"><span class="pre">h2</span></code> のフォーマッタは id <code class="docutils literal notranslate"><span class="pre">precise</span></code> で記述されるものです。</p>
+</section>
+<section id="user-defined-objects">
+<span id="logging-config-dict-userdef"></span><h3>ユーザ定義オブジェクト<a class="headerlink" href="#user-defined-objects" title="Link to this heading">¶</a></h3>
+<p>このスキーマは、ハンドラ、フィルタ、フォーマッタのための、ユーザ定義オブジェクトをサポートします。(ロガーは、異なるインスタンスに対して異なる型を持つ必要はないので、この環境設定スキーマは、ユーザ定義ロガークラスをサポートしていません。)</p>
+<p>設定されるオブジェクトは、それらの設定を詳述する辞書によって記述されます。場所によっては、あるオブジェクトがどのようにインスタンス化されるかというコンテキストを、ロギングシステムが推測できます。しかし、ユーザ定義オブジェクトがインスタンス化されるとき、システムはどのようにこれを行うかを知りません。ユーザ定義オブジェクトのインスタンス化を完全に柔軟なものにするため、ユーザは 'ファクトリ' - 設定辞書を引数として呼ばれ、インスタンス化されたオブジェクトを返す呼び出し可能オブジェクト - を提供する必要があります。これは特殊キー <code class="docutils literal notranslate"><span class="pre">'()'</span></code> で利用できる、ファクトリへの絶対インポートパスによって合図されます。ここに具体的な例を挙げます:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">formatters</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">brief</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;%(message)s&#39;</span>
+<span class="w">  </span><span class="nt">default</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">format</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;%(asctime)s</span><span class="nv"> </span><span class="s">%(levelname)-8s</span><span class="nv"> </span><span class="s">%(name)-15s</span><span class="nv"> </span><span class="s">%(message)s&#39;</span>
+<span class="w">    </span><span class="nt">datefmt</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;%Y-%m-%d</span><span class="nv"> </span><span class="s">%H:%M:%S&#39;</span>
+<span class="w">  </span><span class="nt">custom</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">()</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.package.customFormatterFactory</span>
+<span class="w">      </span><span class="nt">bar</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">baz</span>
+<span class="w">      </span><span class="nt">spam</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">99.9</span>
+<span class="w">      </span><span class="nt">answer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
+</pre></div>
+</div>
+<p>上記の YAML コード片は 3 つのフォーマッタを定義します。 1 つ目は、id が <code class="docutils literal notranslate"><span class="pre">brief</span></code> で、指定されたフォーマット文字列をもつ、標準 <a class="reference internal" href="logging.html#logging.Formatter" title="logging.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Formatter</span></code></a> インスタンスです。 2 つ目は、id が <code class="docutils literal notranslate"><span class="pre">default</span></code> で、長いフォーマットを持ち、時間フォーマットも定義していて、結果はその 2 つのフォーマット文字列で初期化された <a class="reference internal" href="logging.html#logging.Formatter" title="logging.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Formatter</span></code></a> になります。Python ソース形式で見ると、 <code class="docutils literal notranslate"><span class="pre">brief</span></code> と <code class="docutils literal notranslate"><span class="pre">default</span></code> フォーマッタは、それぞれ設定の部分辞書:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s1">&#39;format&#39;</span> <span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(message)s</span><span class="s1">&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>および:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s1">&#39;format&#39;</span> <span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)-8s</span><span class="s1"> </span><span class="si">%(name)-15s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;datefmt&#39;</span> <span class="p">:</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>を持ち、これらの辞書が特殊キー <code class="docutils literal notranslate"><span class="pre">'()'</span></code> を持たないので、インスタンス化はコンテキストから推測され、結果として標準の <a class="reference internal" href="logging.html#logging.Formatter" title="logging.Formatter"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.Formatter</span></code></a> インスタンスが生成されます。id が <code class="docutils literal notranslate"><span class="pre">custom</span></code> である、3 つ目のフォーマッタの設定をする部分辞書は:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s1">&#39;()&#39;</span> <span class="p">:</span> <span class="s1">&#39;my.package.customFormatterFactory&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;bar&#39;</span> <span class="p">:</span> <span class="s1">&#39;baz&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;spam&#39;</span> <span class="p">:</span> <span class="mf">99.9</span><span class="p">,</span>
+  <span class="s1">&#39;answer&#39;</span> <span class="p">:</span> <span class="mi">42</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>で、ユーザ定義のインスタンス化が望まれることを示す特殊キー <code class="docutils literal notranslate"><span class="pre">'()'</span></code> を含みます。この場合、指定された呼び出し可能ファクトリオブジェクトが使われます。これが実際の呼び出し可能オブジェクトであれば、それが直接使われます - そうではなく、(この例でのように) 文字列を指定したなら、実際の呼び出し可能オブジェクトは、通常のインポート機構を使って検索されます。その呼び出し可能オブジェクトは、環境設定の部分辞書の、<strong>残りの</strong> 要素をキーワード引数として呼ばれます。上記の例では、id が <code class="docutils literal notranslate"><span class="pre">custom</span></code> のフォーマッタは、以下の呼び出しによって返されるものとみなされます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">my</span><span class="o">.</span><span class="n">package</span><span class="o">.</span><span class="n">customFormatterFactory</span><span class="p">(</span><span class="n">bar</span><span class="o">=</span><span class="s1">&#39;baz&#39;</span><span class="p">,</span> <span class="n">spam</span><span class="o">=</span><span class="mf">99.9</span><span class="p">,</span> <span class="n">answer</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>上記の例で <code class="docutils literal notranslate"><span class="pre">bar</span></code>, <code class="docutils literal notranslate"><span class="pre">spam</span></code> または <code class="docutils literal notranslate"><span class="pre">answer</span></code> のようなキーワード引数に指定する値は、設定作業の途中で処理されることなくそのまま呼び出し可能オブジェクトに渡されるため、 <code class="docutils literal notranslate"><span class="pre">cfg://foo</span></code> や <code class="docutils literal notranslate"><span class="pre">ext://bar</span></code> のような設定用の辞書や参照であってはいけません。</p>
+</div>
+<p>キー <code class="docutils literal notranslate"><span class="pre">'()'</span></code> が特殊キーとして使われるのは、キーワードパラメータ名として不正で、呼び出しに使われるキーワード引数と衝突し得ないからです。<code class="docutils literal notranslate"><span class="pre">'()'</span></code> はまた、対応する値が呼び出し可能オブジェクトであると覚えやすくします。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.11 で変更: </span><code class="docutils literal notranslate"><span class="pre">handlers</span></code> と <code class="docutils literal notranslate"><span class="pre">loggers</span></code> の <code class="docutils literal notranslate"><span class="pre">filters</span></code> メンバーは id に加えてフィルタのインスタンスを受け取ることができるようになりました。</p>
+</div>
+<p>特殊なキーワード <code class="docutils literal notranslate"><span class="pre">'.'</span></code> を指定することもできます。この場合その値には属性名とその値のマッピングをあらわす辞書を指定します。指定された属性は、もしそれが見つかった場合、戻り値のユーザー定義オブジェクトに設定されます。したがって、以下のように設定すると:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s1">&#39;()&#39;</span> <span class="p">:</span> <span class="s1">&#39;my.package.customFormatterFactory&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;bar&#39;</span> <span class="p">:</span> <span class="s1">&#39;baz&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;spam&#39;</span> <span class="p">:</span> <span class="mf">99.9</span><span class="p">,</span>
+  <span class="s1">&#39;answer&#39;</span> <span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+  <span class="s1">&#39;.&#39;</span> <span class="p">{</span>
+    <span class="s1">&#39;foo&#39;</span><span class="p">:</span> <span class="s1">&#39;bar&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;baz&#39;</span><span class="p">:</span> <span class="s1">&#39;bozz&#39;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>戻り値のフォーマッタは属性 <code class="docutils literal notranslate"><span class="pre">foo</span></code> と``baz`` をもち、それぞれの値は <code class="docutils literal notranslate"><span class="pre">'bar'</span></code> と <code class="docutils literal notranslate"><span class="pre">'bozz'</span></code> に設定されます。</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p>上記の例で <code class="docutils literal notranslate"><span class="pre">foo</span></code> や <code class="docutils literal notranslate"><span class="pre">baz</span></code> のような属性に設定する値は、フォーマッタの設定作業の途中で処理されることなくそのまま属性値として設定されるため、 <code class="docutils literal notranslate"><span class="pre">cfg://foo</span></code> や <code class="docutils literal notranslate"><span class="pre">ext://bar</span></code> のような設定用の辞書や参照であってはいけません。</p>
+</div>
+</section>
+<section id="handler-configuration-order">
+<span id="handler-config-dict-order"></span><h3>ハンドラの設定順序<a class="headerlink" href="#handler-configuration-order" title="Link to this heading">¶</a></h3>
+<p>ハンドラは対応するキーのアルファベット順に設定され、設定されたハンドラはスキーマ中の環境設定辞書における <code class="docutils literal notranslate"><span class="pre">handlers</span></code> 辞書 (の作業コピー) を差し替えます。たとえば <code class="docutils literal notranslate"><span class="pre">cfg://handlers.foo</span></code> という設定において、最初に <code class="docutils literal notranslate"><span class="pre">handlers['foo']``が</span> <span class="pre">``foo</span></code> という名前のハンドラに対する環境設定辞書を指しているとき、以後 (いったんハンドラが設定されると) 設定されたハンドラのインスタンスを指すようになります。その結果、 <code class="docutils literal notranslate"><span class="pre">cfg://handlers.foo</span></code> は辞書かハンドラのインスタンスのいずれかに解決される可能性があります。一般に、ハンドラは、依存するハンドラが全て設定された _あとに_ それらに依存するハンドラが設定されるように名前をつける方が賢明です; これにより、 <code class="docutils literal notranslate"><span class="pre">foo</span></code> という名前のハンドラに依存するハンドラを設定する際に <code class="docutils literal notranslate"><span class="pre">cfg://handlers.foo</span></code> で依存するハンドラを参照できるようになります。もし依存するハンドラの名前が  <code class="docutils literal notranslate"><span class="pre">bar</span></code> であった場合、アルファベット順の規則から <code class="docutils literal notranslate"><span class="pre">bar</span></code> の設定が <code class="docutils literal notranslate"><span class="pre">foo</span></code> の設定よりも先に試みられることにより <code class="docutils literal notranslate"><span class="pre">foo</span></code> がまだ設定されていないかもしれないことから、問題が起こる可能性があります。一方、依存するハンドラの名前が <code class="docutils literal notranslate"><span class="pre">foobar</span></code> であった場合は、その設定は <code class="docutils literal notranslate"><span class="pre">foo</span></code> の後に行われることとなり、 <code class="docutils literal notranslate"><span class="pre">cfg://handlers.foo</span></code> は環境設定辞書ではなく設定済みのハンドラ <code class="docutils literal notranslate"><span class="pre">foo</span></code> のインスタンスに解決されます。</p>
+</section>
+<section id="access-to-external-objects">
+<span id="logging-config-dict-externalobj"></span><h3>外部オブジェクトへのアクセス<a class="headerlink" href="#access-to-external-objects" title="Link to this heading">¶</a></h3>
+<p>環境設定が、例えば <code class="docutils literal notranslate"><span class="pre">sys.stderr</span></code> のような、設定の外部のオブジェクトへの参照を必要とすることがあります。設定辞書が Python コードで構成されていれば話は簡単ですが、これがテキストファイル (JSON, YAML 等) を通して提供されていると問題となります。テキストファイルでは、<code class="docutils literal notranslate"><span class="pre">sys.stderr</span></code> をリテラル文字列 <code class="docutils literal notranslate"><span class="pre">'sys.stderr'</span></code> と区別する標準の方法がありません。この区別を容易にするため、環境設定システムは、文字列中の特定の特殊接頭辞を見つけ、それらを特殊に扱います。例えば、リテラル文字列 <code class="docutils literal notranslate"><span class="pre">'ext://sys.stderr'</span></code> が設定中の値として与えられたら、この <code class="docutils literal notranslate"><span class="pre">ext://</span></code> は剥ぎ取られ、この値の残りが普通のインポート機構で処理されます。</p>
+<p>このような接頭辞の処理は、プロトコルの処理と同じようになされます。どちらの機構も、正規表現 <code class="docutils literal notranslate"><span class="pre">^(?P&lt;prefix&gt;[a-z]+)://(?P&lt;suffix&gt;.*)$</span></code> にマッチする接頭辞を検索し、それによって <code class="docutils literal notranslate"><span class="pre">prefix</span></code> が認識されたなら、接頭辞に応じたやり方で <code class="docutils literal notranslate"><span class="pre">suffix</span></code> が処理され、その処理の結果によって文字列値が置き換えられます。接頭辞が認識されなければ、その文字列値はそのまま残されます。</p>
+</section>
+<section id="access-to-internal-objects">
+<span id="logging-config-dict-internalobj"></span><h3>内部オブジェクトへのアクセス<a class="headerlink" href="#access-to-internal-objects" title="Link to this heading">¶</a></h3>
+<p>外部オブジェクトと同様、環境設定内部のオブジェクトへのアクセスを必要とすることもあります。これは、その各オブジェクトを司る環境設定システムによって暗黙に行われます。例えば、ロガーやハンドラの <code class="docutils literal notranslate"><span class="pre">level</span></code> に対する文字列値 <code class="docutils literal notranslate"><span class="pre">'DEBUG'</span></code> は、自動的に値 <code class="docutils literal notranslate"><span class="pre">logging.DEBUG</span></code> に変換されますし、<code class="docutils literal notranslate"><span class="pre">handlers</span></code>, <code class="docutils literal notranslate"><span class="pre">filters</span></code> および <code class="docutils literal notranslate"><span class="pre">formatter</span></code> の項目は、オブジェクト id を取って、適切な送信先オブジェクトを決定します。</p>
+<p>しかし、ユーザ定義モジュールには、 <a class="reference internal" href="logging.html#module-logging" title="logging: Flexible event logging system for applications."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> モジュールには分からないような、より一般的な機構が必要です。例えば、 <a class="reference internal" href="logging.handlers.html#logging.handlers.MemoryHandler" title="logging.handlers.MemoryHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.handlers.MemoryHandler</span></code></a> があって、委譲する先の別のハンドラである <code class="docutils literal notranslate"><span class="pre">target</span></code> 引数を取るとします。システムはこのクラスをすでに知っていますから、設定中で、与えられた <code class="docutils literal notranslate"><span class="pre">target</span></code> は関連するターゲットハンドラのオブジェクト id でさえあればよく、システムはその id からハンドラを決定します。しかし、ユーザが <code class="docutils literal notranslate"><span class="pre">my.package.MyHandler</span></code> を定義して、それが <code class="docutils literal notranslate"><span class="pre">alternate</span></code> ハンドラを持つなら、設定システムは <code class="docutils literal notranslate"><span class="pre">alternate</span></code> がハンドラを参照していることを知りません。これを知らせるのに、一般的な解析システムで、ユーザはこのように指定できます:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">handlers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">file</span><span class="p">:</span>
+<span class="w">    </span><span class="c1"># configuration of file handler goes here</span>
+
+<span class="w">  </span><span class="nt">custom</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">()</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.package.MyHandler</span>
+<span class="w">    </span><span class="nt">alternate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cfg://handlers.file</span>
+</pre></div>
+</div>
+<p>リテラル文字列 <code class="docutils literal notranslate"><span class="pre">'cfg://handlers.file'</span></code> は、<code class="docutils literal notranslate"><span class="pre">ext://</span></code> 接頭辞が付いた文字列と同じように分析されますが、インポート名前空間ではなく、環境設定自体が検索されます。この機構は <code class="docutils literal notranslate"><span class="pre">str.format</span></code> でできるのと同じようにドットやインデックスのアクセスができます。従って、環境設定において以下のコード片が与えられれば:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">handlers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">email</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging.handlers.SMTPHandler</span>
+<span class="w">    </span><span class="nt">mailhost</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">localhost</span>
+<span class="w">    </span><span class="nt">fromaddr</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_app@domain.tld</span>
+<span class="w">    </span><span class="nt">toaddrs</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">support_team@domain.tld</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev_team@domain.tld</span>
+<span class="w">    </span><span class="nt">subject</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Houston, we have a problem.</span>
+</pre></div>
+</div>
+<p>in the configuration, the string <code class="docutils literal notranslate"><span class="pre">'cfg://handlers'</span></code> would resolve to
+the dict with key <code class="docutils literal notranslate"><span class="pre">handlers</span></code>, the string <code class="docutils literal notranslate"><span class="pre">'cfg://handlers.email</span></code>
+would resolve to the dict with key <code class="docutils literal notranslate"><span class="pre">email</span></code> in the <code class="docutils literal notranslate"><span class="pre">handlers</span></code> dict,
+and so on.  The string <code class="docutils literal notranslate"><span class="pre">'cfg://handlers.email.toaddrs[1]</span></code> would
+resolve to <code class="docutils literal notranslate"><span class="pre">'dev_team&#64;domain.tld'</span></code> and the string
+<code class="docutils literal notranslate"><span class="pre">'cfg://handlers.email.toaddrs[0]'</span></code> would resolve to the value
+<code class="docutils literal notranslate"><span class="pre">'support_team&#64;domain.tld'</span></code>. The <code class="docutils literal notranslate"><span class="pre">subject</span></code> value could be accessed
+using either <code class="docutils literal notranslate"><span class="pre">'cfg://handlers.email.subject'</span></code> or, equivalently,
+<code class="docutils literal notranslate"><span class="pre">'cfg://handlers.email[subject]'</span></code>.  The latter form only needs to be
+used if the key contains spaces or non-alphanumeric characters.  If an
+index value consists only of decimal digits, access will be attempted
+using the corresponding integer value, falling back to the string
+value if needed.</p>
+<p>文字列 <code class="docutils literal notranslate"><span class="pre">cfg://handlers.myhandler.mykey.123</span></code> が与えられると、これは <code class="docutils literal notranslate"><span class="pre">config_dict['handlers']['myhandler']['mykey']['123']</span></code> と分析されます。文字列が <code class="docutils literal notranslate"><span class="pre">cfg://handlers.myhandler.mykey[123]</span></code> と指定されたら、システムは <code class="docutils literal notranslate"><span class="pre">config_dict['handlers']['myhandler']['mykey'][123]</span></code> から値を引き出そうとし、失敗したら <code class="docutils literal notranslate"><span class="pre">config_dict['handlers']['myhandler']['mykey']['123']</span></code> で代替します。</p>
+</section>
+<section id="import-resolution-and-custom-importers">
+<span id="logging-import-resolution"></span><h3>インポート解決とカスタムインポーター<a class="headerlink" href="#import-resolution-and-custom-importers" title="Link to this heading">¶</a></h3>
+<p>インポート解決は、デフォルトではインポートを行うために <a class="reference internal" href="functions.html#import__" title="__import__"><code class="xref py py-func docutils literal notranslate"><span class="pre">__import__()</span></code></a> 組み込み関数を使用します。これを独自のインポートメカニズムに置き換えたいと思うかもしれません: もしそうなら、 <code class="xref py py-class docutils literal notranslate"><span class="pre">DictConfigurator</span></code> あるいはその上位クラスである <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseConfigurator</span></code> クラスの <code class="xref py py-attr docutils literal notranslate"><span class="pre">importer</span></code> 属性を置換することができます。ただし、この関数はクラスからディスクリプタ経由でアクセスされる点に注意する必要があります。インポートを行うために Python callable を使用していて、それをインスタンスレベルではなくクラスレベルで定義したければ、 <a class="reference internal" href="functions.html#staticmethod" title="staticmethod"><code class="xref py py-func docutils literal notranslate"><span class="pre">staticmethod()</span></code></a> でそれをラップする必要があります。例えば:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">from</span> <span class="nn">logging.config</span> <span class="kn">import</span> <span class="n">BaseConfigurator</span>
+
+<span class="n">BaseConfigurator</span><span class="o">.</span><span class="n">importer</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">import_module</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>configurator <em>インスタンス</em> に対してインポート callable をセットする場合は、 <a class="reference internal" href="functions.html#staticmethod" title="staticmethod"><code class="xref py py-func docutils literal notranslate"><span class="pre">staticmethod()</span></code></a> でラップする必要はありません。</p>
+</section>
+<section id="configuring-queuehandler-and-queuelistener">
+<span id="configure-queue"></span><h3>Configuring QueueHandler and QueueListener<a class="headerlink" href="#configuring-queuehandler-and-queuelistener" title="Link to this heading">¶</a></h3>
+<p>If you want to configure a <a class="reference internal" href="logging.handlers.html#logging.handlers.QueueHandler" title="logging.handlers.QueueHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueueHandler</span></code></a>, noting that this
+is normally used in conjunction with a <a class="reference internal" href="logging.handlers.html#logging.handlers.QueueListener" title="logging.handlers.QueueListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueueListener</span></code></a>, you
+can configure both together. After the configuration, the <code class="docutils literal notranslate"><span class="pre">QueueListener</span></code> instance
+will be available as the <a class="reference internal" href="logging.handlers.html#logging.handlers.QueueHandler.listener" title="logging.handlers.QueueHandler.listener"><code class="xref py py-attr docutils literal notranslate"><span class="pre">listener</span></code></a> attribute of
+the created handler, and that in turn will be available to you using
+<a class="reference internal" href="logging.html#logging.getHandlerByName" title="logging.getHandlerByName"><code class="xref py py-func docutils literal notranslate"><span class="pre">getHandlerByName()</span></code></a> and passing the name you have used for the
+<code class="docutils literal notranslate"><span class="pre">QueueHandler</span></code> in your configuration. The dictionary schema for configuring the pair
+is shown in the example YAML snippet below.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">handlers</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">qhand</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">class</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">logging.handlers.QueueHandler</span>
+<span class="w">    </span><span class="nt">queue</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.module.queue_factory</span>
+<span class="w">    </span><span class="nt">listener</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.package.CustomListener</span>
+<span class="w">    </span><span class="nt">handlers</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hand_name_1</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">hand_name_2</span>
+<span class="w">      </span><span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">queue</span></code> and <code class="docutils literal notranslate"><span class="pre">listener</span></code> keys are optional.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">queue</span></code> key is present, the corresponding value can be one of the following:</p>
+<ul class="simple">
+<li><p>An actual instance of <a class="reference internal" href="queue.html#queue.Queue" title="queue.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a> or a subclass thereof. This is of course
+only possible if you are constructing or modifying the configuration dictionary in
+code.</p></li>
+<li><p>A string that resolves to a callable which, when called with no arguments, returns
+the <a class="reference internal" href="queue.html#queue.Queue" title="queue.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a> instance to use. That callable could be a
+<a class="reference internal" href="queue.html#queue.Queue" title="queue.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a> subclass or a function which returns a suitable queue instance,
+such as <code class="docutils literal notranslate"><span class="pre">my.module.queue_factory()</span></code>.</p></li>
+<li><p>A dict with a <code class="docutils literal notranslate"><span class="pre">'()'</span></code> key which is constructed in the usual way as discussed in
+<a class="reference internal" href="#logging-config-dict-userdef"><span class="std std-ref">ユーザ定義オブジェクト</span></a>. The result of this construction should be a
+<a class="reference internal" href="queue.html#queue.Queue" title="queue.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a> instance.</p></li>
+</ul>
+<p>If the  <code class="docutils literal notranslate"><span class="pre">queue</span></code> key is absent, a standard unbounded <a class="reference internal" href="queue.html#queue.Queue" title="queue.Queue"><code class="xref py py-class docutils literal notranslate"><span class="pre">queue.Queue</span></code></a> instance is
+created and used.</p>
+<p>If the <code class="docutils literal notranslate"><span class="pre">listener</span></code> key is present, the corresponding value can be one of the following:</p>
+<ul class="simple">
+<li><p>A subclass of <a class="reference internal" href="logging.handlers.html#logging.handlers.QueueListener" title="logging.handlers.QueueListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.handlers.QueueListener</span></code></a>. This is of course only
+possible if you are constructing or modifying the configuration dictionary in
+code.</p></li>
+<li><p>A string which resolves to a class which is a subclass of <code class="docutils literal notranslate"><span class="pre">QueueListener</span></code>, such as
+<code class="docutils literal notranslate"><span class="pre">'my.package.CustomListener'</span></code>.</p></li>
+<li><p>A dict with a <code class="docutils literal notranslate"><span class="pre">'()'</span></code> key which is constructed in the usual way as discussed in
+<a class="reference internal" href="#logging-config-dict-userdef"><span class="std std-ref">ユーザ定義オブジェクト</span></a>. The result of this construction should be a
+callable with the same signature as the <code class="docutils literal notranslate"><span class="pre">QueueListener</span></code> initializer.</p></li>
+</ul>
+<p>If the <code class="docutils literal notranslate"><span class="pre">listener</span></code> key is absent, <a class="reference internal" href="logging.handlers.html#logging.handlers.QueueListener" title="logging.handlers.QueueListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">logging.handlers.QueueListener</span></code></a> is used.</p>
+<p>The values under the <code class="docutils literal notranslate"><span class="pre">handlers</span></code> key are the names of other handlers in the
+configuration (not shown in the above snippet) which will be passed to the queue
+listener.</p>
+<p>Any custom queue handler and listener classes will need to be defined with the same
+initialization signatures as <a class="reference internal" href="logging.handlers.html#logging.handlers.QueueHandler" title="logging.handlers.QueueHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueueHandler</span></code></a> and
+<a class="reference internal" href="logging.handlers.html#logging.handlers.QueueListener" title="logging.handlers.QueueListener"><code class="xref py py-class docutils literal notranslate"><span class="pre">QueueListener</span></code></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.12.</span></p>
+</div>
+</section>
+</section>
+<section id="configuration-file-format">
+<span id="logging-config-fileformat"></span><h2>環境設定ファイルの書式<a class="headerlink" href="#configuration-file-format" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="#logging.config.fileConfig" title="logging.config.fileConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">fileConfig()</span></code></a> が解釈できる環境設定ファイルの形式は、 <a class="reference internal" href="configparser.html#module-configparser" title="configparser: Configuration file parser."><code class="xref py py-mod docutils literal notranslate"><span class="pre">configparser</span></code></a> の機能に基づいています。ファイルには、 <code class="docutils literal notranslate"><span class="pre">[loggers]</span></code>, <code class="docutils literal notranslate"><span class="pre">[handlers]</span></code>, <code class="docutils literal notranslate"><span class="pre">[formatters]</span></code> といったセクションが入っていなければならず、各セクションではファイル中で定義されている各タイプのエンティティを名前で指定しています。こうしたエンティティの各々について、そのエンティティをどう設定するかを示した個別のセクションがあります。すなわち、 <code class="docutils literal notranslate"><span class="pre">log01</span></code> という名前の <code class="docutils literal notranslate"><span class="pre">[loggers]</span></code> セクションにあるロガーに対しては、対応する詳細設定がセクション <code class="docutils literal notranslate"><span class="pre">[logger_log01]</span></code> に収められています。同様に、 <code class="docutils literal notranslate"><span class="pre">hand01</span></code> という名前の <code class="docutils literal notranslate"><span class="pre">[handlers]</span></code> セクションにあるハンドラは <code class="docutils literal notranslate"><span class="pre">[handler_hand01]</span></code> と呼ばれるセクションに設定をもつことになり、 <code class="docutils literal notranslate"><span class="pre">[formatters]</span></code> セクションにある <code class="docutils literal notranslate"><span class="pre">form01</span></code> は <code class="docutils literal notranslate"><span class="pre">[formatter_form01]</span></code> というセクションで設定が指定されています。ルートロガーの設定は <code class="docutils literal notranslate"><span class="pre">[logger_root]</span></code> と呼ばれるセクションで指定されていなければなりません。</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><a class="reference internal" href="#logging.config.fileConfig" title="logging.config.fileConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">fileConfig()</span></code></a> API は <a class="reference internal" href="#logging.config.dictConfig" title="logging.config.dictConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">dictConfig()</span></code></a> API よりも古く、ロギングのある種の側面についてカバーする機能に欠けています。たとえば <a class="reference internal" href="#logging.config.fileConfig" title="logging.config.fileConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">fileConfig()</span></code></a> では数値レベルを超えたメッセージを単に拾うフィルタリングを行う <a class="reference internal" href="logging.html#logging.Filter" title="logging.Filter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Filter</span></code></a> オブジェクトを構成出来ません。 <a class="reference internal" href="logging.html#logging.Filter" title="logging.Filter"><code class="xref py py-class docutils literal notranslate"><span class="pre">Filter</span></code></a> のインスタンスをロギングの設定において持つ必要があるならば、 <a class="reference internal" href="#logging.config.dictConfig" title="logging.config.dictConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">dictConfig()</span></code></a> を使う必要があるでしょう。設定の機能における将来の拡張は <a class="reference internal" href="#logging.config.dictConfig" title="logging.config.dictConfig"><code class="xref py py-func docutils literal notranslate"><span class="pre">dictConfig()</span></code></a> に対して行われることに注意してください。ですから、そうするのが便利であるときに新しい API に乗り換えるのは良い考えです。</p>
+</div>
+<p>ファイルにおけるこれらのセクションの例を以下に示します。</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[loggers]</span>
+<span class="na">keys</span><span class="o">=</span><span class="s">root,log02,log03,log04,log05,log06,log07</span>
+
+<span class="k">[handlers]</span>
+<span class="na">keys</span><span class="o">=</span><span class="s">hand01,hand02,hand03,hand04,hand05,hand06,hand07,hand08,hand09</span>
+
+<span class="k">[formatters]</span>
+<span class="na">keys</span><span class="o">=</span><span class="s">form01,form02,form03,form04,form05,form06,form07,form08,form09</span>
+</pre></div>
+</div>
+<p>ルートロガーでは、レベルとハンドラのリストを指定しなければなりません。ルートロガーのセクションの例を以下に示します。</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[logger_root]</span>
+<span class="na">level</span><span class="o">=</span><span class="s">NOTSET</span>
+<span class="na">handlers</span><span class="o">=</span><span class="s">hand01</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">level</span></code> エントリは <code class="docutils literal notranslate"><span class="pre">DEBUG,</span> <span class="pre">INFO,</span> <span class="pre">WARNING,</span> <span class="pre">ERROR,</span> <span class="pre">CRITICAL</span></code> または <code class="docutils literal notranslate"><span class="pre">NOTSET</span></code> のいずれかの値を取ることができます。ルートロガーでのみ、 <code class="docutils literal notranslate"><span class="pre">NOTSET</span></code> は全てのメッセージがログとして記録されることを意味します。レベルの値は <code class="docutils literal notranslate"><span class="pre">logging</span></code> パッケージの名前空間のコンテキストで <a class="reference internal" href="functions.html#func-eval"><span class="std std-ref">評価</span></a> されます。</p>
+<p><code class="docutils literal notranslate"><span class="pre">handlers</span></code> エントリはコンマで区切られたハンドラ名からなるリストで、<code class="docutils literal notranslate"><span class="pre">[handlers]</span></code> セクションになくてはなりません。また、これらの各ハンドラの名前に対応するセクションが設定ファイルに存在しなければなりません。</p>
+<p>ルートロガー以外のロガーでは、いくつか追加の情報が必要になります。これは以下の例のように表されます。</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[logger_parser]</span>
+<span class="na">level</span><span class="o">=</span><span class="s">DEBUG</span>
+<span class="na">handlers</span><span class="o">=</span><span class="s">hand01</span>
+<span class="na">propagate</span><span class="o">=</span><span class="s">1</span>
+<span class="na">qualname</span><span class="o">=</span><span class="s">compiler.parser</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">level</span></code> および <code class="docutils literal notranslate"><span class="pre">handlers</span></code> エントリはルートロガーのエントリと同様に解釈されますが、非ルートロガーのレベルが <code class="docutils literal notranslate"><span class="pre">NOTSET</span></code> に指定された場合、ロギングシステムはロガー階層のより上位のロガーにロガーの実効レベルを問い合わせるところが違います。<code class="docutils literal notranslate"><span class="pre">propagate</span></code> エントリは、メッセージをロガー階層におけるこのロガーの上位のハンドラに伝播させることを示す 1 に設定されるか、メッセージを階層の上位に伝播 <strong>しない</strong> ことを示す 0 に設定されます。<code class="docutils literal notranslate"><span class="pre">qualname</span></code> エントリはロガーのチャネル名を階層的に表したもの、すなわちアプリケーションがこのロガーを取得する際に使う名前になります。</p>
+<p>ハンドラの環境設定を指定しているセクションは以下の例のようになります。</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[handler_hand01]</span>
+<span class="na">class</span><span class="o">=</span><span class="s">StreamHandler</span>
+<span class="na">level</span><span class="o">=</span><span class="s">NOTSET</span>
+<span class="na">formatter</span><span class="o">=</span><span class="s">form01</span>
+<span class="na">args</span><span class="o">=</span><span class="s">(sys.stdout,)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">class</span></code> エントリはハンドラのクラス (<code class="docutils literal notranslate"><span class="pre">logging</span></code> パッケージの名前空間において <a class="reference internal" href="functions.html#eval" title="eval"><code class="xref py py-func docutils literal notranslate"><span class="pre">eval()</span></code></a> で決定されます) を示します。 <code class="docutils literal notranslate"><span class="pre">level</span></code> はロガーの場合と同じように解釈され、 <code class="docutils literal notranslate"><span class="pre">NOTSET</span></code> は &quot;すべてを記録する (log everything)&quot; と解釈されます。</p>
+<p><code class="docutils literal notranslate"><span class="pre">formatter</span></code> エントリはこのハンドラのフォーマッタに対するキー名を表します。空文字列の場合、デフォルトのフォーマッタ (<code class="docutils literal notranslate"><span class="pre">logging._defaultFormatter</span></code>) が使われます。名前が指定されている場合、その名前は <code class="docutils literal notranslate"><span class="pre">[formatters]</span></code> セクションになくてはならず、対応するセクションが設定ファイル中になければなりません。</p>
+<p><code class="docutils literal notranslate"><span class="pre">args</span></code> は、 <code class="docutils literal notranslate"><span class="pre">logging</span></code> パッケージの名前空間のコンテキストで <a class="reference internal" href="functions.html#func-eval"><span class="std std-ref">評価</span></a> される時点では、ハンドラークラスのコンストラクタのための引数のリストです。典型的なコンストラクタの引数が生成される方法については、各ハンドラのコンストラクタまたは下記の例を参照してください。指定されなければデフォルトは <code class="docutils literal notranslate"><span class="pre">()</span></code> になります。</p>
+<p>オプションの <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> は、 <code class="docutils literal notranslate"><span class="pre">logging</span></code> パッケージの名前空間のコンテキストで <a class="reference internal" href="functions.html#func-eval"><span class="std std-ref">評価</span></a> される時点では、ハンドラークラスのコンストラクタのためのキーワード引数の辞書です。指定されなければデフォルトは <code class="docutils literal notranslate"><span class="pre">{}</span></code> になります。</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[handler_hand02]</span>
+<span class="na">class</span><span class="o">=</span><span class="s">FileHandler</span>
+<span class="na">level</span><span class="o">=</span><span class="s">DEBUG</span>
+<span class="na">formatter</span><span class="o">=</span><span class="s">form02</span>
+<span class="na">args</span><span class="o">=</span><span class="s">(&#39;python.log&#39;, &#39;w&#39;)</span>
+
+<span class="k">[handler_hand03]</span>
+<span class="na">class</span><span class="o">=</span><span class="s">handlers.SocketHandler</span>
+<span class="na">level</span><span class="o">=</span><span class="s">INFO</span>
+<span class="na">formatter</span><span class="o">=</span><span class="s">form03</span>
+<span class="na">args</span><span class="o">=</span><span class="s">(&#39;localhost&#39;, handlers.DEFAULT_TCP_LOGGING_PORT)</span>
+
+<span class="k">[handler_hand04]</span>
+<span class="na">class</span><span class="o">=</span><span class="s">handlers.DatagramHandler</span>
+<span class="na">level</span><span class="o">=</span><span class="s">WARN</span>
+<span class="na">formatter</span><span class="o">=</span><span class="s">form04</span>
+<span class="na">args</span><span class="o">=</span><span class="s">(&#39;localhost&#39;, handlers.DEFAULT_UDP_LOGGING_PORT)</span>
+
+<span class="k">[handler_hand05]</span>
+<span class="na">class</span><span class="o">=</span><span class="s">handlers.SysLogHandler</span>
+<span class="na">level</span><span class="o">=</span><span class="s">ERROR</span>
+<span class="na">formatter</span><span class="o">=</span><span class="s">form05</span>
+<span class="na">args</span><span class="o">=</span><span class="s">((&#39;localhost&#39;, handlers.SYSLOG_UDP_PORT), handlers.SysLogHandler.LOG_USER)</span>
+
+<span class="k">[handler_hand06]</span>
+<span class="na">class</span><span class="o">=</span><span class="s">handlers.NTEventLogHandler</span>
+<span class="na">level</span><span class="o">=</span><span class="s">CRITICAL</span>
+<span class="na">formatter</span><span class="o">=</span><span class="s">form06</span>
+<span class="na">args</span><span class="o">=</span><span class="s">(&#39;Python Application&#39;, &#39;&#39;, &#39;Application&#39;)</span>
+
+<span class="k">[handler_hand07]</span>
+<span class="na">class</span><span class="o">=</span><span class="s">handlers.SMTPHandler</span>
+<span class="na">level</span><span class="o">=</span><span class="s">WARN</span>
+<span class="na">formatter</span><span class="o">=</span><span class="s">form07</span>
+<span class="na">args</span><span class="o">=</span><span class="s">(&#39;localhost&#39;, &#39;from@abc&#39;, [&#39;user1@abc&#39;, &#39;user2@xyz&#39;], &#39;Logger Subject&#39;)</span>
+<span class="na">kwargs</span><span class="o">=</span><span class="s">{&#39;timeout&#39;: 10.0}</span>
+
+<span class="k">[handler_hand08]</span>
+<span class="na">class</span><span class="o">=</span><span class="s">handlers.MemoryHandler</span>
+<span class="na">level</span><span class="o">=</span><span class="s">NOTSET</span>
+<span class="na">formatter</span><span class="o">=</span><span class="s">form08</span>
+<span class="na">target</span><span class="o">=</span>
+<span class="na">args</span><span class="o">=</span><span class="s">(10, ERROR)</span>
+
+<span class="k">[handler_hand09]</span>
+<span class="na">class</span><span class="o">=</span><span class="s">handlers.HTTPHandler</span>
+<span class="na">level</span><span class="o">=</span><span class="s">NOTSET</span>
+<span class="na">formatter</span><span class="o">=</span><span class="s">form09</span>
+<span class="na">args</span><span class="o">=</span><span class="s">(&#39;localhost:9022&#39;, &#39;/log&#39;, &#39;GET&#39;)</span>
+<span class="na">kwargs</span><span class="o">=</span><span class="s">{&#39;secure&#39;: True}</span>
+</pre></div>
+</div>
+<p>フォーマッタの環境設定を指定しているセクションは以下のような形式です。</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[formatter_form01]</span>
+<span class="na">format</span><span class="o">=</span><span class="s">F1 %(asctime)s %(levelname)s %(message)s %(customfield)s</span>
+<span class="na">datefmt</span><span class="o">=</span>
+<span class="na">style</span><span class="o">=</span><span class="s">%</span>
+<span class="na">validate</span><span class="o">=</span><span class="s">True</span>
+<span class="na">defaults</span><span class="o">=</span><span class="s">{&#39;customfield&#39;: &#39;defaultvalue&#39;}</span>
+<span class="na">class</span><span class="o">=</span><span class="s">logging.Formatter</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="#logging-config-dictschema-formatters"><span class="std std-ref">フォーマッターのセクション</span></a> の辞書スキーマと同じキーを持つ、フォーマッター設定の引数です。</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">defaults</span></code> entry, when <a class="reference internal" href="functions.html#func-eval"><span class="std std-ref">evaluated</span></a> in the context of
+the <code class="docutils literal notranslate"><span class="pre">logging</span></code> package's namespace, is a dictionary of default values for
+custom formatting fields. If not provided, it defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><a class="reference internal" href="functions.html#eval" title="eval"><code class="xref py py-func docutils literal notranslate"><span class="pre">eval()</span></code></a> を使用していることで、上述のようにソケット経由で設定を送受信するために <a class="reference internal" href="#logging.config.listen" title="logging.config.listen"><code class="xref py py-func docutils literal notranslate"><span class="pre">listen()</span></code></a> を使用していることに起因する潜在的なセキュリティリスクがあります。そのリスクは、相互に信頼できない多数のユーザが同じマシン上でコードを実行する場合に制限されています; 詳細は <a class="reference internal" href="#logging.config.listen" title="logging.config.listen"><code class="xref py py-func docutils literal notranslate"><span class="pre">listen()</span></code></a> ドキュメンテーションを参照してください。</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<dl class="simple">
+<dt><a class="reference internal" href="logging.html#module-logging" title="logging: Flexible event logging system for applications."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code></a> モジュール</dt><dd><p>logging モジュールの API リファレンス。</p>
+</dd>
+<dt><a class="reference internal" href="logging.handlers.html#module-logging.handlers" title="logging.handlers: Handlers for the logging module."><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.handlers</span></code></a> モジュール</dt><dd><p>logging モジュールに含まれる、便利なハンドラです。</p>
+</dd>
+</dl>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.config</span></code> --- ログ記録の環境設定</a><ul>
+<li><a class="reference internal" href="#configuration-functions">環境設定のための関数</a></li>
+<li><a class="reference internal" href="#security-considerations">セキュリティで考慮すべき点</a></li>
+<li><a class="reference internal" href="#configuration-dictionary-schema">環境設定辞書スキーマ</a><ul>
+<li><a class="reference internal" href="#dictionary-schema-details">辞書スキーマの詳細</a></li>
+<li><a class="reference internal" href="#incremental-configuration">増分設定</a></li>
+<li><a class="reference internal" href="#object-connections">オブジェクトの接続</a></li>
+<li><a class="reference internal" href="#user-defined-objects">ユーザ定義オブジェクト</a></li>
+<li><a class="reference internal" href="#handler-configuration-order">ハンドラの設定順序</a></li>
+<li><a class="reference internal" href="#access-to-external-objects">外部オブジェクトへのアクセス</a></li>
+<li><a class="reference internal" href="#access-to-internal-objects">内部オブジェクトへのアクセス</a></li>
+<li><a class="reference internal" href="#import-resolution-and-custom-importers">インポート解決とカスタムインポーター</a></li>
+<li><a class="reference internal" href="#configuring-queuehandler-and-queuelistener">Configuring QueueHandler and QueueListener</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuration-file-format">環境設定ファイルの書式</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="logging.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging</span></code> --- Python 用のログ記録手段</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="logging.handlers.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.handlers</span></code> --- ログ記録ハンドラー</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/logging.config.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="logging.handlers.html" title="logging.handlers --- ログ記録ハンドラー"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="logging.html" title="logging --- Python 用のログ記録手段"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="allos.html" >汎用オペレーティングシステムサービス</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">logging.config</span></code> --- ログ記録の環境設定</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="/license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="/bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

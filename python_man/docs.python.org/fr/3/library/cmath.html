@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="cmath --- Mathematical functions for complex numbers" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/cmath.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="This module provides access to mathematical functions for complex numbers. The functions in this module accept integers, floating-point numbers or complex numbers as arguments. They will also accep..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="This module provides access to mathematical functions for complex numbers. The functions in this module accept integers, floating-point numbers or complex numbers as arguments. They will also accep..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>cmath --- Mathematical functions for complex numbers &#8212; Documentation Python 3.12.4</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=6f87fcbb"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=bf059b8c"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Recherchez dans Documentation Python 3.12.4"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="À propos de ces documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="decimal --- Decimal fixed point and floating point arithmetic" href="decimal.html" />
+    <link rel="prev" title="math --- Mathematical functions" href="math.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/cmath.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" />
+                <input type="submit" value="Go"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">Table des matières</a></h3>
+    <ul>
+<li><a class="reference internal" href="cmath.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cmath</span></code> --- Mathematical functions for complex numbers</a><ul>
+<li><a class="reference internal" href="cmath.html#conversions-to-and-from-polar-coordinates">Conversion vers et à partir de coordonnées polaires</a></li>
+<li><a class="reference internal" href="cmath.html#power-and-logarithmic-functions">Fonctions logarithme et exponentielle</a></li>
+<li><a class="reference internal" href="cmath.html#trigonometric-functions">Fonctions trigonométriques</a></li>
+<li><a class="reference internal" href="cmath.html#hyperbolic-functions">Fonctions hyperboliques</a></li>
+<li><a class="reference internal" href="cmath.html#classification-functions">Fonctions de classifications</a></li>
+<li><a class="reference internal" href="cmath.html#constants">Constantes</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Sujet précédent</h4>
+    <p class="topless"><a href="math.html"
+                          title="Chapitre précédent"><code class="xref py py-mod docutils literal notranslate"><span class="pre">math</span></code> --- Mathematical functions</a></p>
+  </div>
+  <div>
+    <h4>Sujet suivant</h4>
+    <p class="topless"><a href="decimal.html"
+                          title="Chapitre suivant"><code class="xref py py-mod docutils literal notranslate"><span class="pre">decimal</span></code> --- Decimal fixed point and floating point arithmetic</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Signalement de bogue</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/cmath.rst"
+            rel="nofollow">Voir la source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="decimal.html" title="decimal --- Decimal fixed point and floating point arithmetic"
+             accesskey="N">suivant</a> |</li>
+        <li class="right" >
+          <a href="math.html" title="math --- Mathematical functions"
+             accesskey="P">précédent</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >La bibliothèque standard</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="numeric.html" accesskey="U">Modules numériques et mathématiques</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="cmath.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cmath</span></code> --- Mathematical functions for complex numbers</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-cmath">
+<span id="cmath-mathematical-functions-for-complex-numbers"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">cmath</span></code> --- Mathematical functions for complex numbers<a class="headerlink" href="cmath.html#module-cmath" title="Lien vers cette rubrique">¶</a></h1>
+<hr class="docutils" />
+<p>This module provides access to mathematical functions for complex numbers.  The
+functions in this module accept integers, floating-point numbers or complex
+numbers as arguments. They will also accept any Python object that has either a
+<a class="reference internal" href="../reference/datamodel.html#object.__complex__" title="object.__complex__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__complex__()</span></code></a> or a <a class="reference internal" href="../reference/datamodel.html#object.__float__" title="object.__float__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__float__()</span></code></a> method: these methods are used to
+convert the object to a complex or floating-point number, respectively, and
+the function is then applied to the result of the conversion.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For functions involving branch cuts, we have the problem of deciding how to
+define those functions on the cut itself. Following Kahan's &quot;Branch cuts for
+complex elementary functions&quot; paper, as well as Annex G of C99 and later C
+standards, we use the sign of zero to distinguish one side of the branch cut
+from the other: for a branch cut along (a portion of) the real axis we look
+at the sign of the imaginary part, while for a branch cut along the
+imaginary axis we look at the sign of the real part.</p>
+<p>For example, the <a class="reference internal" href="cmath.html#cmath.sqrt" title="cmath.sqrt"><code class="xref py py-func docutils literal notranslate"><span class="pre">cmath.sqrt()</span></code></a> function has a branch cut along the
+negative real axis. An argument of <code class="docutils literal notranslate"><span class="pre">complex(-2.0,</span> <span class="pre">-0.0)</span></code> is treated as
+though it lies <em>below</em> the branch cut, and so gives a result on the negative
+imaginary axis:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cmath</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">))</span>
+<span class="go">-1.4142135623730951j</span>
+</pre></div>
+</div>
+<p>But an argument of <code class="docutils literal notranslate"><span class="pre">complex(-2.0,</span> <span class="pre">0.0)</span></code> is treated as though it lies above
+the branch cut:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">cmath</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+<span class="go">1.4142135623730951j</span>
+</pre></div>
+</div>
+</div>
+<section id="conversions-to-and-from-polar-coordinates">
+<h2>Conversion vers et à partir de coordonnées polaires<a class="headerlink" href="cmath.html#conversions-to-and-from-polar-coordinates" title="Lien vers cette rubrique">¶</a></h2>
+<p>A Python complex number <code class="docutils literal notranslate"><span class="pre">z</span></code> is stored internally using <em>rectangular</em>
+or <em>Cartesian</em> coordinates.  It is completely determined by its <em>real
+part</em> <code class="docutils literal notranslate"><span class="pre">z.real</span></code> and its <em>imaginary part</em> <code class="docutils literal notranslate"><span class="pre">z.imag</span></code>.</p>
+<p>Les <em>coordonnées polaires</em> donnent une manière alternative de représenter un nombre complexe. En coordonnées polaires, un nombre complexe <em>z</em> est défini par son module <em>r</em> et par son argument (<em>angle de phase</em>) <em>phi</em>. Le module <em>r</em> est la distance entre <em>z</em> et l'origine, alors que l'argument <em>phi</em> est l'angle (dans le sens inverse des aiguilles d'une montre, ou sens trigonométrique), mesuré en radians, à partir de l'axe X positif, et vers le segment de droite joignant <em>z</em> à l'origine.</p>
+<p>Les fonctions suivantes peuvent être utilisées pour convertir à partir des coordonnées rectangulaires natives vers les coordonnées polaires, et vice-versa.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.phase">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.phase" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Return the phase of <em>x</em> (also known as the <em>argument</em> of <em>x</em>), as a float.
+<code class="docutils literal notranslate"><span class="pre">phase(x)</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">math.atan2(x.imag,</span> <span class="pre">x.real)</span></code>.  The result
+lies in the range [-<em>π</em>, <em>π</em>], and the branch cut for this operation lies
+along the negative real axis.  The sign of the result is the same as the
+sign of <code class="docutils literal notranslate"><span class="pre">x.imag</span></code>, even when <code class="docutils literal notranslate"><span class="pre">x.imag</span></code> is zero:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+<span class="go">3.141592653589793</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">phase</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0</span><span class="p">))</span>
+<span class="go">-3.141592653589793</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Le module (valeur absolue) d'un nombre complexe <em>x</em> peut être calculé en utilisant la primitive <a class="reference internal" href="functions.html#abs" title="abs"><code class="xref py py-func docutils literal notranslate"><span class="pre">abs()</span></code></a>. Il n'y a pas de fonction spéciale du module <a class="reference internal" href="cmath.html#module-cmath" title="cmath: Mathematical functions for complex numbers."><code class="xref py py-mod docutils literal notranslate"><span class="pre">cmath</span></code></a> pour cette opération.</p>
+</div>
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.polar">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">polar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.polar" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la représentation de <em>x</em> en coordonnées polaires. Renvoie une paire <code class="docutils literal notranslate"><span class="pre">(r,</span> <span class="pre">phi)</span></code> où <em>r</em> est le module de <em>x</em> et phi est l'argument de <em>x</em>. <code class="docutils literal notranslate"><span class="pre">polar(x)</span></code> est équivalent à <code class="docutils literal notranslate"><span class="pre">(abs(x),</span> <span class="pre">phase(x))</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.rect">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">rect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phi</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.rect" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Return the complex number <em>x</em> with polar coordinates <em>r</em> and <em>phi</em>.
+Equivalent to <code class="docutils literal notranslate"><span class="pre">complex(r</span> <span class="pre">*</span> <span class="pre">math.cos(phi),</span> <span class="pre">r</span> <span class="pre">*</span> <span class="pre">math.sin(phi))</span></code>.</p>
+</dd></dl>
+
+</section>
+<section id="power-and-logarithmic-functions">
+<h2>Fonctions logarithme et exponentielle<a class="headerlink" href="cmath.html#power-and-logarithmic-functions" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.exp">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">exp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.exp" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie <em>e</em> élevé à la puissance <em>x</em>, où <em>e</em> est la base des logarithmes naturels.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.log">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.log" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Returns the logarithm of <em>x</em> to the given <em>base</em>. If the <em>base</em> is not
+specified, returns the natural logarithm of <em>x</em>. There is one branch cut,
+from 0 along the negative real axis to -∞.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.log10">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">log10</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.log10" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le logarithme en base 10 de <em>x</em>. Elle a la même coupure que <a class="reference internal" href="cmath.html#cmath.log" title="cmath.log"><code class="xref py py-func docutils literal notranslate"><span class="pre">log()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.sqrt">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">sqrt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.sqrt" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la racine carrée de <em>x</em>. Elle a la même coupure que <a class="reference internal" href="cmath.html#cmath.log" title="cmath.log"><code class="xref py py-func docutils literal notranslate"><span class="pre">log()</span></code></a>.</p>
+</dd></dl>
+
+</section>
+<section id="trigonometric-functions">
+<h2>Fonctions trigonométriques<a class="headerlink" href="cmath.html#trigonometric-functions" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.acos">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">acos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.acos" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Return the arc cosine of <em>x</em>. There are two branch cuts: One extends right
+from 1 along the real axis to ∞. The other extends left from -1 along the
+real axis to -∞.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.asin">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">asin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.asin" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie l'arc sinus de <em>x</em>. Elle a les mêmes coupures que <a class="reference internal" href="cmath.html#cmath.acos" title="cmath.acos"><code class="xref py py-func docutils literal notranslate"><span class="pre">acos()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.atan">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">atan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.atan" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Return the arc tangent of <em>x</em>. There are two branch cuts: One extends from
+<code class="docutils literal notranslate"><span class="pre">1j</span></code> along the imaginary axis to <code class="docutils literal notranslate"><span class="pre">∞j</span></code>. The other extends from <code class="docutils literal notranslate"><span class="pre">-1j</span></code>
+along the imaginary axis to <code class="docutils literal notranslate"><span class="pre">-∞j</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.cos">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">cos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.cos" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le cosinus de <em>x</em>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.sin">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">sin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.sin" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le sinus de <em>x</em>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.tan">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">tan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.tan" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la tangente de <em>x</em>.</p>
+</dd></dl>
+
+</section>
+<section id="hyperbolic-functions">
+<h2>Fonctions hyperboliques<a class="headerlink" href="cmath.html#hyperbolic-functions" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.acosh">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">acosh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.acosh" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Return the inverse hyperbolic cosine of <em>x</em>. There is one branch cut,
+extending left from 1 along the real axis to -∞.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.asinh">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">asinh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.asinh" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Return the inverse hyperbolic sine of <em>x</em>. There are two branch cuts:
+One extends from <code class="docutils literal notranslate"><span class="pre">1j</span></code> along the imaginary axis to <code class="docutils literal notranslate"><span class="pre">∞j</span></code>.  The other
+extends from <code class="docutils literal notranslate"><span class="pre">-1j</span></code> along the imaginary axis to <code class="docutils literal notranslate"><span class="pre">-∞j</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.atanh">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">atanh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.atanh" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Return the inverse hyperbolic tangent of <em>x</em>. There are two branch cuts: One
+extends from <code class="docutils literal notranslate"><span class="pre">1</span></code> along the real axis to <code class="docutils literal notranslate"><span class="pre">∞</span></code>. The other extends from
+<code class="docutils literal notranslate"><span class="pre">-1</span></code> along the real axis to <code class="docutils literal notranslate"><span class="pre">-∞</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.cosh">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">cosh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.cosh" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le cosinus hyperbolique de <em>x</em>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.sinh">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">sinh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.sinh" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le sinus hyperbolique de <em>x</em>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.tanh">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">tanh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.tanh" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la tangente hyperbolique de <em>x</em>.</p>
+</dd></dl>
+
+</section>
+<section id="classification-functions">
+<h2>Fonctions de classifications<a class="headerlink" href="cmath.html#classification-functions" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.isfinite">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">isfinite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.isfinite" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> si la partie réelle <em>et</em> la partie imaginaire de <em>x</em> sont finies, et <code class="docutils literal notranslate"><span class="pre">False</span></code> sinon.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.2.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.isinf">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">isinf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.isinf" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> si soit la partie réelle <em>ou</em> la partie imaginaire de <em>x</em> est infinie, et <code class="docutils literal notranslate"><span class="pre">False</span></code> sinon.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.isnan">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">isnan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.isnan" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> si soit la partie réelle <em>ou</em> la partie imaginaire de <em>x</em> est NaN, et <code class="docutils literal notranslate"><span class="pre">False</span></code> sinon.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmath.isclose">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">isclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rel_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">abs_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="cmath.html#cmath.isclose" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> si les valeurs <em>a</em> et <em>b</em> sont proches l'une de l'autre, et <code class="docutils literal notranslate"><span class="pre">False</span></code> sinon.</p>
+<p>Déterminer si deux valeurs sont proches se fait à l'aide des tolérances absolues et relatives données en paramètres.</p>
+<p><em>rel_tol</em> est la tolérance relative -- c'est la différence maximale permise entre <em>a</em> et <em>b</em>, relativement à la plus grande valeur de <em>a</em> ou de <em>b</em>. Par exemple, pour définir une tolérance de 5%,, précisez <code class="docutils literal notranslate"><span class="pre">rel_tol=0.05</span></code>. La tolérance par défaut est <code class="docutils literal notranslate"><span class="pre">1e-09</span></code>, ce qui assure que deux valeurs sont les mêmes à partir de la 9<sup>e</sup> décimale. <em>rel_tol</em> doit être supérieur à zéro.</p>
+<p><em>abs_tol</em> est la tolérance absolue minimale -- utile pour les comparaisons proches de zéro. <em>abs_tol</em> doit valoir au moins zéro.</p>
+<p>Si aucune erreur n'est rencontrée, le résultat sera : <code class="docutils literal notranslate"><span class="pre">abs(a-b)</span> <span class="pre">&lt;=</span> <span class="pre">max(rel_tol</span> <span class="pre">*</span> <span class="pre">max(abs(a),</span> <span class="pre">abs(b)),</span> <span class="pre">abs_tol)</span></code>.</p>
+<p>Les valeurs spécifiques suivantes : <code class="docutils literal notranslate"><span class="pre">NaN</span></code>, <code class="docutils literal notranslate"><span class="pre">inf</span></code>, et <code class="docutils literal notranslate"><span class="pre">-inf</span></code> définies dans la norme IEEE 754  seront manipulées selon les règles du standard IEEE. En particulier, <code class="docutils literal notranslate"><span class="pre">NaN</span></code> n'est considéré proche d'aucune autre valeur, <code class="docutils literal notranslate"><span class="pre">NaN</span></code> inclus. <code class="docutils literal notranslate"><span class="pre">inf</span></code> et <code class="docutils literal notranslate"><span class="pre">-inf</span></code> ne sont considérés proches que d'eux-mêmes.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.5.</span></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
+<p><span class="target" id="index-3"></span><a class="pep reference external" href="https://peps.python.org/pep-0485/"><strong>PEP 485</strong></a> -- Une fonction pour tester des égalités approximées</p>
+</div>
+</dd></dl>
+
+</section>
+<section id="constants">
+<h2>Constantes<a class="headerlink" href="cmath.html#constants" title="Lien vers cette rubrique">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="cmath.pi">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">pi</span></span><a class="headerlink" href="cmath.html#cmath.pi" title="Lien vers cette définition">¶</a></dt>
+<dd><p>La constante mathématique <em>π</em>, en tant que flottant.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="cmath.e">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">e</span></span><a class="headerlink" href="cmath.html#cmath.e" title="Lien vers cette définition">¶</a></dt>
+<dd><p>La constante mathématique <em>e</em>, en tant que flottant.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="cmath.tau">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">tau</span></span><a class="headerlink" href="cmath.html#cmath.tau" title="Lien vers cette définition">¶</a></dt>
+<dd><p>La constante mathématique <em>τ</em>, sous forme de flottant.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="cmath.inf">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">inf</span></span><a class="headerlink" href="cmath.html#cmath.inf" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Nombre à virgule flottante positif infini. Équivaut à <code class="docutils literal notranslate"><span class="pre">float('inf')</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="cmath.infj">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">infj</span></span><a class="headerlink" href="cmath.html#cmath.infj" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Nombre complexe dont la partie réelle vaut zéro et la partie imaginaire un infini positif. Équivalent à <code class="docutils literal notranslate"><span class="pre">complex(0.0,</span> <span class="pre">float('inf'))</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="cmath.nan">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">nan</span></span><a class="headerlink" href="cmath.html#cmath.nan" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Un nombre à virgule flottante <em>NaN</em> (<em>Not a number</em>). Équivalent à <code class="docutils literal notranslate"><span class="pre">float('nan')</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="cmath.nanj">
+<span class="sig-prename descclassname"><span class="pre">cmath.</span></span><span class="sig-name descname"><span class="pre">nanj</span></span><a class="headerlink" href="cmath.html#cmath.nanj" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Nombre complexe dont la partie réelle vaut zéro et la partie imaginaire vaut un <em>NaN</em>. Équivalent à <code class="docutils literal notranslate"><span class="pre">complex(0.0,</span> <span class="pre">float('nan'))</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6.</span></p>
+</div>
+</dd></dl>
+
+<p id="index-1">Notez que la sélection de fonctions est similaire, mais pas identique, à celles du module <a class="reference internal" href="math.html#module-math" title="math: Mathematical functions (sin() etc.)."><code class="xref py py-mod docutils literal notranslate"><span class="pre">math</span></code></a>. La raison d'avoir deux modules est que certains utilisateurs ne sont pas intéressés par les nombres complexes, et peut-être ne savent même pas ce qu'ils sont. Ils préféreraient alors que <code class="docutils literal notranslate"><span class="pre">math.sqrt(-1)</span></code> lève une exception au lieu de renvoyer un nombre complexe. Également, notez que les fonctions définies dans <a class="reference internal" href="cmath.html#module-cmath" title="cmath: Mathematical functions for complex numbers."><code class="xref py py-mod docutils literal notranslate"><span class="pre">cmath</span></code></a> renvoient toujours un nombre complexe, même si le résultat peut être exprimé à l'aide d'un nombre réel (en quel cas la partie imaginaire du complexe vaut zéro).</p>
+<p>Une note sur les <em>coupures</em> : ce sont des courbes sur lesquelles la fonction n'est pas continue. Ce sont des caractéristiques nécessaires de beaucoup de fonctions complexes. Il est supposé que si vous avez besoin d'utiliser des fonctions complexes, vous comprendrez ce que sont les coupures. Consultez n'importe quel livre (pas trop élémentaire) sur les variables complexes pour plus d'informations. Pour des informations sur les choix des coupures à des fins numériques, voici une bonne référence :</p>
+<div class="admonition seealso">
+<p class="admonition-title">Voir aussi</p>
+<p>Kahan, W:  Branch cuts for complex elementary functions; or, Much ado about
+nothing's sign bit.  In Iserles, A., and Powell, M. (eds.), The state of the art
+in numerical analysis. Clarendon Press (1987) pp165--211.</p>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">Table des matières</a></h3>
+    <ul>
+<li><a class="reference internal" href="cmath.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cmath</span></code> --- Mathematical functions for complex numbers</a><ul>
+<li><a class="reference internal" href="cmath.html#conversions-to-and-from-polar-coordinates">Conversion vers et à partir de coordonnées polaires</a></li>
+<li><a class="reference internal" href="cmath.html#power-and-logarithmic-functions">Fonctions logarithme et exponentielle</a></li>
+<li><a class="reference internal" href="cmath.html#trigonometric-functions">Fonctions trigonométriques</a></li>
+<li><a class="reference internal" href="cmath.html#hyperbolic-functions">Fonctions hyperboliques</a></li>
+<li><a class="reference internal" href="cmath.html#classification-functions">Fonctions de classifications</a></li>
+<li><a class="reference internal" href="cmath.html#constants">Constantes</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Sujet précédent</h4>
+    <p class="topless"><a href="math.html"
+                          title="Chapitre précédent"><code class="xref py py-mod docutils literal notranslate"><span class="pre">math</span></code> --- Mathematical functions</a></p>
+  </div>
+  <div>
+    <h4>Sujet suivant</h4>
+    <p class="topless"><a href="decimal.html"
+                          title="Chapitre suivant"><code class="xref py py-mod docutils literal notranslate"><span class="pre">decimal</span></code> --- Decimal fixed point and floating point arithmetic</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Signalement de bogue</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/cmath.rst"
+            rel="nofollow">Voir la source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="Réduire la barre latérale">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="decimal.html" title="decimal --- Decimal fixed point and floating point arithmetic"
+             >suivant</a> |</li>
+        <li class="right" >
+          <a href="math.html" title="math --- Mathematical functions"
+             >précédent</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >La bibliothèque standard</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="numeric.html" >Modules numériques et mathématiques</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="cmath.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">cmath</span></code> --- Mathematical functions for complex numbers</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      Mis à jour le Jun 09, 2024 (22:21 UTC).
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

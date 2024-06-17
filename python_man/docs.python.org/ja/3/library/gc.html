@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="gc --- ガベージコレクターインターフェース" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/gc.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="このモジュールは、循環ガベージコレクタの無効化・検出頻度の調整・デバッグオブションの設定などを行うインターフェースを提供します。また、検出した到達不能オブジェクトのうち、解放する事ができないオブジェクトを参照する事もできます。循環ガベージコレクタはPythonの参照カウントを補うためのものなので、もしプログラム中で循環参照が発生しない事が明らかな場合には検出をする必要はありません。自動検出は..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="このモジュールは、循環ガベージコレクタの無効化・検出頻度の調整・デバッグオブションの設定などを行うインターフェースを提供します。また、検出した到達不能オブジェクトのうち、解放する事ができないオブジェクトを参照する事もできます。循環ガベージコレクタはPythonの参照カウントを補うためのものなので、もしプログラム中で循環参照が発生しない事が明らかな場合には検出をする必要はありません。自動検出は..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>gc --- ガベージコレクターインターフェース &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="inspect --- 活動中のオブジェクトを調査する" href="inspect.html" />
+    <link rel="prev" title="__future__ --- future 文の定義" href="__future__.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/gc.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="__future__.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">__future__</span></code> --- future 文の定義</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="inspect.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">inspect</span></code> --- 活動中のオブジェクトを調査する</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/gc.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="inspect.html" title="inspect --- 活動中のオブジェクトを調査する"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="__future__.html" title="__future__ --- future 文の定義"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="python.html" accesskey="U">Python ランタイムサービス</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="gc.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gc</span></code> --- ガベージコレクターインターフェース</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-gc">
+<span id="gc-garbage-collector-interface"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">gc</span></code> --- ガベージコレクターインターフェース<a class="headerlink" href="gc.html#module-gc" title="Link to this heading">¶</a></h1>
+<hr class="docutils" />
+<p>このモジュールは、循環ガベージコレクタの無効化・検出頻度の調整・デバッグオブションの設定などを行うインターフェースを提供します。また、検出した到達不能オブジェクトのうち、解放する事ができないオブジェクトを参照する事もできます。循環ガベージコレクタはPythonの参照カウントを補うためのものなので、もしプログラム中で循環参照が発生しない事が明らかな場合には検出をする必要はありません。自動検出は、 <code class="docutils literal notranslate"><span class="pre">gc.disable()</span></code> で停止する事ができます。メモリリークをデバッグするときには、 <code class="docutils literal notranslate"><span class="pre">gc.set_debug(gc.DEBUG_LEAK)</span></code> とします。これは <code class="docutils literal notranslate"><span class="pre">gc.DEBUG_SAVEALL</span></code> を含んでいることに注意しましょう。ガベージとして検出されたオブジェクトは、インスペクション用に gc.garbage に保存されます。</p>
+<p><a class="reference internal" href="gc.html#module-gc" title="gc: Interface to the cycle-detecting garbage collector."><code class="xref py py-mod docutils literal notranslate"><span class="pre">gc</span></code></a> モジュールは、以下の関数を提供しています:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.enable">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">enable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.enable" title="Link to this definition">¶</a></dt>
+<dd><p>自動ガベージコレクションを有効にします。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.disable">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">disable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.disable" title="Link to this definition">¶</a></dt>
+<dd><p>自動ガベージコレクションを無効にします。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.isenabled">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">isenabled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.isenabled" title="Link to this definition">¶</a></dt>
+<dd><p>自動ガベージコレクションが有効なら <code class="docutils literal notranslate"><span class="pre">True</span></code> を返します。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.collect">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">collect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">generation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.collect" title="Link to this definition">¶</a></dt>
+<dd><p>With no arguments, run a full collection.  The optional argument <em>generation</em>
+may be an integer specifying which generation to collect (from 0 to 2).  A
+<a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is raised if the generation number  is invalid. The number of
+unreachable objects found is returned.</p>
+<p>ビルトイン型が持っている free list は、フルGCか最高世代(2)のGCの時にクリアされます。 <a class="reference internal" href="functions.html#float" title="float"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a> など、実装によって幾つかの free list では全ての要素が解放されるわけではありません。</p>
+<p>The effect of calling <code class="docutils literal notranslate"><span class="pre">gc.collect()</span></code> while the interpreter is already
+performing a collection is undefined.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.set_debug">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">set_debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flags</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.set_debug" title="Link to this definition">¶</a></dt>
+<dd><p>ガベージコレクションのデバッグフラグを設定します。デバッグ情報は <code class="docutils literal notranslate"><span class="pre">sys.stderr</span></code> に出力されます。デバッグフラグは、下の値の組み合わせを指定する事ができます。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.get_debug">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">get_debug</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.get_debug" title="Link to this definition">¶</a></dt>
+<dd><p>現在のデバッグフラグを返します。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.get_objects">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">get_objects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">generation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.get_objects" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a list of all objects tracked by the collector, excluding the list
+returned. If <em>generation</em> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, return only the objects tracked by
+the collector that are in that generation.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.8 で変更: </span>新しい <em>generation</em> パラメータ。</p>
+</div>
+<p class="audit-hook">引数 <code class="docutils literal notranslate"><span class="pre">generation</span></code> で <a class="reference internal" href="sys.html#auditing"><span class="std std-ref">監査イベント</span></a> <code class="docutils literal notranslate"><span class="pre">gc.get_objects</span></code> を送出します。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.get_stats">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">get_stats</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.get_stats" title="Link to this definition">¶</a></dt>
+<dd><p>インタプリタが開始してからの、世代ごと回収統計を持つ辞書の、3 世代ぶんのリストを返します。キーの数は将来変わるかもしれませんが、現在のところそれぞれの辞書には以下の項目が含まれています:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">collections</span></code> は、この世代が検出を行った回数です;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">collected</span></code> は、この世代内で回収されたオブジェクトの総数です;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uncollectable</span></code> は、この世代内で回収不能であることがわかった (そしてそれゆえに <a class="reference internal" href="gc.html#gc.garbage" title="gc.garbage"><code class="xref py py-data docutils literal notranslate"><span class="pre">garbage</span></code></a> リストに移動した) オブジェクトの総数です。</p></li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.set_threshold">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">set_threshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">threshold1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">threshold2</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.set_threshold" title="Link to this definition">¶</a></dt>
+<dd><p>ガベージコレクションの閾値（検出頻度）を指定します。 <em>threshold0</em> を 0 にすると、検出は行われません。</p>
+<p>The GC classifies objects into three generations depending on how many
+collection sweeps they have survived.  New objects are placed in the youngest
+generation (generation <code class="docutils literal notranslate"><span class="pre">0</span></code>).  If an object survives a collection it is moved
+into the next older generation.  Since generation <code class="docutils literal notranslate"><span class="pre">2</span></code> is the oldest
+generation, objects in that generation remain there after a collection.  In
+order to decide when to run, the collector keeps track of the number object
+allocations and deallocations since the last collection.  When the number of
+allocations minus the number of deallocations exceeds <em>threshold0</em>, collection
+starts.  Initially only generation <code class="docutils literal notranslate"><span class="pre">0</span></code> is examined.  If generation <code class="docutils literal notranslate"><span class="pre">0</span></code> has
+been examined more than <em>threshold1</em> times since generation <code class="docutils literal notranslate"><span class="pre">1</span></code> has been
+examined, then generation <code class="docutils literal notranslate"><span class="pre">1</span></code> is examined as well.
+With the third generation, things are a bit more complicated,
+see <a class="reference external" href="https://devguide.python.org/garbage_collector/#collecting-the-oldest-generation">Collecting the oldest generation</a> for more information.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.get_count">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">get_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.get_count" title="Link to this definition">¶</a></dt>
+<dd><p>現在の検出数を、 <code class="docutils literal notranslate"><span class="pre">(count0,</span> <span class="pre">count1,</span> <span class="pre">count2)</span></code> のタプルで返します。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.get_threshold">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">get_threshold</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.get_threshold" title="Link to this definition">¶</a></dt>
+<dd><p>現在の検出閾値を、 <code class="docutils literal notranslate"><span class="pre">(threshold0,</span> <span class="pre">threshold1,</span> <span class="pre">threshold2)</span></code> のタプルで返します。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.get_referrers">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">get_referrers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.get_referrers" title="Link to this definition">¶</a></dt>
+<dd><p>objsで指定したオブジェクトのいずれかを参照しているオブジェクトのリストを返します。この関数では、ガベージコレクションをサポートしているコンテナのみを返します。他のオブジェクトを参照していても、ガベージコレクションをサポートしていない拡張型は含まれません。</p>
+<p>尚、戻り値のリストには、すでに参照されなくなっているが、循環参照の一部でまだガベージコレクションで回収されていないオブジェクトも含まれるので注意が必要です。有効なオブジェクトのみを取得する場合、 <a class="reference internal" href="gc.html#gc.get_referrers" title="gc.get_referrers"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_referrers()</span></code></a> の前に <a class="reference internal" href="gc.html#gc.collect" title="gc.collect"><code class="xref py py-func docutils literal notranslate"><span class="pre">collect()</span></code></a> を呼び出してください。</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p><a class="reference internal" href="gc.html#gc.get_referrers" title="gc.get_referrers"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_referrers()</span></code></a> から返されるオブジェクトは作りかけや利用できない状態である場合があるので、利用する際には注意が必要です。 <a class="reference internal" href="gc.html#gc.get_referrers" title="gc.get_referrers"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_referrers()</span></code></a> をデバッグ以外の目的で利用するのは避けてください。</p>
+</div>
+<p class="audit-hook">引数 <code class="docutils literal notranslate"><span class="pre">objs</span></code> を指定して <a class="reference internal" href="sys.html#auditing"><span class="std std-ref">監査イベント</span></a> <code class="docutils literal notranslate"><span class="pre">gc.get_referrers</span></code> を送出します。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.get_referents">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">get_referents</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">objs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.get_referents" title="Link to this definition">¶</a></dt>
+<dd><p>引数で指定したオブジェクトのいずれかから参照されている、全てのオブジェクトのリストを返します。参照先のオブジェクトは、引数で指定したオブジェクトの Cレベルメソッド <a class="reference internal" href="../c-api/typeobj.html#c.PyTypeObject.tp_traverse" title="PyTypeObject.tp_traverse"><code class="xref c c-member docutils literal notranslate"><span class="pre">tp_traverse</span></code></a> で取得し、全てのオブジェクトが直接到達可能な全てのオブジェクトを返すわけではありません。 <a class="reference internal" href="../c-api/typeobj.html#c.PyTypeObject.tp_traverse" title="PyTypeObject.tp_traverse"><code class="xref c c-member docutils literal notranslate"><span class="pre">tp_traverse</span></code></a> はガベージコレクションをサポートするオブジェクトのみが実装しており、ここで取得できるオブジェクトは循環参照の一部となる可能性のあるオブジェクトのみです。従って、例えば整数オブジェクトが直接到達可能であっても、このオブジェクトは戻り値には含まれません。</p>
+<p class="audit-hook">引数 <code class="docutils literal notranslate"><span class="pre">objs</span></code> を指定して <a class="reference internal" href="sys.html#auditing"><span class="std std-ref">監査イベント</span></a> <code class="docutils literal notranslate"><span class="pre">gc.get_referents</span></code> を送出します。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.is_tracked">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">is_tracked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.is_tracked" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">obj</span></code> がガベージコレクタに管理されていたら <code class="docutils literal notranslate"><span class="pre">True</span></code> を返し、それ以外の場合は <code class="docutils literal notranslate"><span class="pre">False</span></code> を返します。
+一般的なルールとして、アトミックな (訳注: 他のオブジェクトを参照しないで単一で値を表す型。 int や str など) 型のインスタンスは管理されず、それ以外の型 (コンテナ型、ユーザー定義型など) のインスタンスは管理されます。
+しかし、いくつかの型では専用の最適化を行い、シンプルなインスタンスの場合に GCのオーバーヘッドを減らしています。
+(例: 全ての key と value がアトミック型の値である dict)</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gc</span><span class="o">.</span><span class="n">is_tracked</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gc</span><span class="o">.</span><span class="n">is_tracked</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gc</span><span class="o">.</span><span class="n">is_tracked</span><span class="p">([])</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gc</span><span class="o">.</span><span class="n">is_tracked</span><span class="p">({})</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gc</span><span class="o">.</span><span class="n">is_tracked</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gc</span><span class="o">.</span><span class="n">is_tracked</span><span class="p">({</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">[]})</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.1.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.is_finalized">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">is_finalized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.is_finalized" title="Link to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the given object has been finalized by the
+garbage collector, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Lazarus</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">global</span> <span class="n">x</span>
+<span class="gp">... </span>        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lazarus</span> <span class="o">=</span> <span class="n">Lazarus</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gc</span><span class="o">.</span><span class="n">is_finalized</span><span class="p">(</span><span class="n">lazarus</span><span class="p">)</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">del</span> <span class="n">lazarus</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gc</span><span class="o">.</span><span class="n">is_finalized</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.9.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.freeze">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">freeze</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.freeze" title="Link to this definition">¶</a></dt>
+<dd><p>Freeze all the objects tracked by the garbage collector; move them to a
+permanent generation and ignore them in all the future collections.</p>
+<p>If a process will <code class="docutils literal notranslate"><span class="pre">fork()</span></code> without <code class="docutils literal notranslate"><span class="pre">exec()</span></code>, avoiding unnecessary
+copy-on-write in child processes will maximize memory sharing and reduce
+overall memory usage. This requires both avoiding creation of freed &quot;holes&quot;
+in memory pages in the parent process and ensuring that GC collections in
+child processes won't touch the <code class="docutils literal notranslate"><span class="pre">gc_refs</span></code> counter of long-lived objects
+originating in the parent process. To accomplish both, call <code class="docutils literal notranslate"><span class="pre">gc.disable()</span></code>
+early in the parent process, <code class="docutils literal notranslate"><span class="pre">gc.freeze()</span></code> right before <code class="docutils literal notranslate"><span class="pre">fork()</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">gc.enable()</span></code> early in child processes.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.7.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.unfreeze">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">unfreeze</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.unfreeze" title="Link to this definition">¶</a></dt>
+<dd><p>Permanent世代領域にあるオブジェクトを解凍します。つまり、最も古い世代へ戻します。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.7.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="gc.get_freeze_count">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">get_freeze_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="gc.html#gc.get_freeze_count" title="Link to this definition">¶</a></dt>
+<dd><p>Permanent世代領域にあるオブジェクトの数を返します。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.7.</span></p>
+</div>
+</dd></dl>
+
+<p>以下の変数は読み出し専用アクセスのために提供されています。(この変数を操作することはできますが、その値は記憶されません):</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="gc.garbage">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">garbage</span></span><a class="headerlink" href="gc.html#gc.garbage" title="Link to this definition">¶</a></dt>
+<dd><p>到達不能であることが検出されたが、解放する事ができないオブジェクトのリスト（回収不能オブジェクト）。Python 3.4 からは、<code class="docutils literal notranslate"><span class="pre">NULL</span></code> でない <code class="docutils literal notranslate"><span class="pre">tp_del</span></code> スロットを持つ C 拡張型のインスタンスを使っている場合を除き、このリストはほとんど常に空であるはずです。</p>
+<p><a class="reference internal" href="gc.html#gc.DEBUG_SAVEALL" title="gc.DEBUG_SAVEALL"><code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG_SAVEALL</span></code></a> が設定されている場合、全ての到達不能オブジェクトは解放されずにこのリストに格納されます。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.2 で変更: </span><a class="reference internal" href="../glossary.html#term-interpreter-shutdown"><span class="xref std std-term">インタプリタシャットダウン</span></a> 時にこのリストが空でない場合、(デフォルトでは黙りますが) <a class="reference internal" href="exceptions.html#ResourceWarning" title="ResourceWarning"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ResourceWarning</span></code></a> が発行されます。 <a class="reference internal" href="gc.html#gc.DEBUG_UNCOLLECTABLE" title="gc.DEBUG_UNCOLLECTABLE"><code class="xref py py-const docutils literal notranslate"><span class="pre">DEBUG_UNCOLLECTABLE</span></code></a> がセットされていると、加えて回収不能オブジェクトを出力します。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.4 で変更: </span>Following <span class="target" id="index-0"></span><a class="pep reference external" href="https://peps.python.org/pep-0442/"><strong>PEP 442</strong></a>, objects with a <a class="reference internal" href="../reference/datamodel.html#object.__del__" title="object.__del__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__del__()</span></code></a> method don't end
+up in <a class="reference internal" href="gc.html#gc.garbage" title="gc.garbage"><code class="xref py py-data docutils literal notranslate"><span class="pre">gc.garbage</span></code></a> anymore.</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gc.callbacks">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">callbacks</span></span><a class="headerlink" href="gc.html#gc.callbacks" title="Link to this definition">¶</a></dt>
+<dd><p>ガベージコレクタの起動前と終了後に呼び出されるコールバック関数のリスト。コールバックは <em>phase</em> と <em>info</em> の2つの引数で呼び出されます。</p>
+<p><em>phase</em> は以下 2 つのいずれかです:</p>
+<blockquote>
+<div><p>&quot;start&quot;: ガベージコレクションを始めます。</p>
+<p>&quot;stop&quot;: ガベージコレクションが終了しました。</p>
+</div></blockquote>
+<p><em>info</em> はコールバックに付加情報を提供する辞書です。現在のところ以下のキーが定義されています:</p>
+<blockquote>
+<div><p>&quot;generation&quot;: 回収される最も古い世代。</p>
+<p>&quot;collected&quot;: <em>phase</em> が &quot;stop&quot; のとき、正常に回収されたオブジェクトの数。</p>
+<p>&quot;uncollectable&quot;: <em>phase</em> が &quot;stop&quot; のとき、回収出来ずに <a class="reference internal" href="gc.html#gc.garbage" title="gc.garbage"><code class="xref py py-data docutils literal notranslate"><span class="pre">garbage</span></code></a> リストに入れられたオブジェクトの数。</p>
+</div></blockquote>
+<p>アプリケーションは自身のコールバックをこのリストに追加出来ます。基本的なユースケースは以下のようなものでしょう:</p>
+<blockquote>
+<div><p>世代が回収される頻度やガベージコレクションにかかった時間の長さといった、ガベージコレクションの統計情報を集めます。</p>
+<p><a class="reference internal" href="gc.html#gc.garbage" title="gc.garbage"><code class="xref py py-data docutils literal notranslate"><span class="pre">garbage</span></code></a> に回収できない独自の型のオブジェクトが現れたとき、アプリケーションがそれらを特定し消去できるようにする。</p>
+</div></blockquote>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.3.</span></p>
+</div>
+</dd></dl>
+
+<p>以下は <a class="reference internal" href="gc.html#gc.set_debug" title="gc.set_debug"><code class="xref py py-func docutils literal notranslate"><span class="pre">set_debug()</span></code></a> に指定することのできる定数です:</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="gc.DEBUG_STATS">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">DEBUG_STATS</span></span><a class="headerlink" href="gc.html#gc.DEBUG_STATS" title="Link to this definition">¶</a></dt>
+<dd><p>検出中に統計情報を出力します。この情報は、検出頻度を最適化する際に有益です。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gc.DEBUG_COLLECTABLE">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">DEBUG_COLLECTABLE</span></span><a class="headerlink" href="gc.html#gc.DEBUG_COLLECTABLE" title="Link to this definition">¶</a></dt>
+<dd><p>見つかった回収可能オブジェクトの情報を出力します。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gc.DEBUG_UNCOLLECTABLE">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">DEBUG_UNCOLLECTABLE</span></span><a class="headerlink" href="gc.html#gc.DEBUG_UNCOLLECTABLE" title="Link to this definition">¶</a></dt>
+<dd><p>見つかった回収不能オブジェクト（到達不能だが、ガベージコレクションで解放する事ができないオブジェクト）の情報を出力します。回収不能オブジェクトは、 <code class="docutils literal notranslate"><span class="pre">garbage</span></code> リストに追加されます。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.2 で変更: </span><a class="reference internal" href="../glossary.html#term-interpreter-shutdown"><span class="xref std std-term">インタプリタシャットダウン</span></a> 時に <a class="reference internal" href="gc.html#gc.garbage" title="gc.garbage"><code class="xref py py-data docutils literal notranslate"><span class="pre">garbage</span></code></a> リストが空でない場合に、その中身の出力も行います。</p>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gc.DEBUG_SAVEALL">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">DEBUG_SAVEALL</span></span><a class="headerlink" href="gc.html#gc.DEBUG_SAVEALL" title="Link to this definition">¶</a></dt>
+<dd><p>設定されている場合、全ての到達不能オブジェクトは解放されずに <em>garbage</em> に追加されます。これはプログラムのメモリリークをデバッグするときに便利です。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="gc.DEBUG_LEAK">
+<span class="sig-prename descclassname"><span class="pre">gc.</span></span><span class="sig-name descname"><span class="pre">DEBUG_LEAK</span></span><a class="headerlink" href="gc.html#gc.DEBUG_LEAK" title="Link to this definition">¶</a></dt>
+<dd><p>プログラムのメモリリークをデバッグするときに指定します（ <code class="docutils literal notranslate"><span class="pre">DEBUG_COLLECTABLE</span> <span class="pre">|</span> <span class="pre">DEBUG_UNCOLLECTABLE</span> <span class="pre">|</span> <span class="pre">DEBUG_SAVEALL</span></code> と同じ）。</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="__future__.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">__future__</span></code> --- future 文の定義</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="inspect.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">inspect</span></code> --- 活動中のオブジェクトを調査する</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/gc.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="inspect.html" title="inspect --- 活動中のオブジェクトを調査する"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="__future__.html" title="__future__ --- future 文の定義"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="python.html" >Python ランタイムサービス</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="gc.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gc</span></code> --- ガベージコレクターインターフェース</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

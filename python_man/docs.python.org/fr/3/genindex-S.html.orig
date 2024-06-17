@@ -1,0 +1,1592 @@
+
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; Documentation Python 3.12.4</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css?v=bb723527" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="_static/pygments_dark.css?v=b20cc3f5" />
+    
+    <script src="_static/documentation_options.js?v=6f87fcbb"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/translations.js?v=bf059b8c"></script>
+    
+    <script src="_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Recherchez dans Documentation Python 3.12.4"
+          href="_static/opensearch.xml"/>
+    <link rel="author" title="À propos de ces documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="https://docs.python.org/3/genindex-S.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="_static/py.svg" />
+            <script type="text/javascript" src="_static/copybutton.js"></script>
+            <script type="text/javascript" src="_static/menu.js"></script>
+            <script type="text/javascript" src="_static/search-focus.js"></script>
+            <script type="text/javascript" src="_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" />
+                <input type="submit" value="Go"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+
+          <li><img src="_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+        <li class="nav-item nav-item-this"><a href="">Index</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+
+<h1 id="index">Index &ndash; S</h1>
+
+<table style="width: 100%" class="indextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="library/tkinter.ttk.html#tkinter.ttk.Spinbox">Spinbox (classe dans tkinter.ttk)</a>
+</li>
+      <li><a href="library/os.html#os.splice">splice() (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.SPLICE_F_MORE">SPLICE_F_MORE (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.SPLICE_F_MOVE">SPLICE_F_MOVE (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.SPLICE_F_NONBLOCK">SPLICE_F_NONBLOCK (dans le module os)</a>
+</li>
+      <li><a href="library/os.path.html#os.path.split">split() (dans le module os.path)</a>
+
+      <ul>
+        <li><a href="library/re.html#re.split">(dans le module re)</a>
+</li>
+        <li><a href="library/shlex.html#shlex.split">(dans le module shlex)</a>
+</li>
+        <li><a href="library/exceptions.html#BaseExceptionGroup.split">(méthode BaseExceptionGroup)</a>
+</li>
+        <li><a href="library/stdtypes.html#bytearray.split">(méthode bytearray)</a>
+</li>
+        <li><a href="library/stdtypes.html#bytes.split">(méthode bytes)</a>
+</li>
+        <li><a href="library/re.html#re.Pattern.split">(méthode re.Pattern)</a>
+</li>
+        <li><a href="library/stdtypes.html#str.split">(méthode str)</a>
+</li>
+      </ul></li>
+      <li><a href="library/os.path.html#os.path.splitdrive">splitdrive() (dans le module os.path)</a>
+</li>
+      <li><a href="library/os.path.html#os.path.splitext">splitext() (dans le module os.path)</a>
+</li>
+      <li><a href="library/stdtypes.html#bytearray.splitlines">splitlines() (méthode bytearray)</a>
+
+      <ul>
+        <li><a href="library/stdtypes.html#bytes.splitlines">(méthode bytes)</a>
+</li>
+        <li><a href="library/stdtypes.html#str.splitlines">(méthode str)</a>
+</li>
+      </ul></li>
+      <li><a href="library/urllib.parse.html#urllib.parse.SplitResult">SplitResult (classe dans urllib.parse)</a>
+</li>
+      <li><a href="library/urllib.parse.html#urllib.parse.SplitResultBytes">SplitResultBytes (classe dans urllib.parse)</a>
+</li>
+      <li><a href="library/os.path.html#os.path.splitroot">splitroot() (dans le module os.path)</a>
+</li>
+      <li><a href="library/tempfile.html#tempfile.SpooledTemporaryFile">SpooledTemporaryFile (classe dans tempfile)</a>
+</li>
+      <li><a href="library/stdtypes.html#index-35">sprintf-style formatting</a>, <a href="library/stdtypes.html#index-45">[1]</a>
+</li>
+      <li>
+    spwd
+
+      <ul>
+        <li><a href="library/spwd.html#module-spwd">module</a>
+</li>
+      </ul></li>
+      <li>
+    sqlite3
+
+      <ul>
+        <li><a href="library/sqlite3.html#module-sqlite3">module</a>
+</li>
+      </ul></li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_DEFENSIVE">SQLITE_DBCONFIG_DEFENSIVE (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_DQS_DDL">SQLITE_DBCONFIG_DQS_DDL (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_DQS_DML">SQLITE_DBCONFIG_DQS_DML (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_ENABLE_FKEY">SQLITE_DBCONFIG_ENABLE_FKEY (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER">SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION">SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_ENABLE_QPSG">SQLITE_DBCONFIG_ENABLE_QPSG (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_ENABLE_TRIGGER">SQLITE_DBCONFIG_ENABLE_TRIGGER (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_ENABLE_VIEW">SQLITE_DBCONFIG_ENABLE_VIEW (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_LEGACY_ALTER_TABLE">SQLITE_DBCONFIG_LEGACY_ALTER_TABLE (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_LEGACY_FILE_FORMAT">SQLITE_DBCONFIG_LEGACY_FILE_FORMAT (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_NO_CKPT_ON_CLOSE">SQLITE_DBCONFIG_NO_CKPT_ON_CLOSE (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_RESET_DATABASE">SQLITE_DBCONFIG_RESET_DATABASE (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_TRIGGER_EQP">SQLITE_DBCONFIG_TRIGGER_EQP (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_TRUSTED_SCHEMA">SQLITE_DBCONFIG_TRUSTED_SCHEMA (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DBCONFIG_WRITABLE_SCHEMA">SQLITE_DBCONFIG_WRITABLE_SCHEMA (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_DENY">SQLITE_DENY (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.Error.sqlite_errorcode">sqlite_errorcode (attribut sqlite3.Error)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.Error.sqlite_errorname">sqlite_errorname (attribut sqlite3.Error)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_IGNORE">SQLITE_IGNORE (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.SQLITE_OK">SQLITE_OK (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.sqlite_version">sqlite_version (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.sqlite_version_info">sqlite_version_info (dans le module sqlite3)</a>
+</li>
+      <li><a href="library/cmath.html#cmath.sqrt">sqrt() (dans le module cmath)</a>
+
+      <ul>
+        <li><a href="library/math.html#math.sqrt">(dans le module math)</a>
+</li>
+        <li><a href="library/decimal.html#decimal.Context.sqrt">(méthode decimal.Context)</a>
+</li>
+        <li><a href="library/decimal.html#decimal.Decimal.sqrt">(méthode decimal.Decimal)</a>
+</li>
+      </ul></li>
+      <li><a href="c-api/typeobj.html#c.ssizeargfunc">ssizeargfunc (C type)</a>
+</li>
+      <li><a href="c-api/typeobj.html#c.ssizeobjargproc">ssizeobjargproc (C type)</a>
+</li>
+      <li><a href="library/ssl.html#index-1">SSL</a>
+</li>
+      <li>
+    ssl
+
+      <ul>
+        <li><a href="library/ssl.html#module-ssl">module</a>
+</li>
+      </ul></li>
+      <li><a href="library/ftplib.html#ftplib.FTP_TLS.ssl_version">ssl_version (attribut ftplib.FTP_TLS)</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLCertVerificationError">SSLCertVerificationError</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLContext">SSLContext (classe dans ssl)</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLEOFError">SSLEOFError</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLError">SSLError</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLErrorNumber">SSLErrorNumber (classe dans ssl)</a>
+</li>
+      <li><a href="library/ssl.html#index-25">SSLKEYLOGFILE</a>, <a href="library/ssl.html#index-26">[1]</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLObject">SSLObject (classe dans ssl)</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLContext.sslobject_class">sslobject_class (attribut ssl.SSLContext)</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLSession">SSLSession (classe dans ssl)</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLSocket">SSLSocket (classe dans ssl)</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLContext.sslsocket_class">sslsocket_class (attribut ssl.SSLContext)</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLSyscallError">SSLSyscallError</a>
+</li>
+      <li><a href="library/ssl.html#ssl.TLSVersion.SSLv3">SSLv3 (attribut ssl.TLSVersion)</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLWantReadError">SSLWantReadError</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLWantWriteError">SSLWantWriteError</a>
+</li>
+      <li><a href="library/ssl.html#ssl.SSLZeroReturnError">SSLZeroReturnError</a>
+</li>
+      <li><a href="library/turtle.html#turtle.st">st() (dans le module turtle)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_atime">st_atime (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/stat.html#stat.ST_ATIME">ST_ATIME (dans le module stat)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_atime_ns">st_atime_ns (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_birthtime">st_birthtime (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_birthtime_ns">st_birthtime_ns (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_blksize">st_blksize (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_blocks">st_blocks (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_creator">st_creator (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_ctime">st_ctime (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/stat.html#stat.ST_CTIME">ST_CTIME (dans le module stat)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_ctime_ns">st_ctime_ns (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_dev">st_dev (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/stat.html#stat.ST_DEV">ST_DEV (dans le module stat)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_file_attributes">st_file_attributes (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_flags">st_flags (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_fstype">st_fstype (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_gen">st_gen (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_gid">st_gid (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/stat.html#stat.ST_GID">ST_GID (dans le module stat)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_ino">st_ino (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/stat.html#stat.ST_INO">ST_INO (dans le module stat)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_mode">st_mode (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/stat.html#stat.ST_MODE">ST_MODE (dans le module stat)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_mtime">st_mtime (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/stat.html#stat.ST_MTIME">ST_MTIME (dans le module stat)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_mtime_ns">st_mtime_ns (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_nlink">st_nlink (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/stat.html#stat.ST_NLINK">ST_NLINK (dans le module stat)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_rdev">st_rdev (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_reparse_tag">st_reparse_tag (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_rsize">st_rsize (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_size">st_size (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/stat.html#stat.ST_SIZE">ST_SIZE (dans le module stat)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_type">st_type (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/os.html#os.stat_result.st_uid">st_uid (attribut os.stat_result)</a>
+</li>
+      <li><a href="library/stat.html#stat.ST_UID">ST_UID (dans le module stat)</a>
+</li>
+      <li>
+    stack
+
+      <ul>
+        <li><a href="reference/datamodel.html#index-66">execution</a>
+</li>
+        <li><a href="reference/datamodel.html#index-66">trace</a>
+</li>
+      </ul></li>
+      <li><a href="library/traceback.html#traceback.TracebackException.stack">stack (attribut traceback.TracebackException)</a>
+</li>
+      <li><a href="library/idle.html#index-3">stack viewer</a>
+</li>
+      <li><a href="library/inspect.html#inspect.stack">stack() (dans le module inspect)</a>
+</li>
+      <li><a href="library/dis.html#dis.stack_effect">stack_effect() (dans le module dis)</a>
+</li>
+      <li><a href="library/_thread.html#thread.stack_size">stack_size() (dans le module _thread)</a>
+
+      <ul>
+        <li><a href="library/threading.html#threading.stack_size">(dans le module threading)</a>
+</li>
+      </ul></li>
+      <li>
+    stackable
+
+      <ul>
+        <li><a href="library/codecs.html#index-0">streams</a>
+</li>
+      </ul></li>
+      <li><a href="library/traceback.html#traceback.StackSummary">StackSummary (classe dans traceback)</a>
+</li>
+      <li><a href="library/turtle.html#turtle.stamp">stamp() (dans le module turtle)</a>
+</li>
+      <li>
+    standard
+
+      <ul>
+        <li><a href="reference/simple_stmts.html#index-3">sortie</a>
+</li>
+      </ul></li>
+      <li><a href="reference/lexical_analysis.html#index-23">Standard C</a>
+</li>
+      <li><a href="library/base64.html#base64.standard_b64decode">standard_b64decode() (dans le module base64)</a>
+</li>
+      <li><a href="library/base64.html#base64.standard_b64encode">standard_b64encode() (dans le module base64)</a>
+</li>
+      <li><a href="library/2to3.html#to3fixer-standarderror">standarderror (2to3 fixer)</a>
+</li>
+      <li><a href="library/curses.html#curses.window.standend">standend() (méthode curses.window)</a>
+</li>
+      <li><a href="library/curses.html#curses.window.standout">standout() (méthode curses.window)</a>
+</li>
+      <li><a href="library/token.html#token.STAR">STAR (dans le module token)</a>
+</li>
+      <li><a href="library/token.html#token.STAREQUAL">STAREQUAL (dans le module token)</a>
+</li>
+      <li><a href="library/itertools.html#itertools.starmap">starmap() (dans le module itertools)</a>
+
+      <ul>
+        <li><a href="library/multiprocessing.html#multiprocessing.pool.Pool.starmap">(méthode multiprocessing.pool.Pool)</a>
+</li>
+      </ul></li>
+      <li><a href="library/multiprocessing.html#multiprocessing.pool.Pool.starmap_async">starmap_async() (méthode multiprocessing.pool.Pool)</a>
+</li>
+      <li><a href="library/ast.html#ast.Starred">Starred (classe dans ast)</a>
+</li>
+      <li><a href="reference/expressions.html#index-46">start (attribut d&#39;objet tranche)</a>
+
+      <ul>
+        <li><a href="library/stdtypes.html#range.start">(attribut range)</a>
+</li>
+        <li><a href="library/functions.html#slice.start">(attribut slice)</a>
+</li>
+        <li><a href="library/exceptions.html#UnicodeError.start">(attribut UnicodeError)</a>
+</li>
+        <li><a href="reference/datamodel.html#index-70">(slice object attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="library/tracemalloc.html#tracemalloc.start">start() (dans le module tracemalloc)</a>
+
+      <ul>
+        <li><a href="library/logging.handlers.html#logging.handlers.QueueListener.start">(méthode logging.handlers.QueueListener)</a>
+</li>
+        <li><a href="library/multiprocessing.html#multiprocessing.managers.BaseManager.start">(méthode multiprocessing.managers.BaseManager)</a>
+</li>
+        <li><a href="library/multiprocessing.html#multiprocessing.Process.start">(méthode multiprocessing.Process)</a>
+</li>
+        <li><a href="library/re.html#re.Match.start">(méthode re.Match)</a>
+</li>
+        <li><a href="library/threading.html#threading.Thread.start">(méthode threading.Thread)</a>
+</li>
+        <li><a href="library/tkinter.ttk.html#tkinter.ttk.Progressbar.start">(méthode tkinter.ttk.Progressbar)</a>
+</li>
+        <li><a href="library/xml.etree.elementtree.html#xml.etree.ElementTree.TreeBuilder.start">(méthode xml.etree.ElementTree.TreeBuilder)</a>
+</li>
+      </ul></li>
+      <li><a href="library/curses.html#curses.start_color">start_color() (dans le module curses)</a>
+</li>
+      <li><a href="library/msilib.html#msilib.Directory.start_component">start_component() (méthode msilib.Directory)</a>
+</li>
+      <li><a href="library/_thread.html#thread.start_new_thread">start_new_thread() (dans le module _thread)</a>
+</li>
+      <li><a href="library/xml.etree.elementtree.html#xml.etree.ElementTree.TreeBuilder.start_ns">start_ns() (méthode xml.etree.ElementTree.TreeBuilder)</a>
+</li>
+      <li><a href="library/asyncio-stream.html#asyncio.start_server">start_server() (dans le module asyncio)</a>
+</li>
+      <li><a href="library/asyncio-eventloop.html#asyncio.Server.start_serving">start_serving() (méthode asyncio.Server)</a>
+</li>
+      <li><a href="library/test.html#test.support.threading_helper.start_threads">start_threads() (dans le module test.support.threading_helper)</a>
+</li>
+      <li><a href="library/asyncio-eventloop.html#asyncio.loop.start_tls">start_tls() (méthode asyncio.loop)</a>
+
+      <ul>
+        <li><a href="library/asyncio-stream.html#asyncio.StreamWriter.start_tls">(méthode asyncio.StreamWriter)</a>
+</li>
+      </ul></li>
+      <li><a href="library/asyncio-stream.html#asyncio.start_unix_server">start_unix_server() (dans le module asyncio)</a>
+</li>
+      <li><a href="library/xml.sax.handler.html#xml.sax.handler.LexicalHandler.startCDATA">startCDATA() (méthode xml.sax.handler.LexicalHandler)</a>
+</li>
+      <li><a href="library/pyexpat.html#xml.parsers.expat.xmlparser.StartCdataSectionHandler">StartCdataSectionHandler() (méthode xml.parsers.expat.xmlparser)</a>
+</li>
+      <li><a href="library/pyexpat.html#xml.parsers.expat.xmlparser.StartDoctypeDeclHandler">StartDoctypeDeclHandler() (méthode xml.parsers.expat.xmlparser)</a>
+</li>
+      <li><a href="library/xml.sax.handler.html#xml.sax.handler.ContentHandler.startDocument">startDocument() (méthode xml.sax.handler.ContentHandler)</a>
+</li>
+      <li><a href="library/xml.sax.handler.html#xml.sax.handler.LexicalHandler.startDTD">startDTD() (méthode xml.sax.handler.LexicalHandler)</a>
+</li>
+      <li><a href="library/xml.sax.handler.html#xml.sax.handler.ContentHandler.startElement">startElement() (méthode xml.sax.handler.ContentHandler)</a>
+</li>
+      <li><a href="library/pyexpat.html#xml.parsers.expat.xmlparser.StartElementHandler">StartElementHandler() (méthode xml.parsers.expat.xmlparser)</a>
+</li>
+      <li><a href="library/xml.sax.handler.html#xml.sax.handler.ContentHandler.startElementNS">startElementNS() (méthode xml.sax.handler.ContentHandler)</a>
+</li>
+      <li><a href="library/subprocess.html#subprocess.STARTF_USESHOWWINDOW">STARTF_USESHOWWINDOW (dans le module subprocess)</a>
+</li>
+      <li><a href="library/subprocess.html#subprocess.STARTF_USESTDHANDLES">STARTF_USESTDHANDLES (dans le module subprocess)</a>
+</li>
+      <li><a href="library/os.html#os.startfile">startfile() (dans le module os)</a>
+</li>
+      <li><a href="library/pyexpat.html#xml.parsers.expat.xmlparser.StartNamespaceDeclHandler">StartNamespaceDeclHandler() (méthode xml.parsers.expat.xmlparser)</a>
+</li>
+      <li><a href="library/xml.sax.handler.html#xml.sax.handler.ContentHandler.startPrefixMapping">startPrefixMapping() (méthode xml.sax.handler.ContentHandler)</a>
+</li>
+      <li><a href="library/wsgiref.html#wsgiref.types.StartResponse">StartResponse (classe dans wsgiref.types)</a>
+</li>
+      <li><a href="library/stdtypes.html#bytearray.startswith">startswith() (méthode bytearray)</a>
+
+      <ul>
+        <li><a href="library/stdtypes.html#bytes.startswith">(méthode bytes)</a>
+</li>
+        <li><a href="library/stdtypes.html#str.startswith">(méthode str)</a>
+</li>
+      </ul></li>
+      <li><a href="library/unittest.html#unittest.TestResult.startTest">startTest() (méthode unittest.TestResult)</a>
+</li>
+      <li><a href="library/unittest.html#unittest.TestResult.startTestRun">startTestRun() (méthode unittest.TestResult)</a>
+</li>
+      <li><a href="library/imaplib.html#imaplib.IMAP4.starttls">starttls() (méthode imaplib.IMAP4)</a>
+
+      <ul>
+        <li><a href="library/nntplib.html#nntplib.NNTP.starttls">(méthode nntplib.NNTP)</a>
+</li>
+        <li><a href="library/smtplib.html#smtplib.SMTP.starttls">(méthode smtplib.SMTP)</a>
+</li>
+      </ul></li>
+      <li><a href="library/subprocess.html#subprocess.STARTUPINFO">STARTUPINFO (classe dans subprocess)</a>
+</li>
+      <li>
+    stat
+
+      <ul>
+        <li><a href="library/os.html#index-30">module</a>, <a href="library/stat.html#module-stat">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="library/os.html#os.stat">stat() (dans le module os)</a>
+
+      <ul>
+        <li><a href="library/nntplib.html#nntplib.NNTP.stat">(méthode nntplib.NNTP)</a>
+</li>
+        <li><a href="library/os.html#os.DirEntry.stat">(méthode os.DirEntry)</a>
+</li>
+        <li><a href="library/pathlib.html#pathlib.Path.stat">(méthode pathlib.Path)</a>
+</li>
+        <li><a href="library/poplib.html#poplib.POP3.stat">(méthode poplib.POP3)</a>
+</li>
+      </ul></li>
+      <li><a href="library/os.html#os.stat_result">stat_result (classe dans os)</a>
+</li>
+      <li><a href="library/tkinter.ttk.html#tkinter.ttk.Widget.state">state() (méthode tkinter.ttk.Widget)</a>
+</li>
+      <li>
+    statement
+
+      <ul>
+        <li><a href="library/exceptions.html#index-4">assert</a>
+</li>
+        <li><a href="reference/datamodel.html#index-22">assignment</a>
+</li>
+        <li><a href="library/stdtypes.html#index-24">del</a>, <a href="library/stdtypes.html#index-52">[1]</a>, <a href="reference/datamodel.html#index-74">[2]</a>
+</li>
+        <li><a href="library/exceptions.html#index-0">except</a>
+</li>
+        <li><a href="tutorial/controlflow.html#index-0">for</a>
+</li>
+        <li><a href="library/stdtypes.html#index-1">if</a>
+</li>
+        <li><a href="library/site.html#index-2">import</a>, <a href="reference/datamodel.html#index-44">[1]</a>
+</li>
+        <li><a href="library/exceptions.html#index-1">raise</a>
+</li>
+        <li><a href="library/exceptions.html#index-0">try</a>, <a href="reference/datamodel.html#index-67">[1]</a>
+</li>
+        <li><a href="library/stdtypes.html#index-1">while</a>
+</li>
+        <li><a href="reference/datamodel.html#index-106">with</a>
+</li>
+      </ul></li>
+      <li><a href="reference/lexical_analysis.html#index-8">statement grouping</a>
+</li>
+      <li><a href="glossary.html#term-static-type-checker"><strong>static type checker</strong></a>
+</li>
+      <li><a href="library/graphlib.html#graphlib.TopologicalSorter.static_order">static_order() (méthode graphlib.TopologicalSorter)</a>
+</li>
+      <li>
+    staticmethod
+
+      <ul>
+        <li><a href="c-api/structures.html#index-1">built-in function</a>
+</li>
+      </ul></li>
+      <li>
+    staticmethod()
+
+      <ul>
+        <li><a href="library/functions.html#staticmethod">built-in function</a>
+</li>
+      </ul></li>
+      <li><a href="library/tracemalloc.html#tracemalloc.Statistic">Statistic (classe dans tracemalloc)</a>
+</li>
+      <li><a href="library/tracemalloc.html#tracemalloc.StatisticDiff">StatisticDiff (classe dans tracemalloc)</a>
+</li>
+      <li>
+    statistics
+
+      <ul>
+        <li><a href="library/statistics.html#module-statistics">module</a>
+</li>
+      </ul></li>
+      <li><a href="library/tracemalloc.html#tracemalloc.Snapshot.statistics">statistics() (méthode tracemalloc.Snapshot)</a>
+</li>
+      <li><a href="library/statistics.html#statistics.StatisticsError">StatisticsError</a>
+</li>
+      <li><a href="library/profile.html#pstats.Stats">Stats (classe dans pstats)</a>
+</li>
+      <li><a href="library/http.client.html#http.client.HTTPResponse.status">status (attribut http.client.HTTPResponse)</a>
+
+      <ul>
+        <li><a href="library/urllib.request.html#urllib.response.addinfourl.status">(attribut urllib.response.addinfourl)</a>
+</li>
+      </ul></li>
+      <li><a href="library/imaplib.html#imaplib.IMAP4.status">status() (méthode imaplib.IMAP4)</a>
+</li>
+      <li><a href="library/os.html#os.statvfs">statvfs() (dans le module os)</a>
+</li>
+      <li><a href="library/subprocess.html#subprocess.STD_ERROR_HANDLE">STD_ERROR_HANDLE (dans le module subprocess)</a>
+</li>
+      <li><a href="library/subprocess.html#subprocess.STD_INPUT_HANDLE">STD_INPUT_HANDLE (dans le module subprocess)</a>
+</li>
+      <li><a href="library/subprocess.html#subprocess.STD_OUTPUT_HANDLE">STD_OUTPUT_HANDLE (dans le module subprocess)</a>
+</li>
+      <li><a href="library/tkinter.tix.html#tkinter.tix.StdButtonBox">StdButtonBox (classe dans tkinter.tix)</a>
+</li>
+      <li><a href="library/asyncio-subprocess.html#asyncio.subprocess.Process.stderr">stderr (attribut asyncio.subprocess.Process)</a>
+
+      <ul>
+        <li><a href="library/subprocess.html#subprocess.CalledProcessError.stderr">(attribut subprocess.CalledProcessError)</a>
+</li>
+        <li><a href="library/subprocess.html#subprocess.CompletedProcess.stderr">(attribut subprocess.CompletedProcess)</a>
+</li>
+        <li><a href="library/subprocess.html#subprocess.Popen.stderr">(attribut subprocess.Popen)</a>
+</li>
+        <li><a href="library/subprocess.html#subprocess.TimeoutExpired.stderr">(attribut subprocess.TimeoutExpired)</a>
+</li>
+        <li><a href="library/sys.html#sys.stderr">(dans le module sys)</a>
+</li>
+        <li><a href="c-api/init.html#index-42">(in module sys)</a>, <a href="c-api/init.html#index-45">[1]</a>, <a href="reference/datamodel.html#index-55">[2]</a>
+</li>
+      </ul></li>
+      <li><a href="library/statistics.html#statistics.NormalDist.stdev">stdev (attribut statistics.NormalDist)</a>
+</li>
+      <li><a href="library/statistics.html#statistics.stdev">stdev() (dans le module statistics)</a>
+</li>
+      <li>
+    stdin
+
+      <ul>
+        <li><a href="c-api/init.html#index-16">stdout sdterr</a>
+</li>
+      </ul></li>
+      <li><a href="library/asyncio-subprocess.html#asyncio.subprocess.Process.stdin">stdin (attribut asyncio.subprocess.Process)</a>
+
+      <ul>
+        <li><a href="library/subprocess.html#subprocess.Popen.stdin">(attribut subprocess.Popen)</a>
+</li>
+        <li><a href="library/sys.html#sys.stdin">(dans le module sys)</a>
+</li>
+        <li><a href="c-api/init.html#index-42">(in module sys)</a>, <a href="c-api/init.html#index-45">[1]</a>, <a href="reference/datamodel.html#index-55">[2]</a>
+</li>
+      </ul></li>
+      <li><a href="reference/datamodel.html#index-55">stdio</a>
+</li>
+      <li><a href="library/sys.html#sys.stdlib_module_names">stdlib_module_names (dans le module sys)</a>
+</li>
+      <li>
+    stdout
+
+      <ul>
+        <li><a href="c-api/init.html#index-16">sdterr, stdin</a>
+</li>
+      </ul></li>
+      <li><a href="library/asyncio-subprocess.html#asyncio.subprocess.Process.stdout">stdout (attribut asyncio.subprocess.Process)</a>
+
+      <ul>
+        <li><a href="library/subprocess.html#subprocess.CalledProcessError.stdout">(attribut subprocess.CalledProcessError)</a>
+</li>
+        <li><a href="library/subprocess.html#subprocess.CompletedProcess.stdout">(attribut subprocess.CompletedProcess)</a>
+</li>
+        <li><a href="library/subprocess.html#subprocess.Popen.stdout">(attribut subprocess.Popen)</a>
+</li>
+        <li><a href="library/subprocess.html#subprocess.TimeoutExpired.stdout">(attribut subprocess.TimeoutExpired)</a>
+</li>
+      </ul></li>
+      <li><a href="library/subprocess.html#subprocess.STDOUT">STDOUT (dans le module subprocess)</a>
+</li>
+      <li><a href="library/sys.html#sys.stdout">stdout (dans le module sys)</a>
+
+      <ul>
+        <li><a href="c-api/init.html#index-42">(in module sys)</a>, <a href="c-api/init.html#index-45">[1]</a>, <a href="reference/datamodel.html#index-55">[2]</a>
+</li>
+      </ul></li>
+      <li><a href="library/pathlib.html#pathlib.PurePath.stem">stem (attribut pathlib.PurePath)</a>
+</li>
+      <li><a href="reference/expressions.html#index-46">step (attribut d&#39;objet tranche)</a>
+
+      <ul>
+        <li><a href="library/stdtypes.html#range.step">(attribut range)</a>
+</li>
+        <li><a href="library/functions.html#slice.step">(attribut slice)</a>
+</li>
+        <li><a href="library/pdb.html#pdbcommand-step">(pdb command)</a>
+</li>
+        <li><a href="reference/datamodel.html#index-70">(slice object attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="library/tkinter.ttk.html#tkinter.ttk.Progressbar.step">step() (méthode tkinter.ttk.Progressbar)</a>
+</li>
+      <li><a href="library/ossaudiodev.html#ossaudiodev.oss_mixer_device.stereocontrols">stereocontrols() (méthode ossaudiodev.oss_mixer_device)</a>
+</li>
+      <li><a href="library/poplib.html#poplib.POP3.stls">stls() (méthode poplib.POP3)</a>
+</li>
+      <li><a href="reference/expressions.html#index-46">stop (attribut d&#39;objet tranche)</a>
+
+      <ul>
+        <li><a href="library/stdtypes.html#range.stop">(attribut range)</a>
+</li>
+        <li><a href="library/functions.html#slice.stop">(attribut slice)</a>
+</li>
+        <li><a href="reference/datamodel.html#index-70">(slice object attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="library/tracemalloc.html#tracemalloc.stop">stop() (dans le module tracemalloc)</a>
+
+      <ul>
+        <li><a href="library/asyncio-eventloop.html#asyncio.loop.stop">(méthode asyncio.loop)</a>
+</li>
+        <li><a href="library/logging.handlers.html#logging.handlers.QueueListener.stop">(méthode logging.handlers.QueueListener)</a>
+</li>
+        <li><a href="library/tkinter.ttk.html#tkinter.ttk.Progressbar.stop">(méthode tkinter.ttk.Progressbar)</a>
+</li>
+        <li><a href="library/unittest.html#unittest.TestResult.stop">(méthode unittest.TestResult)</a>
+</li>
+      </ul></li>
+      <li><a href="library/bdb.html#bdb.Bdb.stop_here">stop_here() (méthode bdb.Bdb)</a>
+</li>
+      <li><a href="library/sys.monitoring.html#monitoring-event-STOP_ITERATION">STOP_ITERATION (monitoring event)</a>
+</li>
+      <li><a href="library/exceptions.html#StopAsyncIteration">StopAsyncIteration</a>
+
+      <ul>
+        <li><a href="reference/expressions.html#index-36">exception</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="library/exceptions.html#StopIteration">StopIteration</a>
+
+      <ul>
+        <li><a href="reference/expressions.html#index-32">exception</a>, <a href="reference/simple_stmts.html#index-26">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="library/logging.config.html#logging.config.stopListening">stopListening() (dans le module logging.config)</a>
+</li>
+      <li><a href="library/unittest.html#unittest.TestResult.stopTest">stopTest() (méthode unittest.TestResult)</a>
+</li>
+      <li><a href="library/unittest.html#unittest.TestResult.stopTestRun">stopTestRun() (méthode unittest.TestResult)</a>
+</li>
+      <li><a href="library/ftplib.html#ftplib.FTP.storbinary">storbinary() (méthode ftplib.FTP)</a>
+</li>
+      <li><a href="library/ast.html#ast.Store">Store (classe dans ast)</a>
+</li>
+      <li><a href="library/imaplib.html#imaplib.IMAP4.store">store() (méthode imaplib.IMAP4)</a>
+</li>
+      <li><a href="library/optparse.html#optparse.Option.STORE_ACTIONS">STORE_ACTIONS (attribut optparse.Option)</a>
+</li>
+      <li><a href="library/dis.html#opcode-STORE_ATTR">STORE_ATTR (opcode)</a>
+</li>
+      <li><a href="library/dis.html#opcode-STORE_DEREF">STORE_DEREF (opcode)</a>
+</li>
+      <li><a href="library/dis.html#opcode-STORE_FAST">STORE_FAST (opcode)</a>
+</li>
+      <li><a href="library/dis.html#opcode-STORE_GLOBAL">STORE_GLOBAL (opcode)</a>
+</li>
+      <li><a href="library/dis.html#opcode-STORE_NAME">STORE_NAME (opcode)</a>
+</li>
+      <li><a href="library/dis.html#opcode-STORE_SLICE">STORE_SLICE (opcode)</a>
+</li>
+      <li><a href="library/dis.html#opcode-STORE_SUBSCR">STORE_SUBSCR (opcode)</a>
+</li>
+      <li><a href="library/ftplib.html#ftplib.FTP.storlines">storlines() (méthode ftplib.FTP)</a>
+</li>
+      <li>
+    str (built-in class)
+
+      <ul>
+        <li><a href="library/stdtypes.html#index-28">(see also string)</a>
+</li>
+      </ul></li>
+      <li><a href="library/stdtypes.html#str">str (classe de base)</a>
+</li>
+      <li><a href="library/locale.html#locale.str">str() (dans le module locale)</a>
+</li>
+      <li><a href="library/sys.html#sys.int_info.str_digits_check_threshold">str_digits_check_threshold (attribut sys.int_info)</a>
+</li>
+      <li><a href="library/locale.html#locale.strcoll">strcoll() (dans le module locale)</a>
+</li>
+      <li><a href="library/tarfile.html#tarfile.StreamError">StreamError</a>
+</li>
+      <li><a href="library/logging.handlers.html#logging.StreamHandler">StreamHandler (classe dans logging)</a>
+</li>
+      <li><a href="library/codecs.html#codecs.CodecInfo.streamreader">streamreader (attribut codecs.CodecInfo)</a>
+</li>
+      <li><a href="library/asyncio-stream.html#asyncio.StreamReader">StreamReader (classe dans asyncio)</a>
+
+      <ul>
+        <li><a href="library/codecs.html#codecs.StreamReader">(classe dans codecs)</a>
+</li>
+      </ul></li>
+      <li><a href="library/codecs.html#codecs.StreamReaderWriter">StreamReaderWriter (classe dans codecs)</a>
+</li>
+      <li><a href="library/codecs.html#codecs.StreamRecoder">StreamRecoder (classe dans codecs)</a>
+</li>
+      <li><a href="library/socketserver.html#socketserver.StreamRequestHandler">StreamRequestHandler (classe dans socketserver)</a>
+</li>
+      <li><a href="library/codecs.html#index-0">streams</a>
+
+      <ul>
+        <li><a href="library/codecs.html#index-0">stackable</a>
+</li>
+      </ul></li>
+      <li><a href="library/codecs.html#codecs.CodecInfo.streamwriter">streamwriter (attribut codecs.CodecInfo)</a>
+</li>
+      <li><a href="library/asyncio-stream.html#asyncio.StreamWriter">StreamWriter (classe dans asyncio)</a>
+
+      <ul>
+        <li><a href="library/codecs.html#codecs.StreamWriter">(classe dans codecs)</a>
+</li>
+      </ul></li>
+      <li><a href="library/enum.html#enum.StrEnum">StrEnum (classe dans enum)</a>
+</li>
+      <li><a href="library/exceptions.html#OSError.strerror">strerror (attribut OSError)</a>
+
+      <ul>
+        <li><a href="c-api/exceptions.html#index-0">(C function)</a>
+</li>
+      </ul></li>
+      <li><a href="library/os.html#os.strerror">strerror() (dans le module os)</a>
+</li>
+      <li><a href="library/time.html#time.strftime">strftime() (dans le module time)</a>
+
+      <ul>
+        <li><a href="library/datetime.html#datetime.date.strftime">(méthode datetime.date)</a>
+</li>
+        <li><a href="library/datetime.html#datetime.datetime.strftime">(méthode datetime.datetime)</a>
+</li>
+        <li><a href="library/datetime.html#datetime.time.strftime">(méthode datetime.time)</a>
+</li>
+      </ul></li>
+      <li>
+    strict
+
+      <ul>
+        <li><a href="library/codecs.html#index-1">error handler&#39;s name</a>
+</li>
+      </ul></li>
+      <li><a href="library/csv.html#csv.Dialect.strict">strict (attribut csv.Dialect)</a>
+</li>
+      <li><a href="library/enum.html#enum.FlagBoundary.STRICT">STRICT (attribut enum.FlagBoundary)</a>
+</li>
+      <li><a href="library/email.policy.html#email.policy.strict">strict (dans le module email.policy)</a>
+</li>
+      <li><a href="library/http.cookiejar.html#http.cookiejar.DefaultCookiePolicy.strict_domain">strict_domain (attribut http.cookiejar.DefaultCookiePolicy)</a>
+</li>
+      <li><a href="library/codecs.html#codecs.strict_errors">strict_errors() (dans le module codecs)</a>
+</li>
+      <li><a href="library/http.cookiejar.html#http.cookiejar.DefaultCookiePolicy.strict_ns_domain">strict_ns_domain (attribut http.cookiejar.DefaultCookiePolicy)</a>
+</li>
+      <li><a href="library/http.cookiejar.html#http.cookiejar.DefaultCookiePolicy.strict_ns_set_initial_dollar">strict_ns_set_initial_dollar (attribut http.cookiejar.DefaultCookiePolicy)</a>
+</li>
+      <li><a href="library/http.cookiejar.html#http.cookiejar.DefaultCookiePolicy.strict_ns_set_path">strict_ns_set_path (attribut http.cookiejar.DefaultCookiePolicy)</a>
+</li>
+      <li><a href="library/http.cookiejar.html#http.cookiejar.DefaultCookiePolicy.strict_ns_unverifiable">strict_ns_unverifiable (attribut http.cookiejar.DefaultCookiePolicy)</a>
+</li>
+      <li><a href="library/http.cookiejar.html#http.cookiejar.DefaultCookiePolicy.strict_rfc2965_unverifiable">strict_rfc2965_unverifiable (attribut http.cookiejar.DefaultCookiePolicy)</a>
+</li>
+      <li><a href="library/inspect.html#inspect.BufferFlags.STRIDED">STRIDED (attribut inspect.BufferFlags)</a>
+</li>
+      <li><a href="library/inspect.html#inspect.BufferFlags.STRIDED_RO">STRIDED_RO (attribut inspect.BufferFlags)</a>
+</li>
+      <li><a href="library/inspect.html#inspect.BufferFlags.STRIDES">STRIDES (attribut inspect.BufferFlags)</a>
+</li>
+      <li><a href="library/stdtypes.html#memoryview.strides">strides (attribut memoryview)</a>
+</li>
+      <li>
+    string
+
+      <ul>
+        <li><a href="reference/datamodel.html#index-78">__format__() (object method)</a>
+</li>
+        <li><a href="reference/datamodel.html#index-76">__str__() (object method)</a>
+</li>
+        <li><a href="reference/datamodel.html#index-78">conversion</a>
+</li>
+        <li><a href="reference/lexical_analysis.html#index-25">formatted literal</a>
+</li>
+        <li><a href="library/stdtypes.html#index-35">formatting, printf</a>
+</li>
+        <li><a href="reference/datamodel.html#index-18">immutable sequences</a>
+</li>
+        <li><a href="reference/lexical_analysis.html#index-25">interpolated literal</a>
+</li>
+        <li><a href="library/stdtypes.html#index-35">interpolation, printf</a>
+</li>
+        <li><a href="library/stdtypes.html#index-32">methods</a>
+</li>
+        <li><a href="library/string.html#module-string">module</a>
+</li>
+        <li><a href="library/stdtypes.html#index-28">object</a>
+</li>
+        <li><a href="c-api/object.html#index-2">PyObject_Str (C function)</a>
+</li>
+        <li><a href="library/stdtypes.html#index-30">str (built-in class)</a>
+</li>
+        <li><a href="library/stdtypes.html#index-28">text sequence type</a>
+</li>
+      </ul></li>
+      <li><a href="library/re.html#re.Match.string">string (attribut re.Match)</a>
+</li>
+      <li><a href="library/token.html#token.STRING">STRING (dans le module token)</a>
+</li>
+      <li><a href="reference/lexical_analysis.html#index-17">string literal</a>
+</li>
+      <li><a href="library/ctypes.html#ctypes.string_at">string_at() (dans le module ctypes)</a>
+</li>
+      <li><a href="library/io.html#io.StringIO">StringIO (classe dans io)</a>
+</li>
+      <li>
+    stringprep
+
+      <ul>
+        <li><a href="library/stringprep.html#module-stringprep">module</a>
+</li>
+      </ul></li>
+      <li><a href="tutorial/controlflow.html#index-2">strings, documentation</a>, <a href="tutorial/controlflow.html#index-5">[1]</a>
+</li>
+      <li><a href="library/stdtypes.html#bytearray.strip">strip() (méthode bytearray)</a>
+
+      <ul>
+        <li><a href="library/stdtypes.html#bytes.strip">(méthode bytes)</a>
+</li>
+        <li><a href="library/stdtypes.html#str.strip">(méthode str)</a>
+</li>
+      </ul></li>
+      <li><a href="library/profile.html#pstats.Stats.strip_dirs">strip_dirs() (méthode pstats.Stats)</a>
+</li>
+      <li><a href="library/curses.html#curses.textpad.Textbox.stripspaces">stripspaces (attribut curses.textpad.Textbox)</a>
+</li>
+      <li><a href="library/time.html#time.strptime">strptime() (dans le module time)</a>
+
+      <ul>
+        <li><a href="library/datetime.html#datetime.datetime.strptime">(méthode de la classe datetime.datetime)</a>
+</li>
+      </ul></li>
+      <li><a href="library/signal.html#signal.strsignal">strsignal() (dans le module signal)</a>
+</li>
+      <li>
+    struct
+
+      <ul>
+        <li><a href="library/socket.html#index-14">module</a>, <a href="library/struct.html#module-struct">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="library/struct.html#struct.Struct">Struct (classe dans struct)</a>
+</li>
+      <li><a href="library/time.html#time.struct_time">struct_time (classe dans time)</a>
+</li>
+      <li><a href="c-api/structures.html#index-4">structmember.h</a>
+</li>
+      <li><a href="library/ctypes.html#ctypes.Structure">Structure (classe dans ctypes)</a>
+</li>
+      <li>
+    structures
+
+      <ul>
+        <li><a href="library/struct.html#index-0">C</a>
+</li>
+      </ul></li>
+      <li><a href="library/locale.html#locale.strxfrm">strxfrm() (dans le module locale)</a>
+</li>
+      <li><a href="library/curses.ascii.html#curses.ascii.STX">STX (dans le module curses.ascii)</a>
+</li>
+      <li>
+    style
+
+      <ul>
+        <li><a href="tutorial/controlflow.html#index-9">coding</a>
+</li>
+      </ul></li>
+      <li><a href="library/tkinter.ttk.html#tkinter.ttk.Style">Style (classe dans tkinter.ttk)</a>
+</li>
+      <li><a href="library/ast.html#ast.Sub">Sub (classe dans ast)</a>
+</li>
+      <li><a href="library/curses.ascii.html#curses.ascii.SUB">SUB (dans le module curses.ascii)</a>
+</li>
+      <li><a href="library/operator.html#operator.sub">sub() (dans le module operator)</a>
+
+      <ul>
+        <li><a href="library/re.html#re.sub">(dans le module re)</a>
+</li>
+        <li><a href="library/re.html#re.Pattern.sub">(méthode re.Pattern)</a>
+</li>
+      </ul></li>
+      <li>
+    subclassing
+
+      <ul>
+        <li><a href="reference/datamodel.html#index-72">immutable types</a>
+</li>
+      </ul></li>
+      <li><a href="library/filecmp.html#filecmp.dircmp.subdirs">subdirs (attribut filecmp.dircmp)</a>
+</li>
+      <li><a href="library/xml.etree.elementtree.html#xml.etree.ElementTree.SubElement">SubElement() (dans le module xml.etree.ElementTree)</a>
+</li>
+      <li><a href="library/exceptions.html#BaseExceptionGroup.subgroup">subgroup() (méthode BaseExceptionGroup)</a>
+</li>
+      <li><a href="library/concurrent.futures.html#concurrent.futures.Executor.submit">submit() (méthode concurrent.futures.Executor)</a>
+</li>
+      <li><a href="library/importlib.html#importlib.machinery.ModuleSpec.submodule_search_locations">submodule_search_locations (attribut importlib.machinery.ModuleSpec)</a>
+</li>
+      <li><a href="library/re.html#re.subn">subn() (dans le module re)</a>
+
+      <ul>
+        <li><a href="library/re.html#re.Pattern.subn">(méthode re.Pattern)</a>
+</li>
+      </ul></li>
+      <li><a href="library/ipaddress.html#ipaddress.IPv4Network.subnet_of">subnet_of() (méthode ipaddress.IPv4Network)</a>
+
+      <ul>
+        <li><a href="library/ipaddress.html#ipaddress.IPv6Network.subnet_of">(méthode ipaddress.IPv6Network)</a>
+</li>
+      </ul></li>
+      <li><a href="library/ipaddress.html#ipaddress.IPv4Network.subnets">subnets() (méthode ipaddress.IPv4Network)</a>
+
+      <ul>
+        <li><a href="library/ipaddress.html#ipaddress.IPv6Network.subnets">(méthode ipaddress.IPv6Network)</a>
+</li>
+      </ul></li>
+      <li><a href="library/decimal.html#decimal.Subnormal">Subnormal (classe dans decimal)</a>
+</li>
+      <li><a href="library/stdtypes.html#memoryview.suboffsets">suboffsets (attribut memoryview)</a>
+</li>
+      <li><a href="library/curses.html#curses.window.subpad">subpad() (méthode curses.window)</a>
+</li>
+      <li>
+    subprocess
+
+      <ul>
+        <li><a href="library/subprocess.html#module-subprocess">module</a>
+</li>
+      </ul></li>
+      <li><a href="library/asyncio-eventloop.html#asyncio.loop.subprocess_exec">subprocess_exec() (méthode asyncio.loop)</a>
+</li>
+      <li><a href="library/asyncio-eventloop.html#asyncio.loop.subprocess_shell">subprocess_shell() (méthode asyncio.loop)</a>
+</li>
+      <li><a href="library/subprocess.html#subprocess.SubprocessError">SubprocessError</a>
+</li>
+      <li><a href="library/asyncio-protocol.html#asyncio.SubprocessProtocol">SubprocessProtocol (classe dans asyncio)</a>
+</li>
+      <li><a href="library/asyncio-protocol.html#asyncio.SubprocessTransport">SubprocessTransport (classe dans asyncio)</a>
+</li>
+      <li><a href="library/imaplib.html#imaplib.IMAP4.subscribe">subscribe() (méthode imaplib.IMAP4)</a>
+</li>
+      <li>
+    subscript
+
+      <ul>
+        <li><a href="library/stdtypes.html#index-24">assignment</a>
+</li>
+        <li><a href="library/stdtypes.html#index-20">operation</a>
+</li>
+      </ul></li>
+      <li><a href="library/ast.html#ast.Subscript">Subscript (classe dans ast)</a>
+</li>
+      <li><a href="reference/datamodel.html#index-15">subscription</a>, <a href="reference/datamodel.html#index-22">[1]</a>, <a href="reference/datamodel.html#index-30">[2]</a>
+</li>
+      <li><a href="library/textwrap.html#textwrap.TextWrapper.subsequent_indent">subsequent_indent (attribut textwrap.TextWrapper)</a>
+</li>
+      <li><a href="library/string.html#string.Template.substitute">substitute() (méthode string.Template)</a>
+</li>
+      <li><a href="library/unittest.html#unittest.TestCase.subTest">subTest() (méthode unittest.TestCase)</a>
+</li>
+      <li><a href="library/collections.html#collections.Counter.subtract">subtract() (méthode collections.Counter)</a>
+
+      <ul>
+        <li><a href="library/decimal.html#decimal.Context.subtract">(méthode decimal.Context)</a>
+</li>
+      </ul></li>
+      <li><a href="library/email.headerregistry.html#email.headerregistry.ContentTypeHeader.subtype">subtype (attribut email.headerregistry.ContentTypeHeader)</a>
+</li>
+      <li><a href="library/curses.html#curses.window.subwin">subwin() (méthode curses.window)</a>
+</li>
+      <li><a href="library/multiprocessing.html#multiprocessing.pool.AsyncResult.successful">successful() (méthode multiprocessing.pool.AsyncResult)</a>
+</li>
+      <li><a href="library/pathlib.html#pathlib.PurePath.suffix">suffix (attribut pathlib.PurePath)</a>
+</li>
+      <li><a href="library/mimetypes.html#mimetypes.MimeTypes.suffix_map">suffix_map (attribut mimetypes.MimeTypes)</a>
+
+      <ul>
+        <li><a href="library/mimetypes.html#mimetypes.suffix_map">(dans le module mimetypes)</a>
+</li>
+      </ul></li>
+      <li><a href="library/pathlib.html#pathlib.PurePath.suffixes">suffixes (attribut pathlib.PurePath)</a>
+</li>
+      <li><a href="reference/compound_stmts.html#index-1">suite</a>
+</li>
+      <li><a href="library/unittest.html#unittest.TestLoader.suiteClass">suiteClass (attribut unittest.TestLoader)</a>
+</li>
+      <li>
+    sum()
+
+      <ul>
+        <li><a href="library/functions.html#sum">built-in function</a>
+</li>
+      </ul></li>
+      <li><a href="c-api/intro.html#index-8">sum_list()</a>
+</li>
+      <li><a href="c-api/intro.html#index-14">sum_sequence()</a>, <a href="c-api/intro.html#index-9">[1]</a>
+</li>
+      <li><a href="library/doctest.html#doctest.DocTestRunner.summarize">summarize() (méthode doctest.DocTestRunner)</a>
+</li>
+      <li><a href="library/ipaddress.html#ipaddress.summarize_address_range">summarize_address_range() (dans le module ipaddress)</a>
+</li>
+      <li><a href="library/math.html#math.sumprod">sumprod() (dans le module math)</a>
+</li>
+      <li>
+    sunau
+
+      <ul>
+        <li><a href="library/sunau.html#module-sunau">module</a>
+</li>
+      </ul></li>
+      <li><a href="library/calendar.html#calendar.SUNDAY">SUNDAY (dans le module calendar)</a>
+</li>
+      <li><a href="library/pyclbr.html#pyclbr.Class.super">super (attribut pyclbr.Class)</a>
+
+      <ul>
+        <li><a href="library/functions.html#super">(classe de base)</a>
+</li>
+      </ul></li>
+      <li><a href="library/ipaddress.html#ipaddress.IPv4Network.supernet">supernet() (méthode ipaddress.IPv4Network)</a>
+
+      <ul>
+        <li><a href="library/ipaddress.html#ipaddress.IPv6Network.supernet">(méthode ipaddress.IPv6Network)</a>
+</li>
+      </ul></li>
+      <li><a href="library/ipaddress.html#ipaddress.IPv4Network.supernet_of">supernet_of() (méthode ipaddress.IPv4Network)</a>
+
+      <ul>
+        <li><a href="library/ipaddress.html#ipaddress.IPv6Network.supernet_of">(méthode ipaddress.IPv6Network)</a>
+</li>
+      </ul></li>
+      <li><a href="library/os.html#os.supports_bytes_environ">supports_bytes_environ (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.supports_dir_fd">supports_dir_fd (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.supports_effective_ids">supports_effective_ids (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.supports_fd">supports_fd (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.supports_follow_symlinks">supports_follow_symlinks (dans le module os)</a>
+</li>
+      <li><a href="library/os.path.html#os.path.supports_unicode_filenames">supports_unicode_filenames (dans le module os.path)</a>
+</li>
+      <li><a href="library/typing.html#typing.SupportsAbs">SupportsAbs (classe dans typing)</a>
+</li>
+      <li><a href="library/typing.html#typing.SupportsBytes">SupportsBytes (classe dans typing)</a>
+</li>
+      <li><a href="library/typing.html#typing.SupportsComplex">SupportsComplex (classe dans typing)</a>
+</li>
+      <li><a href="library/typing.html#typing.SupportsFloat">SupportsFloat (classe dans typing)</a>
+</li>
+      <li><a href="library/typing.html#typing.SupportsIndex">SupportsIndex (classe dans typing)</a>
+</li>
+      <li><a href="library/typing.html#typing.SupportsInt">SupportsInt (classe dans typing)</a>
+</li>
+      <li><a href="library/typing.html#typing.SupportsRound">SupportsRound (classe dans typing)</a>
+</li>
+      <li><a href="library/contextlib.html#contextlib.suppress">suppress() (dans le module contextlib)</a>
+</li>
+      <li><a href="library/test.html#test.support.SuppressCrashReport">SuppressCrashReport (classe dans test.support)</a>
+</li>
+      <li>
+    suppression de liaison
+
+      <ul>
+        <li><a href="reference/simple_stmts.html#index-22">nom</a>
+</li>
+      </ul></li>
+      <li>
+    surrogateescape
+
+      <ul>
+        <li><a href="library/codecs.html#index-1">error handler&#39;s name</a>
+</li>
+      </ul></li>
+      <li>
+    surrogatepass
+
+      <ul>
+        <li><a href="library/codecs.html#index-4">error handler&#39;s name</a>
+</li>
+      </ul></li>
+      <li><a href="library/subprocess.html#subprocess.SW_HIDE">SW_HIDE (dans le module subprocess)</a>
+</li>
+      <li><a href="library/dis.html#opcode-SWAP">SWAP (opcode)</a>
+</li>
+      <li><a href="library/test.html#test.support.swap_attr">swap_attr() (dans le module test.support)</a>
+</li>
+      <li><a href="library/test.html#test.support.swap_item">swap_item() (dans le module test.support)</a>
+</li>
+      <li><a href="library/stdtypes.html#bytearray.swapcase">swapcase() (méthode bytearray)</a>
+
+      <ul>
+        <li><a href="library/stdtypes.html#bytes.swapcase">(méthode bytes)</a>
+</li>
+        <li><a href="library/stdtypes.html#str.swapcase">(méthode str)</a>
+</li>
+      </ul></li>
+      <li><a href="library/symtable.html#symtable.Symbol">Symbol (classe dans symtable)</a>
+</li>
+      <li><a href="library/symtable.html#symtable.SymbolTable">SymbolTable (classe dans symtable)</a>
+</li>
+      <li><a href="library/os.html#os.symlink">symlink() (dans le module os)</a>
+</li>
+      <li><a href="library/pathlib.html#pathlib.Path.symlink_to">symlink_to() (méthode pathlib.Path)</a>
+</li>
+      <li><a href="library/stdtypes.html#frozenset.symmetric_difference">symmetric_difference() (méthode frozenset)</a>
+</li>
+      <li><a href="library/stdtypes.html#frozenset.symmetric_difference_update">symmetric_difference_update() (méthode frozenset)</a>
+</li>
+      <li>
+    symtable
+
+      <ul>
+        <li><a href="library/symtable.html#module-symtable">module</a>
+</li>
+      </ul></li>
+      <li><a href="library/symtable.html#symtable.symtable">symtable() (dans le module symtable)</a>
+</li>
+      <li><a href="library/tarfile.html#tarfile.SYMTYPE">SYMTYPE (dans le module tarfile)</a>
+</li>
+      <li><a href="library/curses.ascii.html#curses.ascii.SYN">SYN (dans le module curses.ascii)</a>
+</li>
+      <li><a href="library/os.html#os.sync">sync() (dans le module os)</a>
+
+      <ul>
+        <li><a href="library/dbm.html#dbm.dumb.dumbdbm.sync">(méthode dbm.dumb.dumbdbm)</a>
+</li>
+        <li><a href="library/dbm.html#dbm.gnu.gdbm.sync">(méthode dbm.gnu.gdbm)</a>
+</li>
+        <li><a href="library/ossaudiodev.html#ossaudiodev.oss_audio_device.sync">(méthode ossaudiodev.oss_audio_device)</a>
+</li>
+        <li><a href="library/shelve.html#shelve.Shelf.sync">(méthode shelve.Shelf)</a>
+</li>
+      </ul></li>
+      <li><a href="library/curses.html#curses.window.syncdown">syncdown() (méthode curses.window)</a>
+</li>
+      <li><a href="library/multiprocessing.html#multiprocessing.sharedctypes.synchronized">synchronized() (dans le module multiprocessing.sharedctypes)</a>
+</li>
+      <li><a href="library/multiprocessing.html#multiprocessing.managers.SyncManager">SyncManager (classe dans multiprocessing.managers)</a>
+</li>
+      <li><a href="library/curses.html#curses.window.syncok">syncok() (méthode curses.window)</a>
+</li>
+      <li><a href="library/curses.html#curses.window.syncup">syncup() (méthode curses.window)</a>
+</li>
+      <li><a href="reference/introduction.html#index-0">syntax</a>
+</li>
+      <li><a href="library/xml.dom.html#xml.dom.SyntaxErr">SyntaxErr</a>
+</li>
+      <li><a href="library/exceptions.html#SyntaxError">SyntaxError</a>
+</li>
+      <li><a href="library/exceptions.html#SyntaxWarning">SyntaxWarning</a>
+</li>
+      <li>
+    sys
+
+      <ul>
+        <li><a href="c-api/init.html#index-15">module</a>, <a href="c-api/init.html#index-42">[1]</a>, <a href="c-api/init.html#index-45">[2]</a>, <a href="c-api/intro.html#index-18">[3]</a>, <a href="library/functions.html#index-8">[4]</a>, <a href="library/sys.html#module-sys">[5]</a>, <a href="reference/compound_stmts.html#index-11">[6]</a>, <a href="reference/toplevel_components.html#index-2">[7]</a>, <a href="tutorial/modules.html#index-4">[8]</a>
+</li>
+      </ul></li>
+      <li><a href="reference/datamodel.html#index-66">sys.exc_info</a>
+</li>
+      <li><a href="reference/datamodel.html#index-66">sys.exception</a>
+</li>
+      <li><a href="reference/datamodel.html#index-66">sys.last_traceback</a>
+</li>
+      <li><a href="reference/import.html#index-10">sys.meta_path</a>
+</li>
+      <li><a href="reference/import.html#index-7">sys.modules</a>
+</li>
+      <li>
+    sys.monitoring
+
+      <ul>
+        <li><a href="library/sys.monitoring.html#module-sys.monitoring">module</a>
+</li>
+      </ul></li>
+      <li><a href="reference/import.html#index-17">sys.path</a>
+</li>
+      <li><a href="reference/import.html#index-17">sys.path_hooks</a>
+</li>
+      <li><a href="reference/import.html#index-17">sys.path_importer_cache</a>
+</li>
+      <li><a href="reference/datamodel.html#index-55">sys.stderr</a>
+</li>
+      <li><a href="reference/datamodel.html#index-55">sys.stdin</a>
+</li>
+      <li><a href="reference/datamodel.html#index-55">sys.stdout</a>
+</li>
+      <li><a href="library/2to3.html#to3fixer-sys_exc">sys_exc (2to3 fixer)</a>
+</li>
+      <li><a href="library/http.server.html#http.server.BaseHTTPRequestHandler.sys_version">sys_version (attribut http.server.BaseHTTPRequestHandler)</a>
+</li>
+      <li><a href="library/os.html#os.sysconf">sysconf() (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.sysconf_names">sysconf_names (dans le module os)</a>
+</li>
+      <li>
+    sysconfig
+
+      <ul>
+        <li><a href="library/sysconfig.html#module-sysconfig">module</a>
+</li>
+      </ul></li>
+      <li>
+    syslog
+
+      <ul>
+        <li><a href="library/syslog.html#module-syslog">module</a>
+</li>
+      </ul></li>
+      <li><a href="library/syslog.html#syslog.syslog">syslog() (dans le module syslog)</a>
+</li>
+      <li><a href="library/logging.handlers.html#logging.handlers.SysLogHandler">SysLogHandler (classe dans logging.handlers)</a>
+</li>
+      <li><a href="library/os.html#os.system">system() (dans le module os)</a>
+
+      <ul>
+        <li><a href="library/platform.html#platform.system">(dans le module platform)</a>
+</li>
+      </ul></li>
+      <li><a href="library/platform.html#platform.system_alias">system_alias() (dans le module platform)</a>
+</li>
+      <li><a href="library/test.html#test.support.system_must_validate_cert">system_must_validate_cert() (dans le module test.support)</a>
+</li>
+      <li><a href="library/exceptions.html#SystemError">SystemError</a>
+
+      <ul>
+        <li><a href="c-api/module.html#index-4">(built-in exception)</a>, <a href="c-api/module.html#index-5">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="library/exceptions.html#SystemExit">SystemExit</a>
+
+      <ul>
+        <li><a href="reference/executionmodel.html#index-17">(built-in exception)</a>
+</li>
+      </ul></li>
+      <li><a href="library/xml.dom.html#xml.dom.DocumentType.systemId">systemId (attribut xml.dom.DocumentType)</a>
+</li>
+      <li><a href="library/random.html#random.SystemRandom">SystemRandom (classe dans random)</a>
+
+      <ul>
+        <li><a href="library/secrets.html#secrets.SystemRandom">(classe dans secrets)</a>
+</li>
+      </ul></li>
+      <li><a href="library/subprocess.html#index-10">SystemRoot</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        </div>
+<div id="sidebarbutton" title="Réduire la barre latérale">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+
+          <li><img src="_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+        <li class="nav-item nav-item-this"><a href="">Index</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="/license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      Mis à jour le Jun 09, 2024 (22:21 UTC).
+    
+      <a href="/bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="_static/switchers.js"></script>
+  </body>
+</html>

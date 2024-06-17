@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="mailcap --- mailcap ファイルの操作" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/mailcap.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/mailcap.py mailcap ファイルは、メールリーダやウェブブラウザのような MIME 対応のアプリケーションが、異なる MIME タイプのファイルにどのように反応するかを設定するために使われます (&quot;mailcap&quot; の名前は &quot;mail capability&quot; から取られました)。例えば、ある mailcap ファイルに video/mpeg; xmpe..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/mailcap.py mailcap ファイルは、メールリーダやウェブブラウザのような MIME 対応のアプリケーションが、異なる MIME タイプのファイルにどのように反応するかを設定するために使われます (&quot;mailcap&quot; の名前は &quot;mail capability&quot; から取られました)。例えば、ある mailcap ファイルに video/mpeg; xmpe..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>mailcap --- mailcap ファイルの操作 &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="msilib --- Microsoft インストーラーファイルの読み書き" href="msilib.html" />
+    <link rel="prev" title="imghdr --- 画像の形式を決定する" href="imghdr.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/mailcap.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="imghdr.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">imghdr</span></code> --- 画像の形式を決定する</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="msilib.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code> --- Microsoft インストーラーファイルの読み書き</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/mailcap.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="msilib.html" title="msilib --- Microsoft インストーラーファイルの読み書き"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="imghdr.html" title="imghdr --- 画像の形式を決定する"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="superseded.html" accesskey="U">取って代わられたモジュール群</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="mailcap.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mailcap</span></code> --- mailcap ファイルの操作</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mailcap">
+<span id="mailcap-mailcap-file-handling"></span><h1><a class="reference internal" href="mailcap.html#module-mailcap" title="mailcap: Mailcap file handling. (非推奨)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mailcap</span></code></a> --- mailcap ファイルの操作<a class="headerlink" href="mailcap.html#module-mailcap" title="Link to this heading">¶</a></h1>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/mailcap.py">Lib/mailcap.py</a></p>
+<div class="deprecated-removed">
+<p><span class="versionmodified">バージョン 3.11 で非推奨、バージョン 3.13 で削除予定: </span>The <a class="reference internal" href="mailcap.html#module-mailcap" title="mailcap: Mailcap file handling. (非推奨)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mailcap</span></code></a> module is deprecated
+(see <span class="target" id="index-0"></span><a class="pep reference external" href="https://peps.python.org/pep-0594/#mailcap"><strong>PEP 594</strong></a> for details).
+The <a class="reference internal" href="mimetypes.html#module-mimetypes" title="mimetypes: Mapping of filename extensions to MIME types."><code class="xref py py-mod docutils literal notranslate"><span class="pre">mimetypes</span></code></a> module provides an alternative.</p>
+</div>
+<hr class="docutils" />
+<p>mailcap ファイルは、メールリーダやウェブブラウザのような MIME 対応のアプリケーションが、異なる MIME タイプのファイルにどのように反応するかを設定するために使われます (&quot;mailcap&quot; の名前は &quot;mail capability&quot; から取られました)。例えば、ある mailcap ファイルに <code class="docutils literal notranslate"><span class="pre">video/mpeg;</span> <span class="pre">xmpeg</span> <span class="pre">%s</span></code> のような行が入っていたとします。ユーザが email メッセージやウェブドキュメント上でその MIME タイプ <em class="mimetype">video/mpeg</em> に遭遇すると、 <code class="docutils literal notranslate"><span class="pre">%s</span></code> はファイル名 (通常テンポラリファイルに属するものになります) に置き換えられ、ファイルを閲覧するために<strong class="program">xmpeg</strong> プログラムが自動的に起動されます。</p>
+<p>mailcap の形式は <span class="target" id="index-5"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc1524.html"><strong>RFC 1524</strong></a>, &quot;A User Agent Configuration Mechanism For Multimedia Mail Format Information&quot; で文書化されていますが、この文書はインターネット標準ではありません。しかしながら、 mailcap ファイルはほとんどの Unix システムでサポートされています。</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="mailcap.findmatch">
+<span class="sig-prename descclassname"><span class="pre">mailcap.</span></span><span class="sig-name descname"><span class="pre">findmatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">caps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MIMEtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'view'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/dev/null'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plist</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mailcap.html#mailcap.findmatch" title="Link to this definition">¶</a></dt>
+<dd><p>2 要素のタプルを返します; 最初の要素は文字列で、実行すべきコマンド (<a class="reference internal" href="os.html#os.system" title="os.system"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.system()</span></code></a> に渡されます) が入っています。二つめの要素は与えられた MIME タイプに対する mailcap エントリです。一致する MIME タイプが見つからなかった場合、 <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code> が返されます。</p>
+<p><em>key</em> は desired フィールドの値で、実行すべき動作のタイプを表現します; ほとんどの場合、単に MIME 形式のデータ本体を見たいと思うので、標準の値は 'view' になっています。与えられた MIME 型をもつ新たなデータ本体を作成した場合や、既存のデータ本体を置き換えたい場合には、'view' の他に 'compose' および 'edit' を取ることもできます。これらフィールドの完全なリストについては <span class="target" id="index-6"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc1524.html"><strong>RFC 1524</strong></a> を参照してください。</p>
+<p><em>filename</em> はコマンドライン中で <code class="docutils literal notranslate"><span class="pre">%s</span></code> に代入されるファイル名です; 標準の値は <code class="docutils literal notranslate"><span class="pre">'/dev/null'</span></code> で、たいていこの値を使いたいわけではないはずです。従って、ファイル名を指定してこのフィールドを上書きする必要があるでしょう。</p>
+<p><em>plist</em> は名前付けされたパラメタのリストです; 標準の値は単なる空のリストです。リスト中の各エントリはパラメタ名を含む文字列、等号 (<code class="docutils literal notranslate"><span class="pre">'='</span></code>)、およびパラメタの値でなければなりません。mailcap エントリには <code class="docutils literal notranslate"><span class="pre">%{foo}</span></code> といったような名前つきのパラメタを含めることができ、'foo' と名づけられたパラメタの値に置き換えられます。例えば、コマンドライン <code class="docutils literal notranslate"><span class="pre">showpartial</span> <span class="pre">%{id}</span> <span class="pre">%{number}</span> <span class="pre">%{total}</span></code> が mailcap ファイルにあり、<em>plist</em> が <code class="docutils literal notranslate"><span class="pre">['id=1',</span> <span class="pre">'number=2',</span> <span class="pre">'total=3']</span></code> に設定されていれば、コマンドラインは <code class="docutils literal notranslate"><span class="pre">'showpartial</span> <span class="pre">1</span> <span class="pre">2</span> <span class="pre">3'</span></code> になります。</p>
+<p>mailcap ファイル中では、オプションの &quot;test&quot; フィールドを使って、(計算機アーキテクチャや、利用しているウィンドウシステムといった) 何らかの外部条件をテストするよう指定することができます。 <a class="reference internal" href="mailcap.html#mailcap.findmatch" title="mailcap.findmatch"><code class="xref py py-func docutils literal notranslate"><span class="pre">findmatch()</span></code></a> はこれらの条件を自動的にチェックし、チェックが失敗したエントリを読み飛ばします。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.11 で変更: </span>To prevent security issues with shell metacharacters (symbols that have
+special effects in a shell command line), <code class="docutils literal notranslate"><span class="pre">findmatch</span></code> will refuse
+to inject ASCII characters other than alphanumerics and <code class="docutils literal notranslate"><span class="pre">&#64;+=:,./-_</span></code>
+into the returned command line.</p>
+<p>If a disallowed character appears in <em>filename</em>, <code class="docutils literal notranslate"><span class="pre">findmatch</span></code> will always
+return <code class="docutils literal notranslate"><span class="pre">(None,</span> <span class="pre">None)</span></code> as if no entry was found.
+If such a character appears elsewhere (a value in <em>plist</em> or in <em>MIMEtype</em>),
+<code class="docutils literal notranslate"><span class="pre">findmatch</span></code> will ignore all mailcap entries which use that value.
+A <a class="reference internal" href="warnings.html#module-warnings" title="warnings: Issue warning messages and control their disposition."><code class="xref py py-mod docutils literal notranslate"><span class="pre">warning</span></code></a> will be raised in either case.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mailcap.getcaps">
+<span class="sig-prename descclassname"><span class="pre">mailcap.</span></span><span class="sig-name descname"><span class="pre">getcaps</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="mailcap.html#mailcap.getcaps" title="Link to this definition">¶</a></dt>
+<dd><p>MIME タイプを mailcap ファイルのエントリに対応付ける辞書を返します。この辞書は <a class="reference internal" href="mailcap.html#mailcap.findmatch" title="mailcap.findmatch"><code class="xref py py-func docutils literal notranslate"><span class="pre">findmatch()</span></code></a> 関数に渡されるべきものです。エントリは辞書のリストとして記憶されますが、この表現形式の詳細について知っておく必要はないでしょう。</p>
+<p>mailcap 情報はシステム上で見つかった全ての mailcap ファイルから導出されます。ユーザ設定の mailcap ファイル <code class="file docutils literal notranslate"><span class="pre">$HOME/.mailcap</span></code> はシステムの mailcap ファイル <code class="file docutils literal notranslate"><span class="pre">/etc/mailcap</span></code> 、 <code class="file docutils literal notranslate"><span class="pre">/usr/etc/mailcap</span></code> 、および <code class="file docutils literal notranslate"><span class="pre">/usr/local/etc/mailcap</span></code> の内容を上書きします。</p>
+</dd></dl>
+
+<p>以下に使用例を示します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mailcap</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="n">mailcap</span><span class="o">.</span><span class="n">getcaps</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mailcap</span><span class="o">.</span><span class="n">findmatch</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">&#39;video/mpeg&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;tmp1223&#39;</span><span class="p">)</span>
+<span class="go">(&#39;xmpeg tmp1223&#39;, {&#39;view&#39;: &#39;xmpeg %s&#39;})</span>
+</pre></div>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="imghdr.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">imghdr</span></code> --- 画像の形式を決定する</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="msilib.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">msilib</span></code> --- Microsoft インストーラーファイルの読み書き</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/mailcap.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="msilib.html" title="msilib --- Microsoft インストーラーファイルの読み書き"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="imghdr.html" title="imghdr --- 画像の形式を決定する"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="superseded.html" >取って代わられたモジュール群</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="mailcap.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mailcap</span></code> --- mailcap ファイルの操作</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

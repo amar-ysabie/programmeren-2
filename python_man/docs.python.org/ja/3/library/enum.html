@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="enum --- 列挙型のサポート" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/enum.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/enum.py Important: このページには、リファレンス情報だけが含まれています。チュートリアルは、以下のページを参照してください 基本チュートリアル, 上級チュートリアル, Enum クックブック. 列挙型とは: 一意の値に紐付けられたシンボリックな名前の集合です, 反復可能であり、定義順にその正規の（エイリアスでない）メンバーを返します, 値を渡してメン..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/enum.py Important: このページには、リファレンス情報だけが含まれています。チュートリアルは、以下のページを参照してください 基本チュートリアル, 上級チュートリアル, Enum クックブック. 列挙型とは: 一意の値に紐付けられたシンボリックな名前の集合です, 反復可能であり、定義順にその正規の（エイリアスでない）メンバーを返します, 値を渡してメン..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>enum --- 列挙型のサポート &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="graphlib --- グラフ構造を操作する機能" href="graphlib.html" />
+    <link rel="prev" title="reprlib --- もう一つの repr() の実装" href="reprlib.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/enum.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="enum.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code> --- 列挙型のサポート</a><ul>
+<li><a class="reference internal" href="enum.html#module-contents">モジュールコンテンツ</a></li>
+<li><a class="reference internal" href="enum.html#data-types">データ型</a><ul>
+<li><a class="reference internal" href="enum.html#supported-dunder-names"><code class="docutils literal notranslate"><span class="pre">__dunder__</span></code> 名のサポート</a></li>
+<li><a class="reference internal" href="enum.html#supported-sunder-names"><code class="docutils literal notranslate"><span class="pre">_sunder_</span></code> 名のサポート</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="enum.html#utilities-and-decorators">ユーティリティとデコレータ</a></li>
+<li><a class="reference internal" href="enum.html#notes">注釈</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="reprlib.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">reprlib</span></code> --- もう一つの <code class="xref py py-func docutils literal notranslate"><span class="pre">repr()</span></code> の実装</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="graphlib.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphlib</span></code> --- グラフ構造を操作する機能</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/enum.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="graphlib.html" title="graphlib --- グラフ構造を操作する機能"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="reprlib.html" title="reprlib --- もう一つの repr() の実装"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="datatypes.html" accesskey="U">データ型</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="enum.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code> --- 列挙型のサポート</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-enum">
+<span id="enum-support-for-enumerations"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code> --- 列挙型のサポート<a class="headerlink" href="enum.html#module-enum" title="Link to this heading">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.4.</span></p>
+</div>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/enum.py">Lib/enum.py</a></p>
+<aside class="sidebar">
+<p class="sidebar-title">Important</p>
+<p>このページには、リファレンス情報だけが含まれています。チュートリアルは、以下のページを参照してください</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../howto/enum.html#enum-basic-tutorial"><span class="std std-ref">基本チュートリアル</span></a></p></li>
+<li><p><a class="reference internal" href="../howto/enum.html#enum-advanced-tutorial"><span class="std std-ref">上級チュートリアル</span></a></p></li>
+<li><p><a class="reference internal" href="../howto/enum.html#enum-cookbook"><span class="std std-ref">Enum クックブック</span></a></p></li>
+</ul>
+</aside>
+<hr class="docutils" />
+<p>列挙型とは:</p>
+<ul class="simple">
+<li><p>一意の値に紐付けられたシンボリックな名前の集合です</p></li>
+<li><p>反復可能であり、定義順にその正規の（エイリアスでない）メンバーを返します</p></li>
+<li><p>値を渡してメンバーを返すために、 <em>呼び出し</em> 構文を使用します</p></li>
+<li><p>名前を受け取ってメンバーを返すために、 <em>インデックス</em> 構文を使用します</p></li>
+</ul>
+<p>列挙型は、<a class="reference internal" href="../reference/compound_stmts.html#class"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">class</span></code></a> 構文を使用するか、関数呼び出し構文を使用して作成されます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># class syntax</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># functional syntax</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s1">&#39;Color&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;RED&#39;</span><span class="p">,</span> <span class="s1">&#39;GREEN&#39;</span><span class="p">,</span> <span class="s1">&#39;BLUE&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Enum の作成に <a class="reference internal" href="../reference/compound_stmts.html#class"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">class</span></code></a> 文を使用できるものの、Enum は通常の Python クラスではありません。詳細は <a class="reference internal" href="../howto/enum.html#enum-class-differences"><span class="std std-ref">Enum はどう違うのか?</span></a> を参照してください。</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>用語</p>
+<ul class="simple">
+<li><p>クラス <code class="xref py py-class docutils literal notranslate"><span class="pre">Color</span></code> は <em>列挙型</em> (または <em>Enum</em>) です</p></li>
+<li><p>属性 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Color.RED</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">Color.GREEN</span></code> などは <em>列挙型のメンバー</em> (または <em>メンバー</em>) で、機能的には定数です。</p></li>
+<li><p>列挙型のメンバーは <em>名前</em> と <em>値</em> を持ちます (<code class="xref py py-attr docutils literal notranslate"><span class="pre">Color.RED</span></code> の名前は <code class="docutils literal notranslate"><span class="pre">RED</span></code> 、 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Color.BLUE</span></code> の値は <code class="docutils literal notranslate"><span class="pre">3</span></code> など。)</p></li>
+</ul>
+</div>
+<hr class="docutils" />
+<section id="module-contents">
+<h2>モジュールコンテンツ<a class="headerlink" href="enum.html#module-contents" title="Link to this heading">¶</a></h2>
+<blockquote>
+<div><p><a class="reference internal" href="enum.html#enum.EnumType" title="enum.EnumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnumType</span></code></a></p>
+<blockquote>
+<div><p>Enumおよびそのサブクラスのための <code class="docutils literal notranslate"><span class="pre">type</span></code> です。</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<blockquote>
+<div><p>列挙型定数を作成する基底クラスです。</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.IntEnum" title="enum.IntEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a></p>
+<blockquote>
+<div><p><a class="reference internal" href="functions.html#int" title="int"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> のサブクラスでもある列挙型定数を作成する基底クラスです。(<a class="reference internal" href="enum.html#notes">Notes</a>)</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.StrEnum" title="enum.StrEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></a></p>
+<blockquote>
+<div><p><a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> のサブクラスでもある列挙型定数を作成する基底クラスです。(<a class="reference internal" href="enum.html#notes">Notes</a>)</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.Flag" title="enum.Flag"><code class="xref py py-class docutils literal notranslate"><span class="pre">Flag</span></code></a></p>
+<blockquote>
+<div><p>列挙型定数を作成する基底クラスで、ビット演算を使って組み合わせられ、その結果も <a class="reference internal" href="enum.html#enum.IntFlag" title="enum.IntFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a> メンバーになります。</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.IntFlag" title="enum.IntFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a></p>
+<blockquote>
+<div><p>列挙型定数を作成する基底クラスで、ビット演算子を使って組み合わせられ、その結果も <a class="reference internal" href="enum.html#enum.IntFlag" title="enum.IntFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a> メンバーになります。
+<a class="reference internal" href="enum.html#enum.IntFlag" title="enum.IntFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a> は <a class="reference internal" href="functions.html#int" title="int"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> のサブクラスでもあります。(<a class="reference internal" href="enum.html#notes">Notes</a>)</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.ReprEnum" title="enum.ReprEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReprEnum</span></code></a></p>
+<blockquote>
+<div><p><a class="reference internal" href="enum.html#enum.IntEnum" title="enum.IntEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a>、<a class="reference internal" href="enum.html#enum.StrEnum" title="enum.StrEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></a>、および <a class="reference internal" href="enum.html#enum.IntFlag" title="enum.IntFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a> によって使用され、mix-inされた型の <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str()</span></code></a> を保持します。</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.EnumCheck" title="enum.EnumCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnumCheck</span></code></a></p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">CONTINUOUS</span></code>、<code class="docutils literal notranslate"><span class="pre">NAMED_FLAGS</span></code>、<code class="docutils literal notranslate"><span class="pre">UNIQUE</span></code> の値を持つ列挙型です。 <a class="reference internal" href="enum.html#enum.verify" title="enum.verify"><code class="xref py py-func docutils literal notranslate"><span class="pre">verify()</span></code></a> と共に使用して、指定された列挙型がさまざまな制約を満たしていることを確認します。</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.FlagBoundary" title="enum.FlagBoundary"><code class="xref py py-class docutils literal notranslate"><span class="pre">FlagBoundary</span></code></a></p>
+<blockquote>
+<div><p>An enumeration with the values <code class="docutils literal notranslate"><span class="pre">STRICT</span></code>, <code class="docutils literal notranslate"><span class="pre">CONFORM</span></code>, <code class="docutils literal notranslate"><span class="pre">EJECT</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">KEEP</span></code> which allows for more fine-grained control over how invalid values
+are dealt with in an enumeration.</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-class docutils literal notranslate"><span class="pre">auto</span></code></a></p>
+<blockquote>
+<div><p>インスタンスは列挙型のメンバーに適切な値で置き換えられます。<a class="reference internal" href="enum.html#enum.StrEnum" title="enum.StrEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></a> ではデフォルトの値がメンバー名を小文字にしたものですが、その他の列挙型のデフォルトは1から連番で増加する値となります。</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.property" title="enum.property"><code class="xref py py-func docutils literal notranslate"><span class="pre">property()</span></code></a></p>
+<blockquote>
+<div><p>メンバー名との競合を避けながら <a class="reference internal" href="enum.html#enum.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a> メンバーに属性を持たせます。<code class="docutils literal notranslate"><span class="pre">value</span></code> 属性と <code class="docutils literal notranslate"><span class="pre">name</span></code> 属性はこの方法で実装されます。</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.unique" title="enum.unique"><code class="xref py py-func docutils literal notranslate"><span class="pre">unique()</span></code></a></p>
+<blockquote>
+<div><p>一つの名前だけがひとつの値に束縛されていることを保証する Enum クラスのデコレーターです。</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.verify" title="enum.verify"><code class="xref py py-func docutils literal notranslate"><span class="pre">verify()</span></code></a></p>
+<blockquote>
+<div><p>Enum class decorator that checks user-selectable constraints on an
+enumeration.</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.member" title="enum.member"><code class="xref py py-func docutils literal notranslate"><span class="pre">member()</span></code></a></p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">obj</span></code> をメンバーにします。デコレータとして使用できます。</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.nonmember" title="enum.nonmember"><code class="xref py py-func docutils literal notranslate"><span class="pre">nonmember()</span></code></a></p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">obj</span></code> をメンバーにしません。デコレータとして使用できます。</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.global_enum" title="enum.global_enum"><code class="xref py py-func docutils literal notranslate"><span class="pre">global_enum()</span></code></a></p>
+<blockquote>
+<div><p>Modify the <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str()</span></code></a> and <a class="reference internal" href="functions.html#repr" title="repr"><code class="xref py py-func docutils literal notranslate"><span class="pre">repr()</span></code></a> of an enum
+to show its members as belonging to the module instead of its class,
+and export the enum members to the global namespace.</p>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.show_flag_values" title="enum.show_flag_values"><code class="xref py py-func docutils literal notranslate"><span class="pre">show_flag_values()</span></code></a></p>
+<blockquote>
+<div><p>フラグに含まれる、全ての2の累乗の整数のリストを返します。</p>
+</div></blockquote>
+</div></blockquote>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6: </span><code class="docutils literal notranslate"><span class="pre">Flag</span></code>, <code class="docutils literal notranslate"><span class="pre">IntFlag</span></code>, <code class="docutils literal notranslate"><span class="pre">auto</span></code></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11: </span><code class="docutils literal notranslate"><span class="pre">StrEnum</span></code>, <code class="docutils literal notranslate"><span class="pre">EnumCheck</span></code>, <code class="docutils literal notranslate"><span class="pre">ReprEnum</span></code>, <code class="docutils literal notranslate"><span class="pre">FlagBoundary</span></code>, <code class="docutils literal notranslate"><span class="pre">property</span></code>, <code class="docutils literal notranslate"><span class="pre">member</span></code>, <code class="docutils literal notranslate"><span class="pre">nonmember</span></code>, <code class="docutils literal notranslate"><span class="pre">global_enum</span></code>, <code class="docutils literal notranslate"><span class="pre">show_flag_values</span></code></p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="data-types">
+<h2>データ型<a class="headerlink" href="enum.html#data-types" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="enum.EnumType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">EnumType</span></span><a class="headerlink" href="enum.html#enum.EnumType" title="Link to this definition">¶</a></dt>
+<dd><p><em>EnumType</em> は <em>enum</em> 列挙型の <span class="xref std std-term">メタクラス</span> です。 <em>EnumType</em> のサブクラスを作成することが可能です -- 詳細は <a class="reference internal" href="../howto/enum.html#enumtype-examples"><span class="std std-ref">EnumTypeのサブクラスを作る</span></a> を参照してください。</p>
+<p><em>EnumType</em> is responsible for setting the correct <code class="xref py py-meth docutils literal notranslate"><span class="pre">__repr__()</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">__str__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__format__()</span></code>, and <code class="xref py py-meth docutils literal notranslate"><span class="pre">__reduce__()</span></code> methods on the
+final <em>enum</em>, as well as creating the enum members, properly handling
+duplicates, providing iteration over the enum class, etc.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.EnumType.__call__">
+<span class="sig-name descname"><span class="pre">__call__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.EnumType.__call__" title="Link to this definition">¶</a></dt>
+<dd><p>このメソッドは2つの異なる方法で呼び出されます。</p>
+<ul>
+<li><p>既存のメンバーを検索する:</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">cls<span class="colon">:</span></dt>
+<dd class="field-odd"><p>呼び出されるenumクラス。</p>
+</dd>
+<dt class="field-even">value<span class="colon">:</span></dt>
+<dd class="field-even"><p>検索する値。</p>
+</dd>
+</dl>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cls</span></code> を使って新しい列挙型を作成する（既存の列挙型がメンバーを持たない場合のみ）:</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">cls<span class="colon">:</span></dt>
+<dd class="field-odd"><p>呼び出されるenumクラス。</p>
+</dd>
+<dt class="field-even">value<span class="colon">:</span></dt>
+<dd class="field-even"><p>新しく作成するEnumの名前。</p>
+</dd>
+<dt class="field-odd">names<span class="colon">:</span></dt>
+<dd class="field-odd"><p>新しく作成するEnumのメンバーの名前/値のリスト。</p>
+</dd>
+<dt class="field-even">module<span class="colon">:</span></dt>
+<dd class="field-even"><p>新しく作成するEnumの属するモジュール名。</p>
+</dd>
+<dt class="field-odd">qualname<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The actual location in the module where this Enum can be found.</p>
+</dd>
+<dt class="field-even">type<span class="colon">:</span></dt>
+<dd class="field-even"><p>新しく作成するEnumのmix-in型。</p>
+</dd>
+<dt class="field-odd">start<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Enumの最初の整数値（<a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-class docutils literal notranslate"><span class="pre">auto</span></code></a> で使用されます）。</p>
+</dd>
+<dt class="field-even">boundary<span class="colon">:</span></dt>
+<dd class="field-even"><p>bit演算での範囲外の値の扱い方（<a class="reference internal" href="enum.html#enum.Flag" title="enum.Flag"><code class="xref py py-class docutils literal notranslate"><span class="pre">Flag</span></code></a> のみ）。</p>
+</dd>
+</dl>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.EnumType.__contains__">
+<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.EnumType.__contains__" title="Link to this definition">¶</a></dt>
+<dd><p>メンバーが <code class="docutils literal notranslate"><span class="pre">cls</span></code> に属している場合は <code class="docutils literal notranslate"><span class="pre">True</span></code> を返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">some_var</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">RED</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">some_var</span> <span class="ow">in</span> <span class="n">Color</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="o">.</span><span class="n">value</span> <span class="ow">in</span> <span class="n">Color</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.12 で変更: </span>Python 3.12 以前では、非Enumメンバーの包含判定が行われた場合、<code class="docutils literal notranslate"><span class="pre">TypeError</span></code> が送出されます。</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.EnumType.__dir__">
+<span class="sig-name descname"><span class="pre">__dir__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.EnumType.__dir__" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">['__class__',</span> <span class="pre">'__doc__',</span> <span class="pre">'__members__',</span> <span class="pre">'__module__']</span></code> と、 <em>cls</em> に属するメンバー名を返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">dir</span><span class="p">(</span><span class="n">Color</span><span class="p">)</span>
+<span class="go">[&#39;BLUE&#39;, &#39;GREEN&#39;, &#39;RED&#39;, &#39;__class__&#39;, &#39;__contains__&#39;, &#39;__doc__&#39;, &#39;__getitem__&#39;, &#39;__init_subclass__&#39;, &#39;__iter__&#39;, &#39;__len__&#39;, &#39;__members__&#39;, &#39;__module__&#39;, &#39;__name__&#39;, &#39;__qualname__&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.EnumType.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.EnumType.__getitem__" title="Link to this definition">¶</a></dt>
+<dd><p><em>cls</em> 内の一致するメンバーを返すか、<a class="reference internal" href="exceptions.html#KeyError" title="KeyError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">KeyError</span></code></a> を送出します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="p">[</span><span class="s1">&#39;BLUE&#39;</span><span class="p">]</span>
+<span class="go">&lt;Color.BLUE: 3&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.EnumType.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.EnumType.__iter__" title="Link to this definition">¶</a></dt>
+<dd><p>Returns each member in <em>cls</em> in definition order:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">Color</span><span class="p">)</span>
+<span class="go">[&lt;Color.RED: 1&gt;, &lt;Color.GREEN: 2&gt;, &lt;Color.BLUE: 3&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.EnumType.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.EnumType.__len__" title="Link to this definition">¶</a></dt>
+<dd><p><em>cls</em> 内のメンバーの数を返します。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">Color</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.EnumType.__members__">
+<span class="sig-name descname"><span class="pre">__members__</span></span><a class="headerlink" href="enum.html#enum.EnumType.__members__" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a mapping of every enum name to its member, including aliases</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.EnumType.__reversed__">
+<span class="sig-name descname"><span class="pre">__reversed__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.EnumType.__reversed__" title="Link to this definition">¶</a></dt>
+<dd><p><em>cls</em> 内の各メンバー を定義順の逆順で返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">Color</span><span class="p">))</span>
+<span class="go">[&lt;Color.BLUE: 3&gt;, &lt;Color.GREEN: 2&gt;, &lt;Color.RED: 1&gt;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11: </span>Before 3.11 <code class="docutils literal notranslate"><span class="pre">enum</span></code> used <code class="docutils literal notranslate"><span class="pre">EnumMeta</span></code> type, which is kept as an alias.</p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enum.Enum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">Enum</span></span><a class="headerlink" href="enum.html#enum.Enum" title="Link to this definition">¶</a></dt>
+<dd><p><em>Enum</em> は全ての <em>enum</em> 列挙型の基底クラスです。</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.Enum.name">
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="enum.html#enum.Enum.name" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">Enum</span></code> メンバーを定義するために使用される名前:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">BLUE</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;BLUE&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.Enum.value">
+<span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="enum.html#enum.Enum.value" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">Enum</span></code> メンバーに与えられた値:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="o">.</span><span class="n">value</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+<p>Value of the member, can be set in <a class="reference internal" href="enum.html#enum.Enum.__new__" title="enum.Enum.__new__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__new__()</span></code></a>.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>列挙型のメンバー値</p>
+<p>メンバー値は何であっても構いません: <a class="reference internal" href="functions.html#int" title="int"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> などなど。
+正確な値が重要でない場合は、 <a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-class docutils literal notranslate"><span class="pre">auto</span></code></a> インスタンスを使っておくと、適切な値が選ばれます。
+詳細は <a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-class docutils literal notranslate"><span class="pre">auto</span></code></a> を参照してください。</p>
+<p>While mutable/unhashable values, such as <a class="reference internal" href="stdtypes.html#dict" title="dict"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a>, <a class="reference internal" href="stdtypes.html#list" title="list"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> or
+a mutable <a class="reference internal" href="dataclasses.html#dataclasses.dataclass" title="dataclasses.dataclass"><code class="xref py py-class docutils literal notranslate"><span class="pre">dataclass</span></code></a>, can be used, they will have a
+quadratic performance impact during creation relative to the
+total number of mutable/unhashable values in the enum.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.Enum._name_">
+<span class="sig-name descname"><span class="pre">_name_</span></span><a class="headerlink" href="enum.html#enum.Enum._name_" title="Link to this definition">¶</a></dt>
+<dd><p>Name of the member.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.Enum._value_">
+<span class="sig-name descname"><span class="pre">_value_</span></span><a class="headerlink" href="enum.html#enum.Enum._value_" title="Link to this definition">¶</a></dt>
+<dd><p>Value of the member, can be set in <a class="reference internal" href="enum.html#enum.Enum.__new__" title="enum.Enum.__new__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__new__()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.Enum._order_">
+<span class="sig-name descname"><span class="pre">_order_</span></span><a class="headerlink" href="enum.html#enum.Enum._order_" title="Link to this definition">¶</a></dt>
+<dd><p>No longer used, kept for backward compatibility.
+(class attribute, removed during class creation).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.Enum._ignore_">
+<span class="sig-name descname"><span class="pre">_ignore_</span></span><a class="headerlink" href="enum.html#enum.Enum._ignore_" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">_ignore_</span></code> は列挙の作成中にのみ使用され、作成が完了すると削除されます。</p>
+<p><code class="docutils literal notranslate"><span class="pre">_ignore_</span></code> は、メンバーにならず、作成された列挙から削除される名前のリストです。例については、<a class="reference internal" href="../howto/enum.html#enum-time-period"><span class="std std-ref">TimePeriod</span></a> を参照してください。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Enum.__dir__">
+<span class="sig-name descname"><span class="pre">__dir__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Enum.__dir__" title="Link to this definition">¶</a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">['__class__',</span> <span class="pre">'__doc__',</span> <span class="pre">'__module__',</span> <span class="pre">'name',</span> <span class="pre">'value']</span></code> and
+any public methods defined on <em>self.__class__</em>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Weekday</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">MONDAY</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="n">TUESDAY</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">... </span>    <span class="n">WEDNESDAY</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">... </span>    <span class="n">THURSDAY</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">... </span>    <span class="n">FRIDAY</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">... </span>    <span class="n">SATURDAY</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="gp">... </span>    <span class="n">SUNDAY</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="gp">... </span>    <span class="nd">@classmethod</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">today</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;today is </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">cls</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">isoweekday</span><span class="p">())</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">dir</span><span class="p">(</span><span class="n">Weekday</span><span class="o">.</span><span class="n">SATURDAY</span><span class="p">)</span>
+<span class="go">[&#39;__class__&#39;, &#39;__doc__&#39;, &#39;__eq__&#39;, &#39;__hash__&#39;, &#39;__module__&#39;, &#39;name&#39;, &#39;today&#39;, &#39;value&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Enum._generate_next_value_">
+<span class="sig-name descname"><span class="pre">_generate_next_value_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">count</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Enum._generate_next_value_" title="Link to this definition">¶</a></dt>
+<dd><blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">name<span class="colon">:</span></dt>
+<dd class="field-odd"><p>定義されているメンバーの名前（例：'RED'）。</p>
+</dd>
+<dt class="field-even">start<span class="colon">:</span></dt>
+<dd class="field-even"><p>Enumの開始値。デフォルトは1です。</p>
+</dd>
+<dt class="field-odd">count<span class="colon">:</span></dt>
+<dd class="field-odd"><p>定義済みのメンバーの数。現在のメンバーを含めない。</p>
+</dd>
+<dt class="field-even">last_values<span class="colon">:</span></dt>
+<dd class="field-even"><p>定義済みの値のリスト。</p>
+</dd>
+</dl>
+</div></blockquote>
+<p><a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-class docutils literal notranslate"><span class="pre">auto</span></code></a> によって返される次の値を決定するために使用される <em>staticmethod</em>  です:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">auto</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">PowersOfThree</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nd">@staticmethod</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">_generate_next_value_</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">last_values</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="mi">3</span> <span class="o">**</span> <span class="p">(</span><span class="n">count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="n">FIRST</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">SECOND</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">PowersOfThree</span><span class="o">.</span><span class="n">SECOND</span><span class="o">.</span><span class="n">value</span>
+<span class="go">9</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Enum.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Enum.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>デフォルトでは何もしません。メンバーに複数の値が指定されている場合、それらの値は <code class="docutils literal notranslate"><span class="pre">__init__</span></code> の別々の引数となります。例えば、</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Weekday</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">MONDAY</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Mon&#39;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Weekday.__init__()</span></code> は <code class="docutils literal notranslate"><span class="pre">Weekday.__init__(self,</span> <span class="pre">1,</span> <span class="pre">'Mon')</span></code> として呼び出されます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Enum.__init_subclass__">
+<span class="sig-name descname"><span class="pre">__init_subclass__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Enum.__init_subclass__" title="Link to this definition">¶</a></dt>
+<dd><p>サブクラスを更に設定するために使用される <em>classmethod</em> です。デフォルトでは何も行いません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Enum._missing_">
+<span class="sig-name descname"><span class="pre">_missing_</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Enum._missing_" title="Link to this definition">¶</a></dt>
+<dd><p><em>cls</em> で見つからない値を検索するための <em>classmethod</em> です。デフォルトでは何もしませんが、カスタムの検索の振る舞いを実装するためにオーバーライドすることができます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">StrEnum</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Build</span><span class="p">(</span><span class="n">StrEnum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">DEBUG</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">OPTIMIZED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="nd">@classmethod</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">_missing_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+<span class="gp">... </span>        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">cls</span><span class="p">:</span>
+<span class="gp">... </span>            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="n">value</span><span class="p">:</span>
+<span class="gp">... </span>                <span class="k">return</span> <span class="n">member</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="kc">None</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Build</span><span class="o">.</span><span class="n">DEBUG</span><span class="o">.</span><span class="n">value</span>
+<span class="go">&#39;debug&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Build</span><span class="p">(</span><span class="s1">&#39;deBUG&#39;</span><span class="p">)</span>
+<span class="go">&lt;Build.DEBUG: &#39;debug&#39;&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Enum.__new__">
+<span class="sig-name descname"><span class="pre">__new__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Enum.__new__" title="Link to this definition">¶</a></dt>
+<dd><p>デフォルトでは存在しません。指定された場合、列挙型のクラス定義またはmix-inクラス（例えば <code class="docutils literal notranslate"><span class="pre">int</span></code> など）のいずれかで、メンバーに代入されたすべての値が渡されます。例:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyIntEnum</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">TWENTYSIX</span> <span class="o">=</span> <span class="s1">&#39;1a&#39;</span><span class="p">,</span> <span class="mi">16</span>
+</pre></div>
+</div>
+<p>results in the call <code class="docutils literal notranslate"><span class="pre">int('1a',</span> <span class="pre">16)</span></code> and a value of <code class="docutils literal notranslate"><span class="pre">26</span></code> for the member.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>When writing a custom <code class="docutils literal notranslate"><span class="pre">__new__</span></code>, do not use <code class="docutils literal notranslate"><span class="pre">super().__new__</span></code> --
+call the appropriate <code class="docutils literal notranslate"><span class="pre">__new__</span></code> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Enum.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Enum.__repr__" title="Link to this definition">¶</a></dt>
+<dd><p><em>repr()</em> の呼び出しに使用される文字列を返します。デフォルトでは、 <em>Enum</em> 名、メンバー名、および値を返しますが、オーバーライドすることもできます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">OtherStyle</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">ALTERNATE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">OTHER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">SOMETHING_ELSE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="n">cls_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cls_name</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">OtherStyle</span><span class="o">.</span><span class="n">ALTERNATE</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">OtherStyle</span><span class="o">.</span><span class="n">ALTERNATE</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OtherStyle</span><span class="o">.</span><span class="n">ALTERNATE</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="go">(OtherStyle.ALTERNATE, &#39;OtherStyle.ALTERNATE&#39;, &#39;OtherStyle.ALTERNATE&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Enum.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Enum.__str__" title="Link to this definition">¶</a></dt>
+<dd><p><em>str()</em> の呼び出しに使用される文字列を返します。デフォルトでは、 <em>Enum</em> の名前とメンバーの名前を返しますが、オーバーライドすることもできます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">OtherStyle</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">ALTERNATE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">OTHER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">SOMETHING_ELSE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">OtherStyle</span><span class="o">.</span><span class="n">ALTERNATE</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">OtherStyle</span><span class="o">.</span><span class="n">ALTERNATE</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OtherStyle</span><span class="o">.</span><span class="n">ALTERNATE</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="go">(&lt;OtherStyle.ALTERNATE: 1&gt;, &#39;ALTERNATE&#39;, &#39;ALTERNATE&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Enum.__format__">
+<span class="sig-name descname"><span class="pre">__format__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Enum.__format__" title="Link to this definition">¶</a></dt>
+<dd><p><em>format()</em> および <em>f-string</em> の呼び出しに使用される文字列を返します。デフォルトでは、<a class="reference internal" href="enum.html#enum.Enum.__str__" title="enum.Enum.__str__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__str__()</span></code></a> の戻り値を返しますが、オーバーライドすることもできます。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">OtherStyle</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">ALTERNATE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">OTHER</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">SOMETHING_ELSE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__format__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">OtherStyle</span><span class="o">.</span><span class="n">ALTERNATE</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">OtherStyle</span><span class="o">.</span><span class="n">ALTERNATE</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">OtherStyle</span><span class="o">.</span><span class="n">ALTERNATE</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="go">(&lt;OtherStyle.ALTERNATE: 1&gt;, &#39;OtherStyle.ALTERNATE&#39;, &#39;ALTERNATE&#39;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><a class="reference internal" href="enum.html#enum.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a> で <a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-class docutils literal notranslate"><span class="pre">auto</span></code></a> を使用すると、 <code class="docutils literal notranslate"><span class="pre">1</span></code> から始まりインクリメントする整数が値となります。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.12 で変更: </span><a class="reference internal" href="../howto/enum.html#enum-dataclass-support"><span class="std std-ref">データクラスのサポート</span></a> の追加</p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enum.IntEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">IntEnum</span></span><a class="headerlink" href="enum.html#enum.IntEnum" title="Link to this definition">¶</a></dt>
+<dd><p><em>IntEnum</em> is the same as <em>Enum</em>, but its members are also integers and can be
+used anywhere that an integer can be used.  If any integer operation is performed
+with an <em>IntEnum</em> member, the resulting value loses its enumeration status.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntEnum</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Number</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">ONE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="n">TWO</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">... </span>    <span class="n">THREE</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Number</span><span class="o">.</span><span class="n">THREE</span>
+<span class="go">&lt;Number.THREE: 3&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Number</span><span class="o">.</span><span class="n">ONE</span> <span class="o">+</span> <span class="n">Number</span><span class="o">.</span><span class="n">TWO</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Number</span><span class="o">.</span><span class="n">THREE</span> <span class="o">+</span> <span class="mi">5</span>
+<span class="go">8</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Number</span><span class="o">.</span><span class="n">THREE</span> <span class="o">==</span> <span class="mi">3</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><a class="reference internal" href="enum.html#enum.IntEnum" title="enum.IntEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a> で <a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-class docutils literal notranslate"><span class="pre">auto</span></code></a> を使用すると、 <code class="docutils literal notranslate"><span class="pre">1</span></code> から始まりインクリメントする整数が値となります。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.11 で変更: </span><a class="reference internal" href="../reference/datamodel.html#object.__str__" title="object.__str__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__str__()</span></code></a> は、既存の定数を置き換えるユースケースをより良くサポートするために <code class="xref py py-meth docutils literal notranslate"><span class="pre">int.__str__()</span></code> に変更されました。同じ理由で、<a class="reference internal" href="../reference/datamodel.html#object.__format__" title="object.__format__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__format__()</span></code></a> は既に <code class="xref py py-meth docutils literal notranslate"><span class="pre">int.__format__()</span></code> に変更されています。</p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enum.StrEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">StrEnum</span></span><a class="headerlink" href="enum.html#enum.StrEnum" title="Link to this definition">¶</a></dt>
+<dd><p><em>StrEnum</em> is the same as <em>Enum</em>, but its members are also strings and can be used
+in most of the same places that a string can be used.  The result of any string
+operation performed on or with a <em>StrEnum</em> member is not part of the enumeration.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>標準ライブラリの中には、 <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> の代わりに <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> のサブクラス（つまり、 <code class="docutils literal notranslate"><span class="pre">type(unknown)</span> <span class="pre">==</span> <span class="pre">str</span></code> の代わりに <code class="docutils literal notranslate"><span class="pre">isinstance(unknown,</span> <span class="pre">str)</span></code> ）を厳密にチェックする場所があります。そのような場所では、 <code class="docutils literal notranslate"><span class="pre">str(StrEnum.member)</span></code> を使用する必要があります。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><a class="reference internal" href="enum.html#enum.StrEnum" title="enum.StrEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></a> で <a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-class docutils literal notranslate"><span class="pre">auto</span></code></a> を使用すると、メンバー名を小文字に変換したものが値となります。</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><a class="reference internal" href="../reference/datamodel.html#object.__str__" title="object.__str__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__str__()</span></code></a> は <em>既存の定数の置換</em> ユースケースをより良くサポートするために <code class="xref py py-meth docutils literal notranslate"><span class="pre">str.__str__()</span></code> となりました。 <a class="reference internal" href="../reference/datamodel.html#object.__format__" title="object.__format__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__format__()</span></code></a> も同様に、同じ理由で <code class="xref py py-meth docutils literal notranslate"><span class="pre">str.__format__()</span></code> となりました。</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enum.Flag">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">Flag</span></span><a class="headerlink" href="enum.html#enum.Flag" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">Flag</span></code> は <a class="reference internal" href="enum.html#enum.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a> と同じですが、そのメンバーはビット単位演算子 <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> (<em>論理積</em>)、 <code class="docutils literal notranslate"><span class="pre">|</span></code> (<em>論理和</em>)、 <code class="docutils literal notranslate"><span class="pre">^</span></code> (<em>排他的論理和</em>)、 および <code class="docutils literal notranslate"><span class="pre">~</span></code> (<em>反転</em>) をサポートしています。これらの演算の結果は列挙型のメンバーです。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Flag.__contains__">
+<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Flag.__contains__" title="Link to this definition">¶</a></dt>
+<dd><p>値を含む場合に <em>True</em> を返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">auto</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">purple</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">RED</span> <span class="o">|</span> <span class="n">Color</span><span class="o">.</span><span class="n">BLUE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">white</span> <span class="o">=</span> <span class="n">Color</span><span class="o">.</span><span class="n">RED</span> <span class="o">|</span> <span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span> <span class="o">|</span> <span class="n">Color</span><span class="o">.</span><span class="n">BLUE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span> <span class="ow">in</span> <span class="n">purple</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span> <span class="ow">in</span> <span class="n">white</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">purple</span> <span class="ow">in</span> <span class="n">white</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">white</span> <span class="ow">in</span> <span class="n">purple</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__iter__(self):</span></span></dt>
+<dd><p>エイリアスでない、全てのメンバーを返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span><span class="p">)</span>
+<span class="go">[&lt;Color.RED: 1&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">purple</span><span class="p">)</span>
+<span class="go">[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 4&gt;]</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__len__(self):</span></span></dt>
+<dd><p>flag 内のメンバーの数を返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span><span class="p">)</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">white</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__bool__(self):</span></span></dt>
+<dd><p>メンバーがflagに含まれている場合は <em>True</em> を返し、それ以外の場合は <em>False</em> を返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">bool</span><span class="p">(</span><span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">bool</span><span class="p">(</span><span class="n">white</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">black</span> <span class="o">=</span> <span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">bool</span><span class="p">(</span><span class="n">black</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Flag.__or__">
+<span class="sig-name descname"><span class="pre">__or__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Flag.__or__" title="Link to this definition">¶</a></dt>
+<dd><p>現在のフラグと他のフラグの論理和となるフラグを返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span> <span class="o">|</span> <span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span>
+<span class="go">&lt;Color.RED|GREEN: 3&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Flag.__and__">
+<span class="sig-name descname"><span class="pre">__and__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Flag.__and__" title="Link to this definition">¶</a></dt>
+<dd><p>現在のフラグと他のフラグの論理積となるフラグを返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">purple</span> <span class="o">&amp;</span> <span class="n">white</span>
+<span class="go">&lt;Color.RED|BLUE: 5&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">purple</span> <span class="o">&amp;</span> <span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span>
+<span class="go">&lt;Color: 0&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Flag.__xor__">
+<span class="sig-name descname"><span class="pre">__xor__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Flag.__xor__" title="Link to this definition">¶</a></dt>
+<dd><p>現在のフラグと他のフラグの排他的論理和となるフラグを返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">purple</span> <span class="o">^</span> <span class="n">white</span>
+<span class="go">&lt;Color.GREEN: 2&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">purple</span> <span class="o">^</span> <span class="n">Color</span><span class="o">.</span><span class="n">GREEN</span>
+<span class="go">&lt;Color.RED|GREEN|BLUE: 7&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">__invert__(self):</span></span></dt>
+<dd><p>Returns all the flags in <em>type(self)</em> that are not in self:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="o">~</span><span class="n">white</span>
+<span class="go">&lt;Color: 0&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">~</span><span class="n">purple</span>
+<span class="go">&lt;Color.GREEN: 2&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="o">~</span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span>
+<span class="go">&lt;Color.GREEN|BLUE: 6&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="enum.Flag._numeric_repr_">
+<span class="sig-name descname"><span class="pre">_numeric_repr_</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.Flag._numeric_repr_" title="Link to this definition">¶</a></dt>
+<dd><p>Function used to format any remaining unnamed numeric values.  Default is
+the value's repr; common choices are <a class="reference internal" href="functions.html#hex" title="hex"><code class="xref py py-func docutils literal notranslate"><span class="pre">hex()</span></code></a> and <a class="reference internal" href="functions.html#oct" title="oct"><code class="xref py py-func docutils literal notranslate"><span class="pre">oct()</span></code></a>.</p>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-class docutils literal notranslate"><span class="pre">auto</span></code></a> と <a class="reference internal" href="enum.html#enum.Flag" title="enum.Flag"><code class="xref py py-class docutils literal notranslate"><span class="pre">Flag</span></code></a> を一緒に使うと、<code class="docutils literal notranslate"><span class="pre">1</span></code> から始まる2の累乗の整数になります。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.11 で変更: </span>値が0のフラグの <em>repr()</em> は変更されました。現在は以下のとおりです:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> 
+<span class="go">&lt;Color: 0&gt;</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enum.IntFlag">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">IntFlag</span></span><a class="headerlink" href="enum.html#enum.IntFlag" title="Link to this definition">¶</a></dt>
+<dd><p><em>IntFlag</em> is the same as <em>Flag</em>, but its members are also integers and can be
+used anywhere that an integer can be used.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">IntFlag</span><span class="p">,</span> <span class="n">auto</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span> <span class="o">&amp;</span> <span class="mi">2</span>
+<span class="go">&lt;Color: 0&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span> <span class="o">|</span> <span class="mi">2</span>
+<span class="go">&lt;Color.RED|GREEN: 3&gt;</span>
+</pre></div>
+</div>
+<p><em>IntFlag</em> のメンバーと整数の演算が行われた場合、結果は <em>IntFlag</em> ではありません:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="o">.</span><span class="n">RED</span> <span class="o">+</span> <span class="mi">2</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<p>If a <em>Flag</em> operation is performed with an <em>IntFlag</em> member and:</p>
+<ul class="simple">
+<li><p>結果が有効な <em>IntFlag</em>: <em>IntFlag</em> が返されます</p></li>
+<li><p>the result is not a valid <em>IntFlag</em>: the result depends on the <em>FlagBoundary</em> setting</p></li>
+</ul>
+<p>The <em>repr()</em> of unnamed zero-valued flags has changed.  It is now:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Color</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="go">&lt;Color: 0&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-class docutils literal notranslate"><span class="pre">auto</span></code></a> と <a class="reference internal" href="enum.html#enum.IntFlag" title="enum.IntFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a> を一緒に使うと、<code class="docutils literal notranslate"><span class="pre">1</span></code> から始まる2の累乗の整数になります。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.11 で変更: </span><a class="reference internal" href="../reference/datamodel.html#object.__str__" title="object.__str__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__str__()</span></code></a> は、既存の定数を置き換えるユースケースをより良くサポートするために <code class="xref py py-meth docutils literal notranslate"><span class="pre">int.__str__()</span></code> に変更されました。同じ理由で、<a class="reference internal" href="../reference/datamodel.html#object.__format__" title="object.__format__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__format__()</span></code></a> は既に <code class="xref py py-meth docutils literal notranslate"><span class="pre">int.__format__()</span></code> に変更されています。</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code> の反転は、与えられたフラグ以外のすべてのフラグの結合となる正の値を返すようになりました。これは既存の <a class="reference internal" href="enum.html#enum.Flag" title="enum.Flag"><code class="xref py py-class docutils literal notranslate"><span class="pre">Flag</span></code></a> の振る舞いに一致します。</p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enum.ReprEnum">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">ReprEnum</span></span><a class="headerlink" href="enum.html#enum.ReprEnum" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ReprEnum</span></code> uses the <a class="reference internal" href="enum.html#enum.Enum.__repr__" title="enum.Enum.__repr__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">repr()</span></code></a> of <a class="reference internal" href="enum.html#enum.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a>,
+but the <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str()</span></code></a> of the mixed-in data type:</p>
+<ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">int.__str__()</span></code> for <a class="reference internal" href="enum.html#enum.IntEnum" title="enum.IntEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a> and <a class="reference internal" href="enum.html#enum.IntFlag" title="enum.IntFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">str.__str__()</span></code> for <a class="reference internal" href="enum.html#enum.StrEnum" title="enum.StrEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></a></p></li>
+</ul>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">ReprEnum</span></code> を継承することで、<a class="reference internal" href="enum.html#enum.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a> デフォルトの <a class="reference internal" href="enum.html#enum.Enum.__str__" title="enum.Enum.__str__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str()</span></code></a>  を使用する代わりに、mix-inされたデータ型の <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str()</span></code></a>  /  <a class="reference internal" href="functions.html#format" title="format"><code class="xref py py-func docutils literal notranslate"><span class="pre">format()</span></code></a> を使用します。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enum.EnumCheck">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">EnumCheck</span></span><a class="headerlink" href="enum.html#enum.EnumCheck" title="Link to this definition">¶</a></dt>
+<dd><p><em>EnumCheck</em> には <a class="reference internal" href="enum.html#enum.verify" title="enum.verify"><code class="xref py py-func docutils literal notranslate"><span class="pre">verify()</span></code></a> デコレータやさまざまな制約を保証するために使用されるオプションが含まれています。制約に違反すると <a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> が発生します。</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.EnumCheck.UNIQUE">
+<span class="sig-name descname"><span class="pre">UNIQUE</span></span><a class="headerlink" href="enum.html#enum.EnumCheck.UNIQUE" title="Link to this definition">¶</a></dt>
+<dd><p>それぞれの値が1つの名前しか持たないことを確認します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">verify</span><span class="p">,</span> <span class="n">UNIQUE</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@verify</span><span class="p">(</span><span class="n">UNIQUE</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">... </span>    <span class="n">CRIMSON</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">aliases found in &lt;enum &#39;Color&#39;&gt;: CRIMSON -&gt; RED</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.EnumCheck.CONTINUOUS">
+<span class="sig-name descname"><span class="pre">CONTINUOUS</span></span><a class="headerlink" href="enum.html#enum.EnumCheck.CONTINUOUS" title="Link to this definition">¶</a></dt>
+<dd><p>最小値のメンバーと最大値のメンバーの間に欠損値がないことを確認します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">verify</span><span class="p">,</span> <span class="n">CONTINUOUS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@verify</span><span class="p">(</span><span class="n">CONTINUOUS</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">invalid enum &#39;Color&#39;: missing values 3, 4</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.EnumCheck.NAMED_FLAGS">
+<span class="sig-name descname"><span class="pre">NAMED_FLAGS</span></span><a class="headerlink" href="enum.html#enum.EnumCheck.NAMED_FLAGS" title="Link to this definition">¶</a></dt>
+<dd><p>任意のフラググループ/マスクが、名前付きフラグのみを含むことを確認します -- 値を指定するのではなく、<a class="reference internal" href="enum.html#enum.auto" title="enum.auto"><code class="xref py py-func docutils literal notranslate"><span class="pre">auto()</span></code></a> によって生成される場合に便利です:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">verify</span><span class="p">,</span> <span class="n">NAMED_FLAGS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@verify</span><span class="p">(</span><span class="n">NAMED_FLAGS</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">class</span> <span class="nc">Color</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="gp">... </span>    <span class="n">WHITE</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="gp">... </span>    <span class="n">NEON</span> <span class="o">=</span> <span class="mi">31</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">invalid Flag &#39;Color&#39;: aliases WHITE and NEON are missing combined values of 0x18 [use enum.show_flag_values(value) for details]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>CONTINUOUSとNAMED_FLAGSは整数値のメンバーとともに動作するように設計されています。</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="enum.FlagBoundary">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">FlagBoundary</span></span><a class="headerlink" href="enum.html#enum.FlagBoundary" title="Link to this definition">¶</a></dt>
+<dd><p><em>FlagBoundary</em> controls how out-of-range values are handled in <em>Flag</em> and its
+subclasses.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.FlagBoundary.STRICT">
+<span class="sig-name descname"><span class="pre">STRICT</span></span><a class="headerlink" href="enum.html#enum.FlagBoundary.STRICT" title="Link to this definition">¶</a></dt>
+<dd><p>範囲外の値は <a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> を送出します。これは <a class="reference internal" href="enum.html#enum.Flag" title="enum.Flag"><code class="xref py py-class docutils literal notranslate"><span class="pre">Flag</span></code></a> のデフォルトです:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">STRICT</span><span class="p">,</span> <span class="n">auto</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">StrictFlag</span><span class="p">(</span><span class="n">Flag</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="n">STRICT</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">StrictFlag</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">&lt;flag &#39;StrictFlag&#39;&gt; invalid value 20</span>
+<span class="x">    given 0b0 10100</span>
+<span class="x">  allowed 0b0 00111</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.FlagBoundary.CONFORM">
+<span class="sig-name descname"><span class="pre">CONFORM</span></span><a class="headerlink" href="enum.html#enum.FlagBoundary.CONFORM" title="Link to this definition">¶</a></dt>
+<dd><p>Out-of-range values have invalid values removed, leaving a valid <em>Flag</em>
+value:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">CONFORM</span><span class="p">,</span> <span class="n">auto</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">ConformFlag</span><span class="p">(</span><span class="n">Flag</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="n">CONFORM</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ConformFlag</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">&lt;ConformFlag.BLUE: 4&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.FlagBoundary.EJECT">
+<span class="sig-name descname"><span class="pre">EJECT</span></span><a class="headerlink" href="enum.html#enum.FlagBoundary.EJECT" title="Link to this definition">¶</a></dt>
+<dd><p>Out-of-range values lose their <em>Flag</em> membership and revert to <a class="reference internal" href="functions.html#int" title="int"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">EJECT</span><span class="p">,</span> <span class="n">auto</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">EjectFlag</span><span class="p">(</span><span class="n">Flag</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="n">EJECT</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">EjectFlag</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">20</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="enum.FlagBoundary.KEEP">
+<span class="sig-name descname"><span class="pre">KEEP</span></span><a class="headerlink" href="enum.html#enum.FlagBoundary.KEEP" title="Link to this definition">¶</a></dt>
+<dd><p>Out-of-range values are kept, and the <em>Flag</em> membership is kept.
+This is the default for <a class="reference internal" href="enum.html#enum.IntFlag" title="enum.IntFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a>:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">KEEP</span><span class="p">,</span> <span class="n">auto</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">KeepFlag</span><span class="p">(</span><span class="n">Flag</span><span class="p">,</span> <span class="n">boundary</span><span class="o">=</span><span class="n">KEEP</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">RED</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">GREEN</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">... </span>    <span class="n">BLUE</span> <span class="o">=</span> <span class="n">auto</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">KeepFlag</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">**</span><span class="mi">4</span><span class="p">)</span>
+<span class="go">&lt;KeepFlag.BLUE|16: 20&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+<hr class="docutils" />
+<section id="supported-dunder-names">
+<h3><code class="docutils literal notranslate"><span class="pre">__dunder__</span></code> 名のサポート<a class="headerlink" href="enum.html#supported-dunder-names" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="enum.html#enum.EnumType.__members__" title="enum.EnumType.__members__"><code class="xref py py-attr docutils literal notranslate"><span class="pre">__members__</span></code></a> は読み込み専用の、 <code class="docutils literal notranslate"><span class="pre">member_name</span></code>:<code class="docutils literal notranslate"><span class="pre">member</span></code>  を要素とする順序付きマッピングです。これはクラスでのみ利用可能です。</p>
+<p><a class="reference internal" href="enum.html#enum.Enum.__new__" title="enum.Enum.__new__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__new__()</span></code></a>, if specified, must create and return the enum members; it is
+also a very good idea to set the member's <code class="xref py py-attr docutils literal notranslate"><span class="pre">_value_</span></code> appropriately.  Once
+all the members are created it is no longer used.</p>
+</section>
+<section id="supported-sunder-names">
+<h3><code class="docutils literal notranslate"><span class="pre">_sunder_</span></code> 名のサポート<a class="headerlink" href="enum.html#supported-sunder-names" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><a class="reference internal" href="enum.html#enum.Enum._name_" title="enum.Enum._name_"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_name_</span></code></a> -- name of the member</p></li>
+<li><p><a class="reference internal" href="enum.html#enum.Enum._value_" title="enum.Enum._value_"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_value_</span></code></a> -- value of the member; can be set in <code class="docutils literal notranslate"><span class="pre">__new__</span></code></p></li>
+<li><p><a class="reference internal" href="enum.html#enum.Enum._missing_" title="enum.Enum._missing_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_missing_()</span></code></a> -- a lookup function used when a value is not found;
+may be overridden</p></li>
+<li><p><a class="reference internal" href="enum.html#enum.Enum._ignore_" title="enum.Enum._ignore_"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_ignore_</span></code></a> -- a list of names, either as a <a class="reference internal" href="stdtypes.html#list" title="list"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> or a
+<a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, that will not be transformed into members, and will be removed
+from the final class</p></li>
+<li><p><a class="reference internal" href="enum.html#enum.Enum._order_" title="enum.Enum._order_"><code class="xref py py-attr docutils literal notranslate"><span class="pre">_order_</span></code></a> -- no longer used, kept for backward
+compatibility (class attribute, removed during class creation)</p></li>
+<li><p><a class="reference internal" href="enum.html#enum.Enum._generate_next_value_" title="enum.Enum._generate_next_value_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_generate_next_value_()</span></code></a> -- used to get an appropriate value for
+an enum member; may be overridden</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>For standard <a class="reference internal" href="enum.html#enum.Enum" title="enum.Enum"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a> classes the next value chosen is the last value seen
+incremented by one.</p>
+<p>For <a class="reference internal" href="enum.html#enum.Flag" title="enum.Flag"><code class="xref py py-class docutils literal notranslate"><span class="pre">Flag</span></code></a> classes the next value chosen will be the next highest
+power-of-two, regardless of the last value seen.</p>
+</div>
+</li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6: </span><code class="docutils literal notranslate"><span class="pre">_missing_</span></code>, <code class="docutils literal notranslate"><span class="pre">_order_</span></code>, <code class="docutils literal notranslate"><span class="pre">_generate_next_value_</span></code></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.7: </span><code class="docutils literal notranslate"><span class="pre">_ignore_</span></code></p>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="utilities-and-decorators">
+<h2>ユーティリティとデコレータ<a class="headerlink" href="enum.html#utilities-and-decorators" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="enum.auto">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">auto</span></span><a class="headerlink" href="enum.html#enum.auto" title="Link to this definition">¶</a></dt>
+<dd><p><em>auto</em> can be used in place of a value.  If used, the <em>Enum</em> machinery will
+call an <em>Enum</em>'s <a class="reference internal" href="enum.html#enum.Enum._generate_next_value_" title="enum.Enum._generate_next_value_"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_generate_next_value_()</span></code></a> to get an appropriate value.
+For <em>Enum</em> and <em>IntEnum</em> that appropriate value will be the last value plus
+one; for <em>Flag</em> and <em>IntFlag</em> it will be the first power-of-two greater
+than the highest value; for <em>StrEnum</em> it will be the lower-cased version of
+the member's name.  Care must be taken if mixing <em>auto()</em> with manually
+specified values.</p>
+<p><em>auto</em> インスタンスは、代入のトップレベルでのみ解決されます。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FIRST</span> <span class="pre">=</span> <span class="pre">auto()</span></code> は動作します（auto() は <code class="docutils literal notranslate"><span class="pre">1</span></code> に置き換えられます）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">SECOND</span> <span class="pre">=</span> <span class="pre">auto(),</span> <span class="pre">-2</span></code> は動作します（auto は <code class="docutils literal notranslate"><span class="pre">2</span></code> に置き換えられるため、 <code class="docutils literal notranslate"><span class="pre">SECOND</span></code> 列挙型のメンバーには <code class="docutils literal notranslate"><span class="pre">2,</span> <span class="pre">-2</span></code> が使用されます）</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">THREE</span> <span class="pre">=</span> <span class="pre">[auto(),</span> <span class="pre">-3]</span></code> は動作 <em>しません</em> （enumメンバー <code class="docutils literal notranslate"><span class="pre">THREE</span></code> の作成に <code class="docutils literal notranslate"><span class="pre">&lt;auto</span> <span class="pre">instance&gt;,</span> <span class="pre">-3</span></code> が使用されます）</p></li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.11.1 で変更: </span>以前のバージョンでは、 <code class="docutils literal notranslate"><span class="pre">auto()</span></code> は、代入行に他のものがあると正しく動作しませんでした。</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">_generate_next_value_</span></code> は、 <em>auto</em> が使用する値をカスタマイズするためにオーバーライドすることができる。</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>3.13では、デフォルトの <code class="docutils literal notranslate"><span class="pre">_generate_next_value_</span></code> は常に最も高いメンバーの値に1を加えたものを返し、メンバーのいずれかが比較できない型である場合には失敗します。</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enum.property">
+<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">property</span></span><a class="headerlink" href="enum.html#enum.property" title="Link to this definition">¶</a></dt>
+<dd><p>A decorator similar to the built-in <em>property</em>, but specifically for
+enumerations.  It allows member attributes to have the same names as members
+themselves.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>the <em>property</em> and the member must be defined in separate classes;
+for example, the <em>value</em> and <em>name</em> attributes are defined in the
+<em>Enum</em> class, and <em>Enum</em> subclasses can define members with the
+names <code class="docutils literal notranslate"><span class="pre">value</span></code> and <code class="docutils literal notranslate"><span class="pre">name</span></code>.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enum.unique">
+<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">unique</span></span><a class="headerlink" href="enum.html#enum.unique" title="Link to this definition">¶</a></dt>
+<dd><p>列挙型専用の <a class="reference internal" href="../reference/compound_stmts.html#class"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">class</span></code></a> デコレーターです。列挙型の <a class="reference internal" href="enum.html#enum.EnumType.__members__" title="enum.EnumType.__members__"><code class="xref py py-attr docutils literal notranslate"><span class="pre">__members__</span></code></a> に別名がないかどうか検索します; 見つかった場合、<a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> が詳細情報とともに送出されます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">unique</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@unique</span>
+<span class="gp">... </span><span class="k">class</span> <span class="nc">Mistake</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">ONE</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">... </span>    <span class="n">TWO</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">... </span>    <span class="n">THREE</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">... </span>    <span class="n">FOUR</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">...</span>
+<span class="gt">Traceback (most recent call last):</span>
+<span class="c">...</span>
+<span class="gr">ValueError</span>: <span class="n">duplicate values found in &lt;enum &#39;Mistake&#39;&gt;: FOUR -&gt; THREE</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enum.verify">
+<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">verify</span></span><a class="headerlink" href="enum.html#enum.verify" title="Link to this definition">¶</a></dt>
+<dd><p>列挙型専用の <a class="reference internal" href="../reference/compound_stmts.html#class"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">class</span></code></a> デコレーターです。対象の列挙型に対してチェックを行う制約の指定には <a class="reference internal" href="enum.html#enum.EnumCheck" title="enum.EnumCheck"><code class="xref py py-class docutils literal notranslate"><span class="pre">EnumCheck</span></code></a> のメンバーが使用されます。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enum.member">
+<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">member</span></span><a class="headerlink" href="enum.html#enum.member" title="Link to this definition">¶</a></dt>
+<dd><p>列挙型で使用するデコレータ: 対象は列挙型のメンバー になります。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enum.nonmember">
+<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">nonmember</span></span><a class="headerlink" href="enum.html#enum.nonmember" title="Link to this definition">¶</a></dt>
+<dd><p>列挙型で使用するデコレータ: 対象は列挙型のメンバー になりません。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enum.global_enum">
+<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">global_enum</span></span><a class="headerlink" href="enum.html#enum.global_enum" title="Link to this definition">¶</a></dt>
+<dd><p>A decorator to change the <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-class docutils literal notranslate"><span class="pre">str()</span></code></a> and <a class="reference internal" href="functions.html#repr" title="repr"><code class="xref py py-func docutils literal notranslate"><span class="pre">repr()</span></code></a> of an enum
+to show its members as belonging to the module instead of its class.
+Should only be used when the enum members are exported
+to the module global namespace (see <a class="reference internal" href="re.html#re.RegexFlag" title="re.RegexFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">re.RegexFlag</span></code></a> for an example).</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="enum.show_flag_values">
+<span class="sig-prename descclassname"><span class="pre">enum.</span></span><span class="sig-name descname"><span class="pre">show_flag_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="enum.html#enum.show_flag_values" title="Link to this definition">¶</a></dt>
+<dd><p>フラグの <em>value</em> に含まれる全ての2の累乗の整数のリストを返します。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.11.</span></p>
+</div>
+</dd></dl>
+
+</section>
+<hr class="docutils" />
+<section id="notes">
+<h2>注釈<a class="headerlink" href="enum.html#notes" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="enum.html#enum.IntEnum" title="enum.IntEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a> 、 <a class="reference internal" href="enum.html#enum.StrEnum" title="enum.StrEnum"><code class="xref py py-class docutils literal notranslate"><span class="pre">StrEnum</span></code></a> 、 <a class="reference internal" href="enum.html#enum.IntFlag" title="enum.IntFlag"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a></p>
+<blockquote>
+<div><p>これらの3つの列挙型は、既存の整数ベースおよび文字列ベースの値の代替として設計されています。そのため、追加の制限があります:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">__str__</span></code> は、列挙型のメンバーの名前ではなく値を使用します</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">__format__</span></code> は <code class="docutils literal notranslate"><span class="pre">__str__</span></code> を使用するため、列挙型のメンバーの名前ではなく値を使用します</p></li>
+</ul>
+<p>もし、そのような制限が必要でない/望まない場合は、<code class="docutils literal notranslate"><span class="pre">int</span></code> または <code class="docutils literal notranslate"><span class="pre">str</span></code> タイプを継承して、カスタムの基底クラスを作成することができます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyIntEnum</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>または列挙型の中で適切な <a class="reference internal" href="stdtypes.html#str" title="str"><code class="xref py py-meth docutils literal notranslate"><span class="pre">str()</span></code></a> などを再代入することもできます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">IntEnum</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">MyIntEnum</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="fm">__str__</span> <span class="o">=</span> <span class="n">Enum</span><span class="o">.</span><span class="fm">__str__</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="enum.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code> --- 列挙型のサポート</a><ul>
+<li><a class="reference internal" href="enum.html#module-contents">モジュールコンテンツ</a></li>
+<li><a class="reference internal" href="enum.html#data-types">データ型</a><ul>
+<li><a class="reference internal" href="enum.html#supported-dunder-names"><code class="docutils literal notranslate"><span class="pre">__dunder__</span></code> 名のサポート</a></li>
+<li><a class="reference internal" href="enum.html#supported-sunder-names"><code class="docutils literal notranslate"><span class="pre">_sunder_</span></code> 名のサポート</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="enum.html#utilities-and-decorators">ユーティリティとデコレータ</a></li>
+<li><a class="reference internal" href="enum.html#notes">注釈</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="reprlib.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">reprlib</span></code> --- もう一つの <code class="xref py py-func docutils literal notranslate"><span class="pre">repr()</span></code> の実装</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="graphlib.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">graphlib</span></code> --- グラフ構造を操作する機能</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/enum.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="graphlib.html" title="graphlib --- グラフ構造を操作する機能"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="reprlib.html" title="reprlib --- もう一つの repr() の実装"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="datatypes.html" >データ型</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="enum.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">enum</span></code> --- 列挙型のサポート</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

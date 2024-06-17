@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="tkinter.tix --- Tkの拡張ウィジェット" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/tkinter.tix.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/tkinter/tix.py tkinter.tix(Tk Interface Extension) モジュールは豊富な追加ウィジェットを提供します。標準 Tk ライブラリには多くの有用なウィジェットがありますが、決して完全ではありません。 tkinter.tix ライブラリは、 HList 、 ComboBox 、 Control(別名SpinBox) および各種の..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/tkinter/tix.py tkinter.tix(Tk Interface Extension) モジュールは豊富な追加ウィジェットを提供します。標準 Tk ライブラリには多くの有用なウィジェットがありますが、決して完全ではありません。 tkinter.tix ライブラリは、 HList 、 ComboBox 、 Control(別名SpinBox) および各種の..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>tkinter.tix --- Tkの拡張ウィジェット &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="IDLE" href="idle.html" />
+    <link rel="prev" title="tkinter.ttk --- Tk のテーマ付きウィジェット" href="tkinter.ttk.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/tkinter.tix.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="tkinter.tix.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code> --- Tkの拡張ウィジェット</a><ul>
+<li><a class="reference internal" href="tkinter.tix.html#using-tix">Tixを使う</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#tix-widgets">Tixウィジェット</a><ul>
+<li><a class="reference internal" href="tkinter.tix.html#basic-widgets">基本ウィジェット</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#file-selectors">ファイルセレクタ</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#hierarchical-listbox">階層的リストボックス</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#tabular-listbox">表的リストボックス</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#manager-widgets">管理ウィジェット</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#image-types">画像タイプ</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#miscellaneous-widgets">その他のウィジェット</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#form-geometry-manager">ジオメトリマネジャを作る</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="tkinter.tix.html#tix-commands">Tixコマンド</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="tkinter.ttk.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.ttk</span></code> --- Tk のテーマ付きウィジェット</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="idle.html"
+                          title="次の章へ">IDLE</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/tkinter.tix.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="idle.html" title="IDLE"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="tkinter.ttk.html" title="tkinter.ttk --- Tk のテーマ付きウィジェット"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="tk.html" accesskey="U">Tk を用いたグラフィカルユーザーインターフェース</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="tkinter.tix.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code> --- Tkの拡張ウィジェット</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-tkinter.tix">
+<span id="tkinter-tix-extension-widgets-for-tk"></span><h1><a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> --- Tkの拡張ウィジェット<a class="headerlink" href="tkinter.tix.html#module-tkinter.tix" title="Link to this heading">¶</a></h1>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/tkinter/tix.py">Lib/tkinter/tix.py</a></p>
+<div class="deprecated" id="index-0">
+<p><span class="versionmodified deprecated">バージョン 3.6 で非推奨: </span>この Tk 拡張は保守されておらず、新しいコードでは使うべきではありません。
+その代わりに <a class="reference internal" href="tkinter.ttk.html#module-tkinter.ttk" title="tkinter.ttk: Tk themed widget set"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.ttk</span></code></a> を使ってください。</p>
+</div>
+<hr class="docutils" />
+<p><a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> (Tk Interface Extension) モジュールは豊富な追加ウィジェットを提供します。標準 Tk ライブラリには多くの有用なウィジェットがありますが、決して完全ではありません。 <a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> ライブラリは、<a class="reference internal" href="tkinter.tix.html#tkinter.tix.HList" title="tkinter.tix.HList"><code class="xref py py-class docutils literal notranslate"><span class="pre">HList</span></code></a> 、 <a class="reference internal" href="tkinter.tix.html#tkinter.tix.ComboBox" title="tkinter.tix.ComboBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComboBox</span></code></a> 、 <a class="reference internal" href="tkinter.tix.html#tkinter.tix.Control" title="tkinter.tix.Control"><code class="xref py py-class docutils literal notranslate"><span class="pre">Control</span></code></a> (別名SpinBox) および各種のスクロール可能なウィジェットなど、標準 Tk にはないが、一般的に必要とされるウィジェットの大部分を提供します。 <a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> には、<a class="reference internal" href="tkinter.tix.html#tkinter.tix.NoteBook" title="tkinter.tix.NoteBook"><code class="xref py py-class docutils literal notranslate"><span class="pre">NoteBook</span></code></a> 、 <a class="reference internal" href="tkinter.tix.html#tkinter.tix.FileEntry" title="tkinter.tix.FileEntry"><code class="xref py py-class docutils literal notranslate"><span class="pre">FileEntry</span></code></a> 、 <a class="reference internal" href="tkinter.tix.html#tkinter.tix.PanedWindow" title="tkinter.tix.PanedWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">PanedWindow</span></code></a> など、一般的に幅広い用途に役に立つたくさんのウィジェットも含まれています。それらは40以上あります。</p>
+<p>これら多くの新しいウィジェットと使うと、より便利でより直感的なユーザインターフェースを作成し、新しい相互作用テクニックをアプリケーションに導入することができます。アプリケーションとユーザに特有の要求に合うように、最も適切なアプリケーションウィジェットを選んでアプリケーションを設計できます。</p>
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<dl class="simple">
+<dt><a class="reference external" href="https://tix.sourceforge.net/">Tix Homepage</a></dt><dd><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">Tix</span></code> のホームページ。ここには追加ドキュメントとダウンロードへのリンクがあります。</p>
+</dd>
+<dt><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/">Tix Man Pages</a></dt><dd><p>manページと参考資料のオンライン版。</p>
+</dd>
+<dt><a class="reference external" href="https://tix.sourceforge.net/dist/current/docs/tix-book/tix.book.html">Tix Programming Guide</a></dt><dd><p>プログラマ用参考資料のオンライン版。</p>
+</dd>
+<dt><a class="reference external" href="https://tix.sourceforge.net/Tixapps/src/Tide.html">Tix Development Applications</a></dt><dd><p>Tix と Tkinter プログラムの開発のための Tix アプリケーション。 Tideアプリケーションは Tk または Tkinter に基づいて動作します。また、リモートで Tix/Tk/Tkinter アプリケーションを変更やデバッグするためのインスペクタ <strong class="program">TixInspect</strong> が含まれます。</p>
+</dd>
+</dl>
+</div>
+<section id="using-tix">
+<h2>Tixを使う<a class="headerlink" href="tkinter.tix.html#using-tix" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.Tk">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">Tk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">screenName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">className</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Tix'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.Tk" title="Link to this definition">¶</a></dt>
+<dd><p>主にアプリケーションのメインウィンドウを表すTixのトップレベルウィジェット。Tcl インタープリタが関連付けられます。</p>
+<p><a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> モジュールのクラスは <a class="reference internal" href="tkinter.html#module-tkinter" title="tkinter: Interface to Tcl/Tk for graphical user interfaces"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter</span></code></a> モジュールのクラスをサブクラス化します。前者は後者をインポートするので、モジュールを一つインポートするだけで <a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> を Tkinter と一緒に使うことができます。一般的に、 <a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> をインポートし、トップレベルでの <a class="reference internal" href="tkinter.html#tkinter.Tk" title="tkinter.Tk"><code class="xref py py-class docutils literal notranslate"><span class="pre">tkinter.Tk</span></code></a> への呼び出しは <code class="xref py py-class docutils literal notranslate"><span class="pre">tix.Tk</span></code> に置き換えるだけで済みます。次に例を示します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">tix</span>
+<span class="kn">from</span> <span class="nn">tkinter.constants</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">tix</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<p><a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> を使うためには、通常 Tk ウィジェットのインストールと平行して、Tix ウィジェットをインストールしなければなりません。インストールをテストするために、次のことを試してください:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">tix</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">tix</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+<span class="n">root</span><span class="o">.</span><span class="n">tk</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="s1">&#39;package require Tix&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="tix-widgets">
+<h2>Tixウィジェット<a class="headerlink" href="tkinter.tix.html#tix-widgets" title="Link to this heading">¶</a></h2>
+<p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/TixIntro.htm">Tix</a> は40個以上のウィジェットクラスを <a class="reference internal" href="tkinter.html#module-tkinter" title="tkinter: Interface to Tcl/Tk for graphical user interfaces"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter</span></code></a> のレパートリーに導入します。</p>
+<section id="basic-widgets">
+<h3>基本ウィジェット<a class="headerlink" href="tkinter.tix.html#basic-widgets" title="Link to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.Balloon">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">Balloon</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.Balloon" title="Link to this definition">¶</a></dt>
+<dd><p>ヘルプを提示するためにウィジェット上にポップアップする <a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixBalloon.htm">Balloon</a>。ユーザがカーソルをBalloonウィジェットが束縛されているウィジェット内部へ移動させたとき、説明のメッセージが付いた小さなポップアップウィンドウがスクリーン上に表示されます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.ButtonBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">ButtonBox</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.ButtonBox" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixButtonBox.htm">ButtonBox</a> ウィジェットは、<code class="docutils literal notranslate"><span class="pre">Ok</span> <span class="pre">Cancel</span></code> のためだけに普通は使われるようなボタンボックスを作成します。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.ComboBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">ComboBox</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.ComboBox" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixComboBox.htm">ComboBox</a> ウィジェットはMS Windowsのコンボボックスコントロールに似ています。ユーザはエントリ・サブウィジェットでタイプするか、リストボックス・サブウィジェットから選択するかのどちらかで選択肢を選びます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.Control">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">Control</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.Control" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixControl.htm">Control</a> ウィジェットは <code class="xref py py-class docutils literal notranslate"><span class="pre">SpinBox</span></code> ウィジェットとしても知られています。ユーザは二つの矢印ボタンを押すか、またはエントリに直接値を入力して値を調整します。新しい値をユーザが定義した上限と下限に対してチェックします。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.LabelEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">LabelEntry</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.LabelEntry" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixLabelEntry.htm">LabelEntry</a> ウィジェットはエントリウィジェットとラベルを一つのメガウィジェットにまとめたものです。&quot;記入形式&quot;型のインターフェースの作成を簡単に行うために使うことができます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.LabelFrame">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">LabelFrame</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.LabelFrame" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixLabelFrame.htm">LabelFrame</a> ウィジェットはフレームウィジェットとラベルを一つのメガウィジェットにまとめたものです。LabelFrameウィジェット内部にウィジェットを作成するためには、 <code class="xref py py-attr docutils literal notranslate"><span class="pre">frame</span></code> サブウィジェットに対して新しいウィジェットを作成し、それらを <code class="xref py py-attr docutils literal notranslate"><span class="pre">frame</span></code> サブウィジェット内部で取り扱います。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.Meter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">Meter</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.Meter" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixMeter.htm">Meter</a> ウィジェットは実行に時間のかかるバックグラウンド・ジョブの進み具合を表示するために使用できます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.OptionMenu">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">OptionMenu</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.OptionMenu" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixOptionMenu.htm">OptionMenu</a> はオプションのメニューボタンを作成します。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.PopupMenu">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">PopupMenu</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.PopupMenu" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixPopupMenu.htm">PopupMenu</a> ウィジェットは <code class="docutils literal notranslate"><span class="pre">tk_popup</span></code> コマンドの代替品として使用できます。 <code class="xref py py-mod docutils literal notranslate"><span class="pre">Tix</span></code> <a class="reference internal" href="tkinter.tix.html#tkinter.tix.PopupMenu" title="tkinter.tix.PopupMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">PopupMenu</span></code></a> ウィジェットの利点は、操作に必要なアプリケーション・コードが少ないことです。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.Select">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">Select</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.Select" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixSelect.htm">Select</a> ウィジェットはボタン・サブウィジェットのコンテナです。ユーザに対する選択オプションのラジオボックスまたはチェックボックス形式を提供するために利用することができます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.StdButtonBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">StdButtonBox</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.StdButtonBox" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixStdButtonBox.htm">StdButtonBox</a> ウィジェットは、Motif に似たダイアログボックスのための標準的なボタンのグループです。</p>
+</dd></dl>
+
+</section>
+<section id="file-selectors">
+<h3>ファイルセレクタ<a class="headerlink" href="tkinter.tix.html#file-selectors" title="Link to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.DirList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">DirList</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.DirList" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixDirList.htm">DirList</a> ウィジェットは、ディレクトリのリストビュー (上の階層のディレクトリとサブディレクトリ) を表示します。ユーザはリスト内に表示されたディレクトリの一つを選択したり、他のディレクトリへ変更したりできます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.DirTree">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">DirTree</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.DirTree" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixDirTree.htm">DirTree</a> ウィジェットはディレクトリのツリービュー (上の階層のディレクトリとそのサブディレクトリ) を表示します。ユーザはリスト内に表示されたディレクトリの一つを選択したり、他のディレクトリへ変更したりできます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.DirSelectDialog">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">DirSelectDialog</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.DirSelectDialog" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixDirSelectDialog.htm">DirSelectDialog</a> ウィジェットは、ダイアログウィンドウにファイルシステム内のディレクトリを提示します。ユーザはこのダイアログウィンドウを使用して、ファイルシステム内を移動して目的のディレクトリを選択することができます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.DirSelectBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">DirSelectBox</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.DirSelectBox" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="tkinter.tix.html#tkinter.tix.DirSelectBox" title="tkinter.tix.DirSelectBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">DirSelectBox</span></code></a> は標準 Motif(TM) ディレクトリ選択ボックスに似ています。ユーザがディレクトリを選択するために一般的に使われます。DirSelectBox は主に最近 ComboBox ウィジェットに選択されたディレクトリを保存し、すばやく再選択できるようにします。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.ExFileSelectBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">ExFileSelectBox</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.ExFileSelectBox" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixExFileSelectBox.htm">ExFileSelectBox</a> ウィジェットは、たいてい tixExFileSelectDialog ウィジェット内に組み込まれます。ユーザがファイルを選択するのに便利なメソッドを提供します。 <a class="reference internal" href="tkinter.tix.html#tkinter.tix.ExFileSelectBox" title="tkinter.tix.ExFileSelectBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ExFileSelectBox</span></code></a> ウィジェットのスタイルは、MS Windows 3.1 の標準ファイルダイアログにとてもよく似ています。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.FileSelectBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">FileSelectBox</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.FileSelectBox" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixFileSelectBox.htm">FileSelectBox</a> は標準的な Motif(TM) ファイル選択ボックスに似ています。通常、ユーザがファイルを選択するために使われます。FileSelectBox は、直近に <a class="reference internal" href="tkinter.tix.html#tkinter.tix.ComboBox" title="tkinter.tix.ComboBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ComboBox</span></code></a> ウィジェットに選択されたファイルを保存し、素早く再選択できるようにします。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.FileEntry">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">FileEntry</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.FileEntry" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixFileEntry.htm">FileEntry</a> ウィジェットは、ファイル名を入力するために使うことができます。ユーザはファイル名を手入力できます。その代わりに、エントリの横に並んでいるボタンウィジェットを押すと表示されるファイル選択ダイアログを使用することもできます。</p>
+</dd></dl>
+
+</section>
+<section id="hierarchical-listbox">
+<h3>階層的リストボックス<a class="headerlink" href="tkinter.tix.html#hierarchical-listbox" title="Link to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.HList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">HList</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.HList" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixHList.htm">HList</a> ウィジェットは階層構造をもつどんなデータ(例えば、ファイルシステムディレクトリツリー)でも表示するために使用できます。リストエントリは字下げされ、階層のそれぞれの場所に応じて分岐線で接続されます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.CheckList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">CheckList</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.CheckList" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixCheckList.htm">CheckList</a> ウィジェットは、ユーザが選ぶ項目のリストを表示します。CheckList は Tk のチェックリストやラジオボタンより多くの項目を扱うことができることを除いて、チェックボタンあるいはラジオボタンウィジェットと同じように動作します。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.Tree">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">Tree</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.Tree" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixTree.htm">Tree</a> ウィジェットは階層的なデータをツリー形式で表示するために使うことができます。ユーザはツリーの一部を開いたり閉じたりすることによって、ツリーの見えを調整できます。</p>
+</dd></dl>
+
+</section>
+<section id="tabular-listbox">
+<h3>表的リストボックス<a class="headerlink" href="tkinter.tix.html#tabular-listbox" title="Link to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.TList">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">TList</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.TList" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixTList.htm">TList</a> ウィジェットは、表形式でデータを表示するために使うことができます。 <a class="reference internal" href="tkinter.tix.html#tkinter.tix.TList" title="tkinter.tix.TList"><code class="xref py py-class docutils literal notranslate"><span class="pre">TList</span></code></a> ウィジェットのリスト・エントリは、Tkのリストボックス・ウィジェットのエントリに似ています。主な差は、(1) <a class="reference internal" href="tkinter.tix.html#tkinter.tix.TList" title="tkinter.tix.TList"><code class="xref py py-class docutils literal notranslate"><span class="pre">TList</span></code></a> ウィジェットはリスト・エントリを二次元形式で表示でき、(2) リスト・エントリに対して複数の色やフォントだけでなく画像も使うことができるということです。</p>
+</dd></dl>
+
+</section>
+<section id="manager-widgets">
+<h3>管理ウィジェット<a class="headerlink" href="tkinter.tix.html#manager-widgets" title="Link to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.PanedWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">PanedWindow</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.PanedWindow" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixPanedWindow.htm">PanedWindow</a> ウィジェットは、ユーザがいくつかのペインのサイズを対話的に操作できるようにします。ペインは垂直または水平のどちらかに配置されます。ユーザは二つのペインの間でリサイズ・ハンドルをドラッグしてペインの大きさを変更します。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.ListNoteBook">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">ListNoteBook</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.ListNoteBook" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixListNoteBook.htm">ListNoteBook</a> ウィジェットは、 <code class="xref py py-class docutils literal notranslate"><span class="pre">TixNoteBook</span></code> ウィジェットにとてもよく似ています。ノートのメタファを使って限られた空間をに多くのウィンドウを表示するために使われます。ノートはたくさんのページ(ウィンドウ)に分けられています。ある時には、これらのページの一つしか表示できません。ユーザは <code class="xref py py-attr docutils literal notranslate"><span class="pre">hlist</span></code> サブウィジェットの中の望みのページの名前を選択することによって、これらのページを切り替えることができます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.NoteBook">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">NoteBook</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.NoteBook" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixNoteBook.htm">NoteBook</a> ウィジェットは、ノートのメタファを多くのウィンドウを表示することができます。ノートはたくさんのページに分けられています。ある時には、これらのページの一つしか表示できません。ユーザは NoteBook ウィジェットの一番上にある目に見える&quot;タブ&quot;を選択することで、これらのページを切り替えることができます。</p>
+</dd></dl>
+
+</section>
+<section id="image-types">
+<h3>画像タイプ<a class="headerlink" href="tkinter.tix.html#image-types" title="Link to this heading">¶</a></h3>
+<p><a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> モジュールは次のものを追加します:</p>
+<ul class="simple">
+<li><p>全ての <a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> と <a class="reference internal" href="tkinter.html#module-tkinter" title="tkinter: Interface to Tcl/Tk for graphical user interfaces"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter</span></code></a> ウィジェットに対して XPM ファイルからカラー画像を作成する <a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/pixmap.htm">pixmap</a> 機能。</p>
+</li>
+<li><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/compound.htm">Compound</a> 画像タイプは複数の水平方向の線から構成される画像を作成するために使うことができます。それぞれの線は左から右に並べられた一連のアイテム(テキスト、ビットマップ、画像あるいは空白)から作られます。例えば、Tk の<code class="xref py py-class docutils literal notranslate"><span class="pre">Button</span></code> ウィジェットの中にビットマップとテキスト文字列を同時に表示するためにcompound画像は使うことができます。</p>
+</li>
+</ul>
+</section>
+<section id="miscellaneous-widgets">
+<h3>その他のウィジェット<a class="headerlink" href="tkinter.tix.html#miscellaneous-widgets" title="Link to this heading">¶</a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.InputOnly">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">InputOnly</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.InputOnly" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixInputOnly.htm">InputOnly</a> ウィジェットは、ユーザから入力を受け付けます。それは、<code class="docutils literal notranslate"><span class="pre">bind</span></code> コマンドを使って行われます(Unixのみ)。</p>
+</dd></dl>
+
+</section>
+<section id="form-geometry-manager">
+<h3>ジオメトリマネジャを作る<a class="headerlink" href="tkinter.tix.html#form-geometry-manager" title="Link to this heading">¶</a></h3>
+<p>加えて、 <a class="reference internal" href="tkinter.tix.html#module-tkinter.tix" title="tkinter.tix: Tk Extension Widgets for Tkinter"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code></a> は次のものを提供することで <a class="reference internal" href="tkinter.html#module-tkinter" title="tkinter: Interface to Tcl/Tk for graphical user interfaces"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter</span></code></a> を補強します:</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.Form">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">Form</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.Form" title="Link to this definition">¶</a></dt>
+<dd><p>すべての Tk ウィジェットに対する接続ルールに基づいた <a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tixForm.htm">Form</a> ジオメトリマネジャ。</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="tix-commands">
+<h2>Tixコマンド<a class="headerlink" href="tkinter.tix.html#tix-commands" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="tkinter.tix.tixCommand">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tkinter.tix.</span></span><span class="sig-name descname"><span class="pre">tixCommand</span></span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.tixCommand" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://tix.sourceforge.net/dist/current/man/html/TixCmd/tix.htm">tixコマンド</a> は <code class="xref py py-mod docutils literal notranslate"><span class="pre">Tix</span></code> の内部状態と <code class="xref py py-mod docutils literal notranslate"><span class="pre">Tix</span></code> アプリケーション・コンテキストのいろいろな要素へのアクセスを提供します。これらのメソッドによって操作される情報の大部分は、特定のウィンドウというよりむしろアプリケーション全体かスクリーンあるいはディスプレイに関するものです。</p>
+<p>現在の設定を見るための一般的な方法は:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tkinter</span> <span class="kn">import</span> <span class="n">tix</span>
+<span class="n">root</span> <span class="o">=</span> <span class="n">tix</span><span class="o">.</span><span class="n">Tk</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">tix_configure</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tkinter.tix.tixCommand.tix_configure">
+<span class="sig-prename descclassname"><span class="pre">tixCommand.</span></span><span class="sig-name descname"><span class="pre">tix_configure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cnf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kw</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_configure" title="Link to this definition">¶</a></dt>
+<dd><p>Tix アプリケーション・コンテキストの設定オプションを問い合わせたり、変更したりします。オプションが指定されなければ、利用可能なオプションすべてのディクショナリを返します。オプションが値なしで指定された場合は、メソッドは指定されたオプションを説明するリストを返します(このリストはオプションが指定されていない場合に返される値に含まれている、指定されたオプションに対応するサブリストと同一です)。一つ以上のオプション-値のペアが指定された場合は、メソッドは与えられたオプションが与えられた値を持つように変更します。この場合は、メソッドは空文字列を返します。オプションは設定オプションのどれでも構いません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tkinter.tix.tixCommand.tix_cget">
+<span class="sig-prename descclassname"><span class="pre">tixCommand.</span></span><span class="sig-name descname"><span class="pre">tix_cget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">option</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_cget" title="Link to this definition">¶</a></dt>
+<dd><p><em>option</em> によって与えられた設定オプションの現在の値を返します。オプションは設定オプションのどれでも構いません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tkinter.tix.tixCommand.tix_getbitmap">
+<span class="sig-prename descclassname"><span class="pre">tixCommand.</span></span><span class="sig-name descname"><span class="pre">tix_getbitmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_getbitmap" title="Link to this definition">¶</a></dt>
+<dd><p>ビットマップディレクトリの一つの中の <code class="docutils literal notranslate"><span class="pre">name.xpm</span></code> または <code class="docutils literal notranslate"><span class="pre">name</span></code> と言う名前のビットマップファイルの場所を見つけ出します (<a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_addbitmapdir" title="tkinter.tix.tixCommand.tix_addbitmapdir"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_addbitmapdir()</span></code></a> メソッドを参照してください)。 <a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_getbitmap" title="tkinter.tix.tixCommand.tix_getbitmap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_getbitmap()</span></code></a> を使うことで、アプリケーションにビットマップファイルのパス名をハードコーディングすることを避けることができます。成功すれば、文字 <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> を先頭に付けたビットマップファイルの完全なパス名を返します。戻り値をTkとTixウィジェットの <code class="docutils literal notranslate"><span class="pre">bitmap</span></code> オプションを設定するために使うことができます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tkinter.tix.tixCommand.tix_addbitmapdir">
+<span class="sig-prename descclassname"><span class="pre">tixCommand.</span></span><span class="sig-name descname"><span class="pre">tix_addbitmapdir</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_addbitmapdir" title="Link to this definition">¶</a></dt>
+<dd><p>Tix は <a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_getimage" title="tkinter.tix.tixCommand.tix_getimage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_getimage()</span></code></a> と <a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_getbitmap" title="tkinter.tix.tixCommand.tix_getbitmap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_getbitmap()</span></code></a> メソッドが画像ファイルを検索する検索先ディレクトリのリストを保持しています。標準ビットマップディレクトリは <code class="file docutils literal notranslate"><span class="pre">$TIX_LIBRARY/bitmaps</span></code> です。 <a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_addbitmapdir" title="tkinter.tix.tixCommand.tix_addbitmapdir"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_addbitmapdir()</span></code></a> メソッドは <em>directory</em> をこのリストに追加します。そのメソッドを使うことによって、<a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_getimage" title="tkinter.tix.tixCommand.tix_getimage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_getimage()</span></code></a> または <a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_getbitmap" title="tkinter.tix.tixCommand.tix_getbitmap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_getbitmap()</span></code></a> メソッドを使ってアプリケーションの画像ファイルも見つけることができます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tkinter.tix.tixCommand.tix_filedialog">
+<span class="sig-prename descclassname"><span class="pre">tixCommand.</span></span><span class="sig-name descname"><span class="pre">tix_filedialog</span></span><span class="sig-paren">(</span><span class="optional">[</span><em class="sig-param"><span class="n"><span class="pre">dlgclass</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_filedialog" title="Link to this definition">¶</a></dt>
+<dd><p>このアプリケーションからの異なる呼び出しの間で共有される可能性があるファイル選択ダイアログを返します。最初に呼ばれた時に、このメソッドはファイル選択ダイアログ・ウィジェットを作成します。このダイアログはその後のすべての <a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_filedialog" title="tkinter.tix.tixCommand.tix_filedialog"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_filedialog()</span></code></a> への呼び出しで返されます。オプションの dlgclass パラメータは、要求されているファイル選択ダイアログ・ウィジェットの型を指定するために文字列として渡されます。指定可能なオプションは <code class="docutils literal notranslate"><span class="pre">tix</span></code> 、 <code class="docutils literal notranslate"><span class="pre">FileSelectDialog</span></code> あるいは <code class="docutils literal notranslate"><span class="pre">tixExFileSelectDialog</span></code> です。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tkinter.tix.tixCommand.tix_getimage">
+<span class="sig-prename descclassname"><span class="pre">tixCommand.</span></span><span class="sig-name descname"><span class="pre">tix_getimage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_getimage" title="Link to this definition">¶</a></dt>
+<dd><p>ビットマップディレクトリの一つの中の <code class="file docutils literal notranslate"><span class="pre">name.xpm</span></code> 、 <code class="file docutils literal notranslate"><span class="pre">name.xbm</span></code> または <code class="file docutils literal notranslate"><span class="pre">name.ppm</span></code> という名前の画像ファイルの場所を見つけ出します(上の <a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_addbitmapdir" title="tkinter.tix.tixCommand.tix_addbitmapdir"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_addbitmapdir()</span></code></a> メソッドを参照してください)。同じ名前(だが異なる拡張子)のファイルが一つ以上ある場合は、画像のタイプがXディスプレイの深さに応じて選択されます。xbm画像はモノクロディスプレイの場合に選択され、カラー画像はカラーディスプレイの場合に選択されます。 <a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_getimage" title="tkinter.tix.tixCommand.tix_getimage"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_getimage()</span></code></a> を使うことによって、アプリケーションに画像ファイルのパス名をハードコーディングすることを避けられます。成功すれば、このメソッドは新たに作成した画像の名前を返し、Tk と Tix ウィジェットの <code class="docutils literal notranslate"><span class="pre">image</span></code> オプションを設定するためにそれを使うことができます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tkinter.tix.tixCommand.tix_option_get">
+<span class="sig-prename descclassname"><span class="pre">tixCommand.</span></span><span class="sig-name descname"><span class="pre">tix_option_get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_option_get" title="Link to this definition">¶</a></dt>
+<dd><p>Tixのスキーム・メカニズムによって保持されているオプションを得ます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tkinter.tix.tixCommand.tix_resetoptions">
+<span class="sig-prename descclassname"><span class="pre">tixCommand.</span></span><span class="sig-name descname"><span class="pre">tix_resetoptions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newScheme</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newFontSet</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">newScmPrio</span></span></em><span class="optional">]</span><span class="sig-paren">)</span><a class="headerlink" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_resetoptions" title="Link to this definition">¶</a></dt>
+<dd><p>Tix アプリケーションのスキームとフォントセットをそれぞれ <em>newScheme</em> と <em>newFontSet</em> に再設定します。この設定は、この呼び出し後に作成されたウィジェットだけに影響します。そのため、Tix アプリケーションのどのウィジェットを作成する前にも resetoptions メソッドを呼び出すのが良い方法です。</p>
+<p>オプション・パラメータ <em>newScmPrio</em> を、Tix スキームによって設定される Tk オプションの優先度レベルを再設定するために与えることができます。</p>
+<p>Tk が X オプションデータベースを扱う方法のため、Tix がインポートされ初期化された後に、カラースキームとフォントセットを <code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_config()</span></code> メソッドを使って再設定することはできません。したがって、 <a class="reference internal" href="tkinter.tix.html#tkinter.tix.tixCommand.tix_resetoptions" title="tkinter.tix.tixCommand.tix_resetoptions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">tix_resetoptions()</span></code></a> メソッドを代わりに使わなければならないのです。</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="tkinter.tix.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code> --- Tkの拡張ウィジェット</a><ul>
+<li><a class="reference internal" href="tkinter.tix.html#using-tix">Tixを使う</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#tix-widgets">Tixウィジェット</a><ul>
+<li><a class="reference internal" href="tkinter.tix.html#basic-widgets">基本ウィジェット</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#file-selectors">ファイルセレクタ</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#hierarchical-listbox">階層的リストボックス</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#tabular-listbox">表的リストボックス</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#manager-widgets">管理ウィジェット</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#image-types">画像タイプ</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#miscellaneous-widgets">その他のウィジェット</a></li>
+<li><a class="reference internal" href="tkinter.tix.html#form-geometry-manager">ジオメトリマネジャを作る</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="tkinter.tix.html#tix-commands">Tixコマンド</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="tkinter.ttk.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.ttk</span></code> --- Tk のテーマ付きウィジェット</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="idle.html"
+                          title="次の章へ">IDLE</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/tkinter.tix.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="idle.html" title="IDLE"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="tkinter.ttk.html" title="tkinter.ttk --- Tk のテーマ付きウィジェット"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="tk.html" >Tk を用いたグラフィカルユーザーインターフェース</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="tkinter.tix.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tkinter.tix</span></code> --- Tkの拡張ウィジェット</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

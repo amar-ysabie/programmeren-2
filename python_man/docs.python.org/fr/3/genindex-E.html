@@ -1,0 +1,927 @@
+
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; Documentation Python 3.12.4</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="_static/documentation_options.js%3Fv=6f87fcbb"></script>
+    <script src="_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="_static/translations.js%3Fv=bf059b8c"></script>
+    
+    <script src="_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Recherchez dans Documentation Python 3.12.4"
+          href="_static/opensearch.xml"/>
+    <link rel="author" title="À propos de ces documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../3/genindex-E.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="_static/py.svg" />
+            <script type="text/javascript" src="_static/copybutton.js"></script>
+            <script type="text/javascript" src="_static/menu.js"></script>
+            <script type="text/javascript" src="_static/search-focus.js"></script>
+            <script type="text/javascript" src="_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" />
+                <input type="submit" value="Go"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+
+          <li><img src="_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+        <li class="nav-item nav-item-this"><a href="genindex-E.html">Index</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+
+<h1 id="index">Index &ndash; E</h1>
+
+<table style="width: 100%" class="indextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="library/errno.html#errno.ESPIPE">ESPIPE (dans le module errno)</a>
+</li>
+      <li><a href="library/errno.html#errno.ESRCH">ESRCH (dans le module errno)</a>
+</li>
+      <li><a href="library/errno.html#errno.ESRMNT">ESRMNT (dans le module errno)</a>
+</li>
+      <li><a href="library/errno.html#errno.ESTALE">ESTALE (dans le module errno)</a>
+</li>
+      <li><a href="library/errno.html#errno.ESTRPIPE">ESTRPIPE (dans le module errno)</a>
+</li>
+      <li><a href="library/curses.ascii.html#curses.ascii.ETB">ETB (dans le module curses.ascii)</a>
+</li>
+      <li><a href="library/socket.html#socket.ETH_P_ALL">ETH_P_ALL (dans le module socket)</a>
+</li>
+      <li><a href="library/socket.html#socket.ETHERTYPE_ARP">ETHERTYPE_ARP (dans le module socket)</a>
+</li>
+      <li><a href="library/socket.html#socket.ETHERTYPE_IP">ETHERTYPE_IP (dans le module socket)</a>
+</li>
+      <li><a href="library/socket.html#socket.ETHERTYPE_IPV6">ETHERTYPE_IPV6 (dans le module socket)</a>
+</li>
+      <li><a href="library/socket.html#socket.ETHERTYPE_VLAN">ETHERTYPE_VLAN (dans le module socket)</a>
+</li>
+      <li><a href="library/errno.html#errno.ETIME">ETIME (dans le module errno)</a>
+</li>
+      <li><a href="library/errno.html#errno.ETIMEDOUT">ETIMEDOUT (dans le module errno)</a>
+</li>
+      <li><a href="library/decimal.html#decimal.Context.Etiny">Etiny() (méthode decimal.Context)</a>
+</li>
+      <li><a href="library/errno.html#errno.ETOOMANYREFS">ETOOMANYREFS (dans le module errno)</a>
+</li>
+      <li><a href="library/decimal.html#decimal.Context.Etop">Etop() (méthode decimal.Context)</a>
+</li>
+      <li><a href="library/curses.ascii.html#curses.ascii.ETX">ETX (dans le module curses.ascii)</a>
+</li>
+      <li><a href="library/errno.html#errno.ETXTBSY">ETXTBSY (dans le module errno)</a>
+</li>
+      <li><a href="library/errno.html#errno.EUCLEAN">EUCLEAN (dans le module errno)</a>
+</li>
+      <li><a href="library/errno.html#errno.EUNATCH">EUNATCH (dans le module errno)</a>
+</li>
+      <li><a href="library/errno.html#errno.EUSERS">EUSERS (dans le module errno)</a>
+</li>
+      <li>
+    eval
+
+      <ul>
+        <li><a href="library/pprint.html#index-0">built-in function</a>, <a href="library/pprint.html#index-2">[1]</a>, <a href="library/stdtypes.html#index-64">[2]</a>
+</li>
+        <li><a href="reference/simple_stmts.html#index-44">fonction native</a>, <a href="reference/toplevel_components.html#index-6">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    eval()
+
+      <ul>
+        <li><a href="library/functions.html#eval">built-in function</a>
+</li>
+      </ul></li>
+      <li><a href="library/asyncio-sync.html#asyncio.Event">Event (classe dans asyncio)</a>
+
+      <ul>
+        <li><a href="library/multiprocessing.html#multiprocessing.Event">(classe dans multiprocessing)</a>
+</li>
+        <li><a href="library/threading.html#threading.Event">(classe dans threading)</a>
+</li>
+      </ul></li>
+      <li><a href="library/sched.html#index-0">event scheduling</a>
+</li>
+      <li><a href="library/msilib.html#msilib.Control.event">event() (méthode msilib.Control)</a>
+</li>
+      <li><a href="library/multiprocessing.html#multiprocessing.managers.SyncManager.Event">Event() (méthode multiprocessing.managers.SyncManager)</a>
+</li>
+      <li><a href="library/selectors.html#selectors.EVENT_READ">EVENT_READ (dans le module selectors)</a>
+</li>
+      <li><a href="library/selectors.html#selectors.EVENT_WRITE">EVENT_WRITE (dans le module selectors)</a>
+</li>
+      <li><a href="library/os.html#os.eventfd">eventfd() (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.eventfd_read">eventfd_read() (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.eventfd_write">eventfd_write() (dans le module os)</a>
+</li>
+      <li><a href="library/selectors.html#selectors.SelectorKey.events">events (attribut selectors.SelectorKey)</a>
+
+      <ul>
+        <li><a href="library/tkinter.html#index-5">(widgets)</a>
+</li>
+      </ul></li>
+      <li><a href="library/errno.html#errno.EWOULDBLOCK">EWOULDBLOCK (dans le module errno)</a>
+</li>
+      <li><a href="library/os.html#os.EX_CANTCREAT">EX_CANTCREAT (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_CONFIG">EX_CONFIG (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_DATAERR">EX_DATAERR (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_IOERR">EX_IOERR (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_NOHOST">EX_NOHOST (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_NOINPUT">EX_NOINPUT (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_NOPERM">EX_NOPERM (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_NOTFOUND">EX_NOTFOUND (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_NOUSER">EX_NOUSER (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_OK">EX_OK (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_OSERR">EX_OSERR (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_OSFILE">EX_OSFILE (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_PROTOCOL">EX_PROTOCOL (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_SOFTWARE">EX_SOFTWARE (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_TEMPFAIL">EX_TEMPFAIL (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_UNAVAILABLE">EX_UNAVAILABLE (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.EX_USAGE">EX_USAGE (dans le module os)</a>
+</li>
+      <li><a href="library/doctest.html#doctest.DocTestFailure.example">example (attribut doctest.DocTestFailure)</a>
+
+      <ul>
+        <li><a href="library/doctest.html#doctest.UnexpectedException.example">(attribut doctest.UnexpectedException)</a>
+</li>
+      </ul></li>
+      <li><a href="library/doctest.html#doctest.Example">Example (classe dans doctest)</a>
+</li>
+      <li><a href="library/doctest.html#doctest.DocTest.examples">examples (attribut doctest.DocTest)</a>
+</li>
+      <li><a href="library/doctest.html#doctest.UnexpectedException.exc_info">exc_info (attribut doctest.UnexpectedException)</a>
+
+      <ul>
+        <li><a href="c-api/intro.html#index-13">(in module sys)</a>, <a href="reference/datamodel.html#index-66">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="library/sys.html#sys.exc_info">exc_info() (dans le module sys)</a>
+</li>
+      <li><a href="library/doctest.html#doctest.Example.exc_msg">exc_msg (attribut doctest.Example)</a>
+</li>
+      <li><a href="library/traceback.html#traceback.TracebackException.exc_type">exc_type (attribut traceback.TracebackException)</a>
+</li>
+      <li><a href="library/csv.html#csv.excel">excel (classe dans csv)</a>
+</li>
+      <li><a href="library/csv.html#csv.excel_tab">excel_tab (classe dans csv)</a>
+</li>
+      <li>
+    except
+
+      <ul>
+        <li><a href="reference/compound_stmts.html#index-9">mot-clé</a>
+</li>
+        <li><a href="library/exceptions.html#index-0">statement</a>
+</li>
+      </ul></li>
+      <li><a href="library/2to3.html#to3fixer-except">except (2to3 fixer)</a>
+</li>
+      <li>
+    except_star
+
+      <ul>
+        <li><a href="reference/compound_stmts.html#index-12">mot-clé</a>
+</li>
+      </ul></li>
+      <li><a href="library/ast.html#ast.ExceptHandler">ExceptHandler (classe dans ast)</a>
+</li>
+      <li><a href="library/sys.html#sys.excepthook">excepthook() (dans le module sys)</a>
+
+      <ul>
+        <li><a href="library/threading.html#threading.excepthook">(dans le module threading)</a>
+</li>
+        <li><a href="library/cgitb.html#index-2">(in module sys)</a>
+</li>
+      </ul></li>
+      <li><a href="library/exceptions.html#Exception">Exception</a>
+</li>
+      <li><a href="reference/executionmodel.html#index-14">exception</a>, <a href="reference/simple_stmts.html#index-27">[1]</a>
+
+      <ul>
+        <li><a href="reference/simple_stmts.html#index-19">AssertionError</a>
+</li>
+        <li><a href="reference/expressions.html#index-40">AttributeError</a>
+</li>
+        <li><a href="library/exceptions.html#index-2">chaining</a>
+</li>
+        <li><a href="reference/simple_stmts.html#index-29">chaîner</a>
+</li>
+        <li><a href="reference/expressions.html#index-33">GeneratorExit</a>, <a href="reference/expressions.html#index-37">[1]</a>
+</li>
+        <li><a href="reference/datamodel.html#index-66">handler</a>
+</li>
+        <li><a href="reference/simple_stmts.html#index-34">ImportError</a>
+</li>
+        <li><a href="reference/simple_stmts.html#index-27">lever</a>
+</li>
+        <li><a href="reference/expressions.html#index-4">NameError</a>
+</li>
+        <li><a href="reference/expressions.html#index-36">StopAsyncIteration</a>
+</li>
+        <li><a href="reference/expressions.html#index-32">StopIteration</a>, <a href="reference/simple_stmts.html#index-26">[1]</a>
+</li>
+        <li><a href="reference/expressions.html#index-63">TypeError</a>
+</li>
+        <li><a href="reference/expressions.html#index-72">ValueError</a>
+</li>
+        <li><a href="reference/expressions.html#index-67">ZeroDivisionError</a>
+</li>
+      </ul></li>
+      <li><a href="library/tkinter.html#tkinter.EXCEPTION">EXCEPTION (dans le module _tkinter)</a>
+</li>
+      <li><a href="reference/executionmodel.html#index-15">exception handler</a>
+</li>
+      <li><a href="library/logging.html#logging.exception">exception() (dans le module logging)</a>
+
+      <ul>
+        <li><a href="library/sys.html#sys.exception">(dans le module sys)</a>
+</li>
+        <li><a href="library/asyncio-future.html#asyncio.Future.exception">(méthode asyncio.Future)</a>
+</li>
+        <li><a href="library/asyncio-task.html#asyncio.Task.exception">(méthode asyncio.Task)</a>
+</li>
+        <li><a href="library/concurrent.futures.html#concurrent.futures.Future.exception">(méthode concurrent.futures.Future)</a>
+</li>
+        <li><a href="library/logging.html#logging.Logger.exception">(méthode logging.Logger)</a>
+</li>
+      </ul></li>
+      <li><a href="library/sys.monitoring.html#monitoring-event-EXCEPTION_HANDLED">EXCEPTION_HANDLED (monitoring event)</a>
+</li>
+      <li><a href="library/exceptions.html#ExceptionGroup">ExceptionGroup</a>
+</li>
+      <li>
+    exceptions
+
+      <ul>
+        <li><a href="library/cgitb.html#index-0">in CGI scripts</a>
+</li>
+      </ul></li>
+      <li><a href="library/exceptions.html#BaseExceptionGroup.exceptions">exceptions (attribut BaseExceptionGroup)</a>
+
+      <ul>
+        <li><a href="library/traceback.html#traceback.TracebackException.exceptions">(attribut traceback.TracebackException)</a>
+</li>
+      </ul></li>
+      <li><a href="library/token.html#token.EXCLAMATION">EXCLAMATION (dans le module token)</a>
+</li>
+      <li>
+    exclusif
+
+      <ul>
+        <li><a href="reference/expressions.html#index-75">ou</a>
+</li>
+      </ul></li>
+      <li><a href="library/errno.html#errno.EXDEV">EXDEV (dans le module errno)</a>
+</li>
+      <li>
+    exec
+
+      <ul>
+        <li><a href="library/stdtypes.html#index-64">built-in function</a>
+</li>
+        <li><a href="library/functions.html#index-2">fonction native</a>, <a href="reference/simple_stmts.html#index-44">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="library/2to3.html#to3fixer-exec">exec (2to3 fixer)</a>
+</li>
+      <li>
+    exec()
+
+      <ul>
+        <li><a href="library/functions.html#exec">built-in function</a>
+</li>
+      </ul></li>
+      <li><a href="library/importlib.html#importlib.abc.InspectLoader.exec_module">exec_module() (méthode importlib.abc.InspectLoader)</a>
+
+      <ul>
+        <li><a href="library/importlib.html#importlib.abc.Loader.exec_module">(méthode importlib.abc.Loader)</a>
+</li>
+        <li><a href="library/importlib.html#importlib.abc.SourceLoader.exec_module">(méthode importlib.abc.SourceLoader)</a>
+</li>
+        <li><a href="library/importlib.html#importlib.machinery.ExtensionFileLoader.exec_module">(méthode importlib.machinery.ExtensionFileLoader)</a>
+</li>
+        <li><a href="library/zipimport.html#zipimport.zipimporter.exec_module">(méthode zipimport.zipimporter)</a>
+</li>
+      </ul></li>
+      <li><a href="library/sys.html#sys.exec_prefix">exec_prefix (dans le module sys)</a>
+</li>
+      <li><a href="library/2to3.html#to3fixer-execfile">execfile (2to3 fixer)</a>
+</li>
+      <li><a href="library/os.html#os.execl">execl() (dans le module os)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="library/os.html#os.execle">execle() (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.execlp">execlp() (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.execlpe">execlpe() (dans le module os)</a>
+</li>
+      <li><a href="library/sys.html#sys.executable">executable (dans le module sys)</a>
+
+      <ul>
+        <li><a href="c-api/init.html#index-21">(in module sys)</a>
+</li>
+      </ul></li>
+      <li><a href="library/zipapp.html#index-0">Executable Zip Files</a>
+</li>
+      <li><a href="library/msilib.html#msilib.View.Execute">Execute() (méthode msilib.View)</a>
+</li>
+      <li><a href="library/sqlite3.html#sqlite3.Connection.execute">execute() (méthode sqlite3.Connection)</a>
+
+      <ul>
+        <li><a href="library/sqlite3.html#sqlite3.Cursor.execute">(méthode sqlite3.Cursor)</a>
+</li>
+      </ul></li>
+      <li><a href="library/sqlite3.html#sqlite3.Connection.executemany">executemany() (méthode sqlite3.Connection)</a>
+
+      <ul>
+        <li><a href="library/sqlite3.html#sqlite3.Cursor.executemany">(méthode sqlite3.Cursor)</a>
+</li>
+      </ul></li>
+      <li><a href="library/sqlite3.html#sqlite3.Connection.executescript">executescript() (méthode sqlite3.Connection)</a>
+
+      <ul>
+        <li><a href="library/sqlite3.html#sqlite3.Cursor.executescript">(méthode sqlite3.Cursor)</a>
+</li>
+      </ul></li>
+      <li>
+    execution
+
+      <ul>
+        <li><a href="reference/executionmodel.html#index-2">frame</a>
+</li>
+        <li><a href="reference/executionmodel.html#index-13">restricted</a>
+</li>
+        <li><a href="reference/datamodel.html#index-66">stack</a>
+</li>
+      </ul></li>
+      <li><a href="reference/executionmodel.html#index-0">execution model</a>
+</li>
+      <li><a href="library/importlib.html#importlib.abc.ExecutionLoader">ExecutionLoader (classe dans importlib.abc)</a>
+</li>
+      <li><a href="library/concurrent.futures.html#concurrent.futures.Executor">Executor (classe dans concurrent.futures)</a>
+</li>
+      <li><a href="library/os.html#os.execv">execv() (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.execve">execve() (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.execvp">execvp() (dans le module os)</a>
+</li>
+      <li><a href="library/os.html#os.execvpe">execvpe() (dans le module os)</a>
+</li>
+      <li>
+    exécution
+
+      <ul>
+        <li><a href="reference/compound_stmts.html#index-42">cadre</a>
+</li>
+      </ul></li>
+      <li><a href="library/tkinter.tix.html#tkinter.tix.ExFileSelectBox">ExFileSelectBox (classe dans tkinter.tix)</a>
+</li>
+      <li><a href="library/errno.html#errno.EXFULL">EXFULL (dans le module errno)</a>
+</li>
+      <li><a href="library/os.path.html#os.path.exists">exists() (dans le module os.path)</a>
+
+      <ul>
+        <li><a href="library/pathlib.html#pathlib.Path.exists">(méthode pathlib.Path)</a>
+</li>
+        <li><a href="library/tkinter.ttk.html#tkinter.ttk.Treeview.exists">(méthode tkinter.ttk.Treeview)</a>
+</li>
+        <li><a href="library/zipfile.html#zipfile.Path.exists">(méthode zipfile.Path)</a>
+</li>
+      </ul></li>
+      <li><a href="c-api/sys.html#index-3">exit (C function)</a>
+
+      <ul>
+        <li><a href="library/constants.html#exit">(variable de base)</a>
+</li>
+      </ul></li>
+      <li><a href="library/_thread.html#thread.exit">exit() (dans le module _thread)</a>
+
+      <ul>
+        <li><a href="library/sys.html#sys.exit">(dans le module sys)</a>
+</li>
+        <li><a href="library/argparse.html#argparse.ArgumentParser.exit">(méthode argparse.ArgumentParser)</a>
+</li>
+      </ul></li>
+      <li><a href="library/multiprocessing.html#multiprocessing.Process.exitcode">exitcode (attribut multiprocessing.Process)</a>
+</li>
+      <li><a href="library/2to3.html#to3fixer-exitfunc">exitfunc (2to3 fixer)</a>
+</li>
+      <li><a href="library/turtle.html#turtle.exitonclick">exitonclick() (dans le module turtle)</a>
+</li>
+      <li><a href="library/contextlib.html#contextlib.ExitStack">ExitStack (classe dans contextlib)</a>
+</li>
+      <li><a href="library/cmath.html#cmath.exp">exp() (dans le module cmath)</a>
+
+      <ul>
+        <li><a href="library/math.html#math.exp">(dans le module math)</a>
+</li>
+        <li><a href="library/decimal.html#decimal.Context.exp">(méthode decimal.Context)</a>
+</li>
+        <li><a href="library/decimal.html#decimal.Decimal.exp">(méthode decimal.Decimal)</a>
+</li>
+      </ul></li>
+      <li><a href="library/math.html#math.exp2">exp2() (dans le module math)</a>
+</li>
+      <li><a href="library/re.html#re.Match.expand">expand() (méthode re.Match)</a>
+</li>
+      <li><a href="library/textwrap.html#textwrap.TextWrapper.expand_tabs">expand_tabs (attribut textwrap.TextWrapper)</a>
+</li>
+      <li><a href="library/winreg.html#winreg.ExpandEnvironmentStrings">ExpandEnvironmentStrings() (dans le module winreg)</a>
+</li>
+      <li><a href="library/xml.dom.pulldom.html#xml.dom.pulldom.DOMEventStream.expandNode">expandNode() (méthode xml.dom.pulldom.DOMEventStream)</a>
+</li>
+      <li><a href="library/stdtypes.html#bytearray.expandtabs">expandtabs() (méthode bytearray)</a>
+
+      <ul>
+        <li><a href="library/stdtypes.html#bytes.expandtabs">(méthode bytes)</a>
+</li>
+        <li><a href="library/stdtypes.html#str.expandtabs">(méthode str)</a>
+</li>
+      </ul></li>
+      <li><a href="library/os.path.html#os.path.expanduser">expanduser() (dans le module os.path)</a>
+
+      <ul>
+        <li><a href="library/pathlib.html#pathlib.Path.expanduser">(méthode pathlib.Path)</a>
+</li>
+      </ul></li>
+      <li><a href="library/os.path.html#os.path.expandvars">expandvars() (dans le module os.path)</a>
+</li>
+      <li><a href="library/pyexpat.html#index-0">Expat</a>
+</li>
+      <li><a href="library/pyexpat.html#xml.parsers.expat.ExpatError">ExpatError</a>
+</li>
+      <li><a href="library/telnetlib.html#telnetlib.Telnet.expect">expect() (méthode telnetlib.Telnet)</a>
+</li>
+      <li><a href="library/asyncio-exceptions.html#asyncio.IncompleteReadError.expected">expected (attribut asyncio.IncompleteReadError)</a>
+</li>
+      <li><a href="library/unittest.html#unittest.expectedFailure">expectedFailure() (dans le module unittest)</a>
+</li>
+      <li><a href="library/unittest.html#unittest.TestResult.expectedFailures">expectedFailures (attribut unittest.TestResult)</a>
+</li>
+      <li><a href="library/asyncio-task.html#asyncio.Timeout.expired">expired() (méthode asyncio.Timeout)</a>
+</li>
+      <li><a href="library/http.cookiejar.html#http.cookiejar.Cookie.expires">expires (attribut http.cookiejar.Cookie)</a>
+
+      <ul>
+        <li><a href="library/http.cookies.html#http.cookies.Morsel.expires">(attribut http.cookies.Morsel)</a>
+</li>
+      </ul></li>
+      <li><a href="library/ipaddress.html#ipaddress.IPv4Address.exploded">exploded (attribut ipaddress.IPv4Address)</a>
+
+      <ul>
+        <li><a href="library/ipaddress.html#ipaddress.IPv4Network.exploded">(attribut ipaddress.IPv4Network)</a>
+</li>
+        <li><a href="library/ipaddress.html#ipaddress.IPv6Address.exploded">(attribut ipaddress.IPv6Address)</a>
+</li>
+        <li><a href="library/ipaddress.html#ipaddress.IPv6Network.exploded">(attribut ipaddress.IPv6Network)</a>
+</li>
+      </ul></li>
+      <li><a href="library/math.html#math.expm1">expm1() (dans le module math)</a>
+</li>
+      <li><a href="library/random.html#random.expovariate">expovariate() (dans le module random)</a>
+</li>
+      <li><a href="library/ast.html#ast.Expr">Expr (classe dans ast)</a>
+</li>
+      <li><a href="glossary.html#term-expression"><strong>expression</strong></a>, <a href="reference/expressions.html#index-0">[1]</a>
+
+      <ul>
+        <li><a href="reference/expressions.html#index-82">conditionnelle</a>, <a href="reference/expressions.html#index-88">[1]</a>
+</li>
+        <li><a href="reference/expressions.html#index-22">générateur</a>
+</li>
+        <li><a href="reference/simple_stmts.html#index-1">instruction</a>
+</li>
+        <li><a href="reference/compound_stmts.html#index-35">lambda</a>, <a href="reference/expressions.html#index-90">[1]</a>
+</li>
+        <li><a href="reference/expressions.html#index-91">liste</a>, <a href="reference/simple_stmts.html#index-1">[1]</a>, <a href="reference/simple_stmts.html#index-2">[2]</a>
+</li>
+        <li><a href="reference/expressions.html#index-23">yield</a>
+</li>
+      </ul></li>
+      <li><a href="library/ast.html#ast.Expression">Expression (classe dans ast)</a>
+</li>
+      <li><a href="reference/expressions.html#index-86">expression d&#39;affectation</a>
+</li>
+      <li><a href="glossary.html#term-generator-expression"><strong>expression génératrice</strong></a>, <a href="glossary.html#index-17">[1]</a>
+</li>
+      <li><a href="reference/expressions.html#index-86">expression nommée</a>
+</li>
+      <li><a href="library/imaplib.html#imaplib.IMAP4.expunge">expunge() (méthode imaplib.IMAP4)</a>
+</li>
+      <li><a href="library/array.html#array.array.extend">extend() (méthode array.array)</a>
+
+      <ul>
+        <li><a href="library/collections.html#collections.deque.extend">(méthode collections.deque)</a>
+</li>
+        <li><a href="library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.extend">(méthode xml.etree.ElementTree.Element)</a>
+</li>
+        <li><a href="library/stdtypes.html#index-24">(sequence method)</a>
+</li>
+      </ul></li>
+      <li><a href="library/pkgutil.html#pkgutil.extend_path">extend_path() (dans le module pkgutil)</a>
+</li>
+      <li><a href="library/dis.html#opcode-EXTENDED_ARG">EXTENDED_ARG (opcode)</a>
+</li>
+      <li><a href="library/decimal.html#decimal.ExtendedContext">ExtendedContext (classe dans decimal)</a>
+</li>
+      <li><a href="library/configparser.html#configparser.ExtendedInterpolation">ExtendedInterpolation (classe dans configparser)</a>
+</li>
+      <li><a href="library/collections.html#collections.deque.extendleft">extendleft() (méthode collections.deque)</a>
+</li>
+      <li>
+    extension
+
+      <ul>
+        <li><a href="reference/datamodel.html#index-4">module</a>
+</li>
+      </ul></li>
+      <li><a href="library/importlib.html#importlib.machinery.EXTENSION_SUFFIXES">EXTENSION_SUFFIXES (dans le module importlib.machinery)</a>
+</li>
+      <li><a href="library/importlib.html#importlib.machinery.ExtensionFileLoader">ExtensionFileLoader (classe dans importlib.machinery)</a>
+</li>
+      <li><a href="library/http.server.html#http.server.SimpleHTTPRequestHandler.extensions_map">extensions_map (attribut http.server.SimpleHTTPRequestHandler)</a>
+</li>
+      <li><a href="library/pickle.html#index-1">External Data Representation</a>, <a href="library/xdrlib.html#index-0">[1]</a>
+</li>
+      <li><a href="library/zipfile.html#zipfile.ZipInfo.external_attr">external_attr (attribut zipfile.ZipInfo)</a>
+</li>
+      <li><a href="library/mailbox.html#mailbox.ExternalClashError">ExternalClashError</a>
+</li>
+      <li><a href="library/pyexpat.html#xml.parsers.expat.xmlparser.ExternalEntityParserCreate">ExternalEntityParserCreate() (méthode xml.parsers.expat.xmlparser)</a>
+</li>
+      <li><a href="library/pyexpat.html#xml.parsers.expat.xmlparser.ExternalEntityRefHandler">ExternalEntityRefHandler() (méthode xml.parsers.expat.xmlparser)</a>
+</li>
+      <li><a href="library/zipfile.html#zipfile.ZipInfo.extra">extra (attribut zipfile.ZipInfo)</a>
+</li>
+      <li><a href="library/traceback.html#traceback.StackSummary.extract">extract() (méthode de la classe traceback.StackSummary)</a>
+
+      <ul>
+        <li><a href="library/tarfile.html#tarfile.TarFile.extract">(méthode tarfile.TarFile)</a>
+</li>
+        <li><a href="library/zipfile.html#zipfile.ZipFile.extract">(méthode zipfile.ZipFile)</a>
+</li>
+      </ul></li>
+      <li><a href="library/http.cookiejar.html#http.cookiejar.CookieJar.extract_cookies">extract_cookies() (méthode http.cookiejar.CookieJar)</a>
+</li>
+      <li><a href="library/traceback.html#traceback.extract_stack">extract_stack() (dans le module traceback)</a>
+</li>
+      <li><a href="library/traceback.html#traceback.extract_tb">extract_tb() (dans le module traceback)</a>
+</li>
+      <li><a href="library/zipfile.html#zipfile.ZipInfo.extract_version">extract_version (attribut zipfile.ZipInfo)</a>
+</li>
+      <li><a href="library/tarfile.html#tarfile.TarFile.extractall">extractall() (méthode tarfile.TarFile)</a>
+
+      <ul>
+        <li><a href="library/zipfile.html#zipfile.ZipFile.extractall">(méthode zipfile.ZipFile)</a>
+</li>
+      </ul></li>
+      <li><a href="library/tarfile.html#tarfile.ExtractError">ExtractError</a>
+</li>
+      <li><a href="library/tarfile.html#tarfile.TarFile.extractfile">extractfile() (méthode tarfile.TarFile)</a>
+</li>
+      <li><a href="library/tarfile.html#tarfile.TarFile.extraction_filter">extraction_filter (attribut tarfile.TarFile)</a>
+</li>
+      <li><a href="library/os.html#os.extsep">extsep (dans le module os)</a>
+</li>
+      <li>
+    écrire
+
+      <ul>
+        <li><a href="reference/simple_stmts.html#index-3">valeurs</a>
+</li>
+      </ul></li>
+      <li>
+    élément
+
+      <ul>
+        <li><a href="reference/expressions.html#index-43">chaîne</a>
+</li>
+        <li><a href="reference/expressions.html#index-42">séquence</a>
+</li>
+      </ul></li>
+      <li>
+    évaluation
+
+      <ul>
+        <li><a href="reference/expressions.html#index-96">ordre</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+        </div>
+<div id="sidebarbutton" title="Réduire la barre latérale">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+
+          <li><img src="_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+        <li class="nav-item nav-item-this"><a href="genindex-E.html">Index</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      Mis à jour le Jun 09, 2024 (22:21 UTC).
+    
+      <a href="../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="_static/switchers.js"></script>
+  </body>
+</html>

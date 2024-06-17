@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="pkgutil --- Package extension utility" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/pkgutil.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="Code source : Lib/pkgutil.py Ce module fournit des utilitaires pour le système d'importation, en particulier pour la prise en charge des paquets." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="Code source : Lib/pkgutil.py Ce module fournit des utilitaires pour le système d'importation, en particulier pour la prise en charge des paquets." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>pkgutil --- Package extension utility &#8212; Documentation Python 3.12.4</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?v=bb723527" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css?v=b20cc3f5" />
+    
+    <script src="../_static/documentation_options.js?v=6f87fcbb"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=bf059b8c"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Recherchez dans Documentation Python 3.12.4"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="À propos de ces documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="modulefinder --- Find modules used by a script" href="modulefinder.html" />
+    <link rel="prev" title="zipimport --- Import modules from Zip archives" href="zipimport.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="https://docs.python.org/3/library/pkgutil.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" />
+                <input type="submit" value="Go"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h4>Sujet précédent</h4>
+    <p class="topless"><a href="zipimport.html"
+                          title="Chapitre précédent"><code class="xref py py-mod docutils literal notranslate"><span class="pre">zipimport</span></code> --- Import modules from Zip archives</a></p>
+  </div>
+  <div>
+    <h4>Sujet suivant</h4>
+    <p class="topless"><a href="modulefinder.html"
+                          title="Chapitre suivant"><code class="xref py py-mod docutils literal notranslate"><span class="pre">modulefinder</span></code> --- Find modules used by a script</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Signalement de bogue</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/pkgutil.rst"
+            rel="nofollow">Voir la source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modulefinder.html" title="modulefinder --- Find modules used by a script"
+             accesskey="N">suivant</a> |</li>
+        <li class="right" >
+          <a href="zipimport.html" title="zipimport --- Import modules from Zip archives"
+             accesskey="P">précédent</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >La bibliothèque standard</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" accesskey="U">Importer des modules</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">pkgutil</span></code> --- Package extension utility</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-pkgutil">
+<span id="pkgutil-package-extension-utility"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">pkgutil</span></code> --- Package extension utility<a class="headerlink" href="#module-pkgutil" title="Lien vers cette rubrique">¶</a></h1>
+<p><strong>Code source :</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/pkgutil.py">Lib/pkgutil.py</a></p>
+<hr class="docutils" />
+<p>Ce module fournit des utilitaires pour le système d'importation, en particulier pour la prise en charge des paquets.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pkgutil.ModuleInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">ModuleInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_finder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ispkg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pkgutil.ModuleInfo" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Un <em>n</em>-uplet nommé qui contient un bref résumé des informations d'un module.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.extend_path">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">extend_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pkgutil.extend_path" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Étend le chemin de recherche pour les modules qui composent un paquet. L'usage prévu est de placer le code suivant dans le <code class="file docutils literal notranslate"><span class="pre">__init__.py</span></code> d'un paquet :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pkgutil</span> <span class="kn">import</span> <span class="n">extend_path</span>
+<span class="n">__path__</span> <span class="o">=</span> <span class="n">extend_path</span><span class="p">(</span><span class="n">__path__</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Pour chaque répertoire sur <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> qui a un sous-répertoire correspondant au nom du paquet, ajoute le sous-répertoire au <a class="reference internal" href="../reference/import.html#path__" title="__path__"><code class="xref py py-attr docutils literal notranslate"><span class="pre">__path__</span></code></a> du paquet. Cela est utile si l'on souhaite distribuer différentes parties d'un paquet logique unique dans plusieurs répertoires.</p>
+<p>Elle recherche également les fichiers <code class="file docutils literal notranslate"><span class="pre">*.pkg</span></code> en commençant là où <code class="docutils literal notranslate"><span class="pre">*</span></code> correspond à l'argument <em>name</em>. Cette fonctionnalité est similaire aux fichiers <code class="file docutils literal notranslate"><span class="pre">*.pth</span></code> (voir le module <a class="reference internal" href="site.html#module-site" title="site: Module responsible for site-specific configuration."><code class="xref py py-mod docutils literal notranslate"><span class="pre">site</span></code></a> pour plus d'informations), à l'exception qu'elle ne traite pas de manière spéciale les lignes commençant par <code class="docutils literal notranslate"><span class="pre">import</span></code>. Un fichier <code class="file docutils literal notranslate"><span class="pre">*.pkg</span></code> est fiable de facto : à part la vérification des doublons, toutes les entrées trouvées dans un fichier <code class="file docutils literal notranslate"><span class="pre">*.pkg</span></code> sont ajoutées au chemin, quelle que soit leur existence sur le système de fichiers. (C'est une fonctionnalité.)</p>
+<p>Si le chemin d'entrée n'est pas une liste (comme c'est le cas pour les paquets figés), il est retourné tel quel. Le chemin d'entrée n'est pas modifié ; une copie étendue en est retournée. Les éléments ne sont ajoutés à la copie qu'à la fin.</p>
+<p>L'interpréteur estime que <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> est une séquence. Les éléments de <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> qui ne sont pas des chaînes se référant à des répertoires existants sont ignorés. Les éléments Unicode sur <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> qui provoquent des erreurs lorsqu'ils sont utilisés comme noms de fichiers peuvent amener cette fonction à lever une exception (conformément au comportement de <a class="reference internal" href="os.path.html#os.path.isdir" title="os.path.isdir"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.isdir()</span></code></a>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.find_loader">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">find_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pkgutil.find_loader" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupère un <a class="reference internal" href="../glossary.html#term-loader"><span class="xref std std-term">loader</span></a> de module pour le <em>fullname</em> donné.</p>
+<p>Il s'agit d'une surcouche de compatibilité ascendante autour de <a class="reference internal" href="importlib.html#importlib.util.find_spec" title="importlib.util.find_spec"><code class="xref py py-func docutils literal notranslate"><span class="pre">importlib.util.find_spec()</span></code></a> qui convertit la plupart des échecs en <a class="reference internal" href="exceptions.html#ImportError" title="ImportError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ImportError</span></code></a> et ne renvoie que le chargeur, plutôt que le <a class="reference internal" href="importlib.html#importlib.machinery.ModuleSpec" title="importlib.machinery.ModuleSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">importlib.machinery.ModuleSpec</span></code></a> complet.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.3: </span>Mise à jour pour être basée directement sur <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> au lieu de dépendre de l'émulation interne de la <span class="target" id="index-16"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> du paquet.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.4: </span>Mise à jour pour être basée sur la <span class="target" id="index-17"></span><a class="pep reference external" href="https://peps.python.org/pep-0451/"><strong>PEP 451</strong></a></p>
+</div>
+<div class="deprecated-removed">
+<p><span class="versionmodified">Obsolète depuis la version 3.12, sera supprimé dans la version 3.14: </span>Use <a class="reference internal" href="importlib.html#importlib.util.find_spec" title="importlib.util.find_spec"><code class="xref py py-func docutils literal notranslate"><span class="pre">importlib.util.find_spec()</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.get_importer">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">get_importer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pkgutil.get_importer" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupère un <a class="reference internal" href="../glossary.html#term-finder"><span class="xref std std-term">finder</span></a> pour l'élément <em>path_item</em> donné.</p>
+<p>Le chercheur retourné est mis en cache dans <a class="reference internal" href="sys.html#sys.path_importer_cache" title="sys.path_importer_cache"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path_importer_cache</span></code></a> s'il a été récemment créé par le chemin d'un point d'entrée.</p>
+<p>Le cache (ou une partie de celui-ci) peut être effacé manuellement si une nouvelle analyse de <a class="reference internal" href="sys.html#sys.path_hooks" title="sys.path_hooks"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path_hooks</span></code></a> est nécessaire.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.3: </span>Mise à jour pour être basée directement sur <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> au lieu de dépendre de l'émulation interne de la <span class="target" id="index-18"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> du paquet.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.get_loader">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">get_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_or_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pkgutil.get_loader" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Récupère un objet <a class="reference internal" href="../glossary.html#term-loader"><span class="xref std std-term">loader</span></a> pour <em>module_or_name</em>.</p>
+<p>Si le module ou le paquet est accessible via le mécanisme d'importation normal, une encapsulation autour de la partie pertinente de cette mécanique est renvoyé. Renvoie <code class="docutils literal notranslate"><span class="pre">None</span></code> si le module ne peut pas être trouvé ou importé. Si le module nommé n'est pas déjà importé, son paquet contenant (le cas échéant) est importé afin d'établir le paquet <code class="docutils literal notranslate"><span class="pre">__path__</span></code>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.3: </span>Mise à jour pour être basée directement sur <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> au lieu de dépendre de l'émulation interne de la <span class="target" id="index-19"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> du paquet.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.4: </span>Mise à jour pour être basée sur la <span class="target" id="index-20"></span><a class="pep reference external" href="https://peps.python.org/pep-0451/"><strong>PEP 451</strong></a></p>
+</div>
+<div class="deprecated-removed">
+<p><span class="versionmodified">Obsolète depuis la version 3.12, sera supprimé dans la version 3.14: </span>Use <a class="reference internal" href="importlib.html#importlib.util.find_spec" title="importlib.util.find_spec"><code class="xref py py-func docutils literal notranslate"><span class="pre">importlib.util.find_spec()</span></code></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.iter_importers">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">iter_importers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pkgutil.iter_importers" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Génère des objets <a class="reference internal" href="../glossary.html#term-finder"><span class="xref std std-term">finder</span></a> pour le nom du module donné.</p>
+<p>Si le nom complet contient un <code class="docutils literal notranslate"><span class="pre">'.'</span></code>, les chercheurs sont pour le paquet contenant le nom complet, sinon ils sont enregistrés pour tous les chercheurs de niveau supérieur (c'est-à-dire ceux de <a class="reference internal" href="sys.html#sys.meta_path" title="sys.meta_path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.meta_path</span></code></a> et de <a class="reference internal" href="sys.html#sys.path_hooks" title="sys.path_hooks"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path_hooks</span></code></a>).</p>
+<p>Si le module nommé se trouve dans un paquet, ce paquet est importé en tant qu'effet secondaire de l'invocation de cette fonction.</p>
+<p>Si aucun nom de module n'est spécifié, tous les chercheurs de niveau supérieur sont générés.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.3: </span>Mise à jour pour être basée directement sur <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> au lieu de dépendre de l'émulation interne de la <span class="target" id="index-21"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> du paquet.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.iter_modules">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">iter_modules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pkgutil.iter_modules" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Fournit des <a class="reference internal" href="#pkgutil.ModuleInfo" title="pkgutil.ModuleInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModuleInfo</span></code></a> pour tous les sous-modules sur <em>path</em> ou, si <em>path</em> est <code class="docutils literal notranslate"><span class="pre">None</span></code>, pour tous les modules de niveau supérieur sur <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a>.</p>
+<p><em>path</em> doit être soit <code class="docutils literal notranslate"><span class="pre">None</span></code>, soit une liste de chemins pour rechercher des modules.</p>
+<p><em>prefix</em> est une chaîne de caractères à afficher au début de chaque nom de module en sortie.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Cela fonctionne uniquement pour un <a class="reference internal" href="../glossary.html#term-finder"><span class="xref std std-term">finder</span></a> qui définit une méthode <code class="docutils literal notranslate"><span class="pre">iter_modules()</span></code>. Cette interface n'est pas standard, donc le module fournit également des implémentations pour <a class="reference internal" href="importlib.html#importlib.machinery.FileFinder" title="importlib.machinery.FileFinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">importlib.machinery.FileFinder</span></code></a> et <a class="reference internal" href="zipimport.html#zipimport.zipimporter" title="zipimport.zipimporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">zipimport.zipimporter</span></code></a>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.3: </span>Mise à jour pour être basée directement sur <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> au lieu de dépendre de l'émulation interne de la <span class="target" id="index-22"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> du paquet.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.walk_packages">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">walk_packages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onerror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pkgutil.walk_packages" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Fournit des <a class="reference internal" href="#pkgutil.ModuleInfo" title="pkgutil.ModuleInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModuleInfo</span></code></a> pour tous les modules de manière récursive sur <em>path</em> ou, si <em>path</em> est <code class="docutils literal notranslate"><span class="pre">None</span></code>, tous les modules accessibles.</p>
+<p><em>path</em> doit être soit <code class="docutils literal notranslate"><span class="pre">None</span></code>, soit une liste de chemins pour rechercher des modules.</p>
+<p><em>prefix</em> est une chaîne de caractères à afficher au début de chaque nom de module en sortie.</p>
+<p>Notez que cette fonction doit importer tous les <em>packages</em> (<em>pas</em> tous les modules !) sur le <em>path</em> donné, afin d'accéder à l'attribut <code class="docutils literal notranslate"><span class="pre">__path__</span></code> pour trouver les sous-modules.</p>
+<p><em>onerror</em> est une fonction qui est appelée avec un argument (le nom du paquet qui était en cours d'importation) si une exception se produit lors de la tentative d'importation d'un paquet. Si aucune fonction <em>onerror</em> n'est fournie, les <a class="reference internal" href="exceptions.html#ImportError" title="ImportError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ImportError</span></code></a>s sont attrapées et ignorées, tandis que toutes les autres exceptions sont propagées, mettant fin à la recherche.</p>
+<p>Exemples :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># list all modules python can access</span>
+<span class="n">walk_packages</span><span class="p">()</span>
+
+<span class="c1"># list all submodules of ctypes</span>
+<span class="n">walk_packages</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Cela fonctionne uniquement pour un <a class="reference internal" href="../glossary.html#term-finder"><span class="xref std std-term">finder</span></a> qui définit une méthode <code class="docutils literal notranslate"><span class="pre">iter_modules()</span></code>. Cette interface n'est pas standard, donc le module fournit également des implémentations pour <a class="reference internal" href="importlib.html#importlib.machinery.FileFinder" title="importlib.machinery.FileFinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">importlib.machinery.FileFinder</span></code></a> et <a class="reference internal" href="zipimport.html#zipimport.zipimporter" title="zipimport.zipimporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">zipimport.zipimporter</span></code></a>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.3: </span>Mise à jour pour être basée directement sur <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> au lieu de dépendre de l'émulation interne de la <span class="target" id="index-23"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> du paquet.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.get_data">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pkgutil.get_data" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Obtient une ressource à partir d'un paquet.</p>
+<p>Ceci est une surcouche pour l'API <a class="reference internal" href="../glossary.html#term-loader"><span class="xref std std-term">loader</span></a> <a class="reference internal" href="importlib.html#importlib.abc.ResourceLoader.get_data" title="importlib.abc.ResourceLoader.get_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_data</span></code></a>. L'argument <em>package</em> doit être le nom d'un paquet, au format module standard (<code class="docutils literal notranslate"><span class="pre">foo.bar</span></code>). L'argument <em>resource</em> doit être sous forme d'un nom de fichier relatif, en utilisant <code class="docutils literal notranslate"><span class="pre">/</span></code> comme séparateur de chemin. Le nom du répertoire parent <code class="docutils literal notranslate"><span class="pre">..</span></code> n'est pas autorisé, pas plus qu'un nom racine (commençant par <code class="docutils literal notranslate"><span class="pre">/</span></code>).</p>
+<p>La fonction renvoie une chaîne binaire qui est le contenu de la ressource spécifiée.</p>
+<p>Pour les paquets situés dans le système de fichiers, qui ont déjà été importés, c'est l'équivalent approximatif de :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package</span><span class="p">]</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">resource</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Si le paquet ne peut pas être localisé ou chargé, ou s'il utilise un <a class="reference internal" href="../glossary.html#term-loader"><span class="xref std std-term">loader</span></a> qui ne prend pas en charge <a class="reference internal" href="importlib.html#importlib.abc.ResourceLoader.get_data" title="importlib.abc.ResourceLoader.get_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_data</span></code></a>, alors <code class="docutils literal notranslate"><span class="pre">None</span></code> est retourné. En particulier, le <a class="reference internal" href="../glossary.html#term-loader"><span class="xref std std-term">loader</span></a> pour les <a class="reference internal" href="../glossary.html#term-namespace-package"><span class="xref std std-term">paquets espaces de noms</span></a> ne prend pas en charge <a class="reference internal" href="importlib.html#importlib.abc.ResourceLoader.get_data" title="importlib.abc.ResourceLoader.get_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_data</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.resolve_name">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">resolve_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pkgutil.resolve_name" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Solutionne un nom en un objet.</p>
+<p>Cette fonctionnalité est utilisée dans de nombreux endroits de la bibliothèque standard (voir <a class="reference external" href="https://bugs.python.org/issue?&#64;action=redirect&amp;bpo=12915">bpo-12915</a>) - et une fonctionnalité équivalente est également présente dans des paquets largement utilisés tels que Setuptools, Django et Pyramid.</p>
+<p>Python s'attend à ce que <em>name</em> soit une chaîne de caractères dans l'un des formats suivants, où W est une abréviation pour un identifiant Python valide et le point représente un point littéral dans ces pseudo-regexes :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">W(.W)*</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">W(.W)*:(W(.W)*)?</span></code></p></li>
+</ul>
+<p>La première forme est destinée uniquement à assurer la compatibilité ascendante. Elle suppose qu'une partie du nom pointé est un paquet, et que le reste est un objet quelque part à l'intérieur de ce paquet, éventuellement niché à l'intérieur d'autres objets. Puisque l'endroit où le paquet s'arrête et où la hiérarchie des objets commence ne peut pas être déduit par inspection, des tentatives répétées d'importation doivent être effectuées avec cette forme.</p>
+<p>Dans la deuxième forme, l'appelant clarifie le point de division en fournissant un seul deux-points : le nom pointé à gauche des deux-points est un package à importer, et le nom pointé à droite est la hiérarchie d'objets à l'intérieur de ce paquet. Seule une importation est nécessaire dans cette forme. Si elle se termine par un deux-points, alors un objet module est retourné.</p>
+<p>La fonction renvoie un objet (qui pourrait être un module), ou génère l'une des exceptions suivantes :</p>
+<p><a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – si <em>name</em> n'est pas un format reconnu.</p>
+<p><a class="reference internal" href="exceptions.html#ImportError" title="ImportError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ImportError</span></code></a> – si une importation échoue lorsqu'elle n'aurait pas dû.</p>
+<p><a class="reference internal" href="exceptions.html#AttributeError" title="AttributeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a> – Si un échec s'est produit lors du parcours de la hiérarchie d'objets dans le paquet importé pour accéder à l'objet souhaité.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.9.</span></p>
+</div>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Sujet précédent</h4>
+    <p class="topless"><a href="zipimport.html"
+                          title="Chapitre précédent"><code class="xref py py-mod docutils literal notranslate"><span class="pre">zipimport</span></code> --- Import modules from Zip archives</a></p>
+  </div>
+  <div>
+    <h4>Sujet suivant</h4>
+    <p class="topless"><a href="modulefinder.html"
+                          title="Chapitre suivant"><code class="xref py py-mod docutils literal notranslate"><span class="pre">modulefinder</span></code> --- Find modules used by a script</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Signalement de bogue</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/pkgutil.rst"
+            rel="nofollow">Voir la source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="Réduire la barre latérale">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modulefinder.html" title="modulefinder --- Find modules used by a script"
+             >suivant</a> |</li>
+        <li class="right" >
+          <a href="zipimport.html" title="zipimport --- Import modules from Zip archives"
+             >précédent</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >La bibliothèque standard</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >Importer des modules</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">pkgutil</span></code> --- Package extension utility</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="/license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      Mis à jour le Jun 09, 2024 (22:21 UTC).
+    
+      <a href="/bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

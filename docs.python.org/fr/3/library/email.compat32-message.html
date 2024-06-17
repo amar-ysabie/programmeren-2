@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+
+<html lang="fr" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="email.message.Message : représentation d'un message électronique à l'aide de l'API compat32" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/email.compat32-message.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="La classe Message est très similaire à la classe EmailMessage, sans les méthodes ajoutées par cette classe et avec le comportement par défaut légèrement différent pour certaines autres méthodes. No..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="La classe Message est très similaire à la classe EmailMessage, sans les méthodes ajoutées par cette classe et avec le comportement par défaut légèrement différent pour certaines autres méthodes. No..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>email.message.Message : représentation d&#39;un message électronique à l&#39;aide de l&#39;API compat32 &#8212; Documentation Python 3.12.4</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?v=bb723527" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css?v=b20cc3f5" />
+    
+    <script src="../_static/documentation_options.js?v=6f87fcbb"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=bf059b8c"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Recherchez dans Documentation Python 3.12.4"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="À propos de ces documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Recherche" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="email.mime: Creating email and MIME objects from scratch" href="email.mime.html" />
+    <link rel="prev" title="email: Exemples" href="email.examples.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="https://docs.python.org/3/library/email.compat32-message.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" />
+                <input type="submit" value="Go"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h4>Sujet précédent</h4>
+    <p class="topless"><a href="email.examples.html"
+                          title="Chapitre précédent"><code class="xref py py-mod docutils literal notranslate"><span class="pre">email</span></code>: Exemples</a></p>
+  </div>
+  <div>
+    <h4>Sujet suivant</h4>
+    <p class="topless"><a href="email.mime.html"
+                          title="Chapitre suivant"><code class="xref py py-mod docutils literal notranslate"><span class="pre">email.mime</span></code>: Creating email and MIME objects from scratch</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Signalement de bogue</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/email.compat32-message.rst"
+            rel="nofollow">Voir la source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="email.mime.html" title="email.mime: Creating email and MIME objects from scratch"
+             accesskey="N">suivant</a> |</li>
+        <li class="right" >
+          <a href="email.examples.html" title="email: Exemples"
+             accesskey="P">précédent</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >La bibliothèque standard</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="netdata.html" >Traitement des données provenant d'Internet</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="email.html" accesskey="U"><code class="xref py py-mod docutils literal notranslate"><span class="pre">email</span></code> --- An email and MIME handling package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">email.message.Message</span></code> : représentation d'un message électronique à l'aide de l'API <code class="xref py py-data docutils literal notranslate"><span class="pre">compat32</span></code></a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="email-message-message-representing-an-email-message-using-the-compat32-api">
+<span id="compat32-message"></span><h1><a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-mod docutils literal notranslate"><span class="pre">email.message.Message</span></code></a> : représentation d'un message électronique à l'aide de l'API <a class="reference internal" href="email.policy.html#email.policy.compat32" title="email.policy.compat32"><code class="xref py py-data docutils literal notranslate"><span class="pre">compat32</span></code></a><a class="headerlink" href="#email-message-message-representing-an-email-message-using-the-compat32-api" title="Lien vers cette rubrique">¶</a></h1>
+<p>La classe <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> est très similaire à la classe <a class="reference internal" href="email.message.html#email.message.EmailMessage" title="email.message.EmailMessage"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code></a>, sans les méthodes ajoutées par cette classe et avec le comportement par défaut légèrement différent pour certaines autres méthodes. Nous documentons également ici certaines méthodes qui, bien que prises en charge par la classe <a class="reference internal" href="email.message.html#email.message.EmailMessage" title="email.message.EmailMessage"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code></a>, ne sont pas recommandées, sauf si vous avez affaire à du code hérité.</p>
+<p>La philosophie et la structure des deux classes sont par ailleurs les mêmes.</p>
+<p>Ce document décrit le comportement avec les règles par défaut (pour <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a>) <a class="reference internal" href="email.policy.html#email.policy.Compat32" title="email.policy.Compat32"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Compat32</span></code></a>. Si vous envisagez d'utiliser d'autres règles, vous devriez plutôt utiliser la classe <a class="reference internal" href="email.message.html#email.message.EmailMessage" title="email.message.EmailMessage"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code></a>.</p>
+<p>Un message électronique se compose d'<em>en-têtes</em> et d'une <em>charge utile</em>. Les en-têtes doivent être des noms et des valeurs de style <span class="target" id="index-24"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc5322.html"><strong>RFC 5322</strong></a>, où le nom et la valeur du champ sont séparés par deux-points. Les deux-points ne font partie ni du nom du champ ni de la valeur du champ. La charge utile peut être un simple message texte, ou un objet binaire, ou une séquence structurée de sous-messages chacun avec son propre ensemble d'en-têtes et sa propre charge utile. Ce dernier type de charge utile est indiqué par le message ayant un type MIME tel que <em class="mimetype">multipart/*</em> ou <em class="mimetype">message/rfc822</em>.</p>
+<p>Le modèle conceptuel fourni par un objet <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> est celui d'un dictionnaire ordonné d'en-têtes avec des méthodes supplémentaires pour accéder à la fois aux informations spécialisées des en-têtes, pour accéder à la charge utile, pour générer une version sérialisée du message et pour parcourir récursivement l'arbre d'objets. Notez que les en-têtes en double sont pris en charge mais que des méthodes spéciales doivent être utilisées pour y accéder.</p>
+<p>Le pseudo-dictionnaire <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> est indicé par les noms d'en-tête, qui doivent être des valeurs ASCII. Les valeurs du dictionnaire sont des chaînes censées contenir uniquement des caractères ASCII ; il existe une gestion spéciale pour les entrées non ASCII, mais cela ne produit pas toujours les résultats corrects. Les en-têtes sont stockés et renvoyés sous une forme respectant la casse, mais les noms de champ sont mis en correspondance sans tenir compte de la casse. Il peut également y avoir un seul en-tête d'enveloppe, également appelé en-tête <em>Unix-From</em> ou en-tête <code class="docutils literal notranslate"><span class="pre">From_</span></code>. La <em>charge utile</em> est soit une chaîne ou des octets, dans le cas d'objets message simples, soit une liste d'objets <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a>, pour les documents conteneurs MIME (par exemple <em class="mimetype">multipart/*</em> et <em class="mimetype">message/rfc822</em>).</p>
+<p>Voici les méthodes de la classe <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> :</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="email.message.Message">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">email.message.</span></span><span class="sig-name descname"><span class="pre">Message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">compat32</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Si <em>policy</em> est spécifié (il doit s'agir d'une instance d'une classe <a class="reference internal" href="email.policy.html#module-email.policy" title="email.policy: Controlling the parsing and generating of messages"><code class="xref py py-mod docutils literal notranslate"><span class="pre">policy</span></code></a>), utilise les règles spécifiées pour mettre à jour et sérialiser la représentation du message. Si <em>policy</em> n'est pas défini, utilise les règles <a class="reference internal" href="email.policy.html#email.policy.Compat32" title="email.policy.Compat32"><code class="xref py py-class docutils literal notranslate"><span class="pre">compat32</span></code></a>, qui maintient la rétrocompatibilité avec la version Python 3.2 du paquet de messagerie. Pour plus d'informations, consultez la documentation <a class="reference internal" href="email.policy.html#module-email.policy" title="email.policy: Controlling the parsing and generating of messages"><code class="xref py py-mod docutils literal notranslate"><span class="pre">policy</span></code></a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.3: </span>l'argument nommé <em>policy</em> a été ajouté.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.as_string">
+<span class="sig-name descname"><span class="pre">as_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unixfrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxheaderlen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.as_string" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le message entier aplati sous forme de chaîne. Lorsque l'option <em>unixfrom</em> est vraie, l'en-tête de l'enveloppe est inclus dans la chaîne renvoyée. <em>unixfrom</em> par défaut est <code class="docutils literal notranslate"><span class="pre">False</span></code>. Pour des raisons de compatibilité descendante, <em>maxheaderlen</em> est par défaut à <code class="docutils literal notranslate"><span class="pre">0</span></code>, donc si vous voulez une valeur différente, vous devez la remplacer explicitement (la valeur spécifiée pour <em>max_line_length</em> dans la politique sera ignorée par cette méthode). L'argument <em>policy</em> peut être utilisé pour remplacer les règles par défaut obtenues à partir de l'instance de message. Cela peut être utilisé pour contrôler une partie du formatage produit par la méthode, puisque la <em>policy</em> spécifiée est transmise au <code class="docutils literal notranslate"><span class="pre">Generator</span></code>.</p>
+<p>L'aplatissement du message peut déclencher des changements dans <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> si les valeurs par défaut doivent être renseignées pour terminer la transformation en chaîne (par exemple, les limites MIME peuvent être générées ou modifiées).</p>
+<p>Notez que cette méthode est fournie à titre de commodité et peut ne pas toujours formater le message comme vous le souhaitez. Par exemple, par défaut, elle ne reformate pas les lignes qui commencent par <code class="docutils literal notranslate"><span class="pre">From</span></code> qui est requis par le format <em>mbox</em> Unix. Pour plus de flexibilité, instanciez une instance <a class="reference internal" href="email.generator.html#email.generator.Generator" title="email.generator.Generator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code></a> et utilisez sa méthode <a class="reference internal" href="email.generator.html#email.generator.Generator.flatten" title="email.generator.Generator.flatten"><code class="xref py py-meth docutils literal notranslate"><span class="pre">flatten()</span></code></a> directement. Par exemple :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">email.generator</span> <span class="kn">import</span> <span class="n">Generator</span>
+<span class="n">fp</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">Generator</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">mangle_from_</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">maxheaderlen</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Si l'objet message contient des données binaires qui ne sont pas encodées selon les normes RFC, les données non conformes seront remplacées par des points de code Unicode « caractère inconnu » (voir aussi <a class="reference internal" href="#email.message.Message.as_bytes" title="email.message.Message.as_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">as_bytes()</span></code></a> et <a class="reference internal" href="email.generator.html#email.generator.BytesGenerator" title="email.generator.BytesGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BytesGenerator</span></code></a>).</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.4: </span>l'argument nommé <em>policy</em> a été ajouté.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.__str__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Équivalent à <a class="reference internal" href="#email.message.Message.as_string" title="email.message.Message.as_string"><code class="xref py py-meth docutils literal notranslate"><span class="pre">as_string()</span></code></a>. Permet à <code class="docutils literal notranslate"><span class="pre">str(msg)</span></code> de produire une chaîne contenant le message formaté.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.as_bytes">
+<span class="sig-name descname"><span class="pre">as_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unixfrom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.as_bytes" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le message entier aplati en tant qu'objet bytes. Lorsque l'option <em>unixfrom</em> est vraie, l'en-tête de l'enveloppe est inclus dans la chaîne renvoyée. <em>unixfrom</em> par défaut est <code class="docutils literal notranslate"><span class="pre">False</span></code>. L'argument <em>policy</em> peut être utilisé pour remplacer les règles par défaut obtenues à partir de l'instance de message. Cela peut être utilisé pour contrôler une partie du formatage produit par la méthode, puisque la <em>policy</em> spécifiée est passée au <code class="docutils literal notranslate"><span class="pre">BytesGenerator</span></code>.</p>
+<p>L'aplatissement du message peut déclencher des changements dans <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> si les valeurs par défaut doivent être renseignées pour terminer la transformation en chaîne (par exemple, les limites MIME peuvent être générées ou modifiées).</p>
+<p>Notez que cette méthode est fournie à titre de commodité et peut ne pas toujours formater le message comme vous le souhaitez. Par exemple, par défaut, elle ne reformate pas les lignes qui commencent par <code class="docutils literal notranslate"><span class="pre">From</span></code> qui est requis par le format <em>mbox</em> Unix. Pour plus de flexibilité, instanciez une instance <a class="reference internal" href="email.generator.html#email.generator.BytesGenerator" title="email.generator.BytesGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">BytesGenerator</span></code></a> et utilisez sa méthode <a class="reference internal" href="email.generator.html#email.generator.BytesGenerator.flatten" title="email.generator.BytesGenerator.flatten"><code class="xref py py-meth docutils literal notranslate"><span class="pre">flatten()</span></code></a> directement. Par exemple :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">email.generator</span> <span class="kn">import</span> <span class="n">BytesGenerator</span>
+<span class="n">fp</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">BytesGenerator</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">mangle_from_</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">maxheaderlen</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">fp</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.__bytes__">
+<span class="sig-name descname"><span class="pre">__bytes__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.__bytes__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Équivalent à <a class="reference internal" href="#email.message.Message.as_bytes" title="email.message.Message.as_bytes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">as_bytes()</span></code></a>. Permet à <code class="docutils literal notranslate"><span class="pre">bytes(msg)</span></code> de produire un objet bytes contenant le message formaté.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.4.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.is_multipart">
+<span class="sig-name descname"><span class="pre">is_multipart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.is_multipart" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> si la charge utile du message est une liste d'objets sous-<a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a>, sinon renvoie <code class="docutils literal notranslate"><span class="pre">False</span></code>. Lorsque <a class="reference internal" href="#email.message.Message.is_multipart" title="email.message.Message.is_multipart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_multipart()</span></code></a> renvoie <code class="docutils literal notranslate"><span class="pre">False</span></code>, la charge utile doit être un objet chaîne (qui peut être une charge utile binaire encodée CTE). (Notez que <a class="reference internal" href="#email.message.Message.is_multipart" title="email.message.Message.is_multipart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_multipart()</span></code></a> renvoyant <code class="docutils literal notranslate"><span class="pre">True</span></code> ne signifie pas nécessairement que <code class="docutils literal notranslate"><span class="pre">msg.get_content_maintype()</span> <span class="pre">==</span> <span class="pre">'multipart'</span></code> renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code>. Par exemple, <code class="docutils literal notranslate"><span class="pre">is_multipart</span></code> renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> lorsque le <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> est de type <code class="docutils literal notranslate"><span class="pre">message/rfc822</span></code>.)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.set_unixfrom">
+<span class="sig-name descname"><span class="pre">set_unixfrom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unixfrom</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.set_unixfrom" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit l'en-tête de l'enveloppe du message sur <em>unixfrom</em>, qui doit être une chaîne.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_unixfrom">
+<span class="sig-name descname"><span class="pre">get_unixfrom</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_unixfrom" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie l'en-tête de l'enveloppe du message. La valeur par défaut est <code class="docutils literal notranslate"><span class="pre">None</span></code> si l'en-tête de l'enveloppe n'a jamais été défini.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.attach">
+<span class="sig-name descname"><span class="pre">attach</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.attach" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ajoute le <em>payload</em> donné à la charge utile actuelle, qui doit être <code class="docutils literal notranslate"><span class="pre">None</span></code> ou une liste d'objets <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> avant l'appel. Après l'appel, la charge utile sera toujours une liste d'objets <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a>. Si vous souhaitez définir la charge utile sur un objet scalaire (par exemple, une chaîne), utilisez <a class="reference internal" href="#email.message.Message.set_payload" title="email.message.Message.set_payload"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_payload()</span></code></a> à la place.</p>
+<p>Il s'agit d'une ancienne méthode. Dans la classe <code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code> sa fonctionnalité est remplacée par <a class="reference internal" href="email.message.html#email.message.EmailMessage.set_content" title="email.message.EmailMessage.set_content"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_content()</span></code></a> et les méthodes associées <code class="docutils literal notranslate"><span class="pre">make</span></code> et <code class="docutils literal notranslate"><span class="pre">add</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_payload">
+<span class="sig-name descname"><span class="pre">get_payload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_payload" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la charge utile actuelle, qui est une liste d'objets <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> lorsque <a class="reference internal" href="#email.message.Message.is_multipart" title="email.message.Message.is_multipart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_multipart()</span></code></a> est <code class="docutils literal notranslate"><span class="pre">True</span></code>, ou une chaîne lorsque <a class="reference internal" href="#email.message.Message.is_multipart" title="email.message.Message.is_multipart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_multipart()</span></code></a> est <code class="docutils literal notranslate"><span class="pre">False</span></code>. Si la charge utile est une liste et que vous modifiez l'objet liste, vous modifiez la charge utile du message « sur place ».</p>
+<p>Avec l'argument optionnel <em>i</em>, <a class="reference internal" href="#email.message.Message.get_payload" title="email.message.Message.get_payload"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_payload()</span></code></a> renvoie le <em>i</em><sup>ème</sup> élément de la charge utile, en partant de zéro, si <a class="reference internal" href="#email.message.Message.is_multipart" title="email.message.Message.is_multipart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_multipart()</span></code></a> vaut <code class="docutils literal notranslate"><span class="pre">True</span></code>. Une <a class="reference internal" href="exceptions.html#IndexError" title="IndexError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IndexError</span></code></a> est levée si <em>i</em> est inférieur à 0 ou supérieur ou égal au nombre d'éléments dans la charge utile. Si la charge utile est une chaîne (c'est-à-dire que <a class="reference internal" href="#email.message.Message.is_multipart" title="email.message.Message.is_multipart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_multipart()</span></code></a> est <code class="docutils literal notranslate"><span class="pre">False</span></code>) et que <em>i</em> est donné, une <a class="reference internal" href="exceptions.html#TypeError" title="TypeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> est levée.</p>
+<p><em>decode</em> est un indicateur facultatif indiquant si la charge utile doit être décodée ou non, selon l'en-tête <em class="mailheader">Content-Transfer-Encoding</em>. Lorsqu'il vaut <code class="docutils literal notranslate"><span class="pre">True</span></code> et que le message n'est pas en plusieurs parties, la charge utile est décodée si la valeur de cet en-tête est <code class="docutils literal notranslate"><span class="pre">quoted-printable</span></code> ou <code class="docutils literal notranslate"><span class="pre">base64</span></code>. Si un autre encodage est utilisé, ou si l'en-tête <em class="mailheader">Content-Transfer-Encoding</em> est manquant, la charge utile est renvoyée telle quelle (non décodée). Dans tous les cas, la valeur renvoyée est une donnée binaire. Si le message est en plusieurs parties et que l'indicateur <em>decode</em> est <code class="docutils literal notranslate"><span class="pre">True</span></code>, alors <code class="docutils literal notranslate"><span class="pre">None</span></code> est renvoyé. Si la charge utile est en base64 et qu'elle n'a pas été parfaitement formée (remplissage manquant, caractères en dehors de l'alphabet base64), alors un défaut approprié est ajouté à la propriété de défaut du message (<code class="xref py py-class docutils literal notranslate"><span class="pre">InvalidBase64PaddingDefect</span></code> ou <code class="xref py py-class docutils literal notranslate"><span class="pre">InvalidBase64CharactersDefect</span></code>, respectivement).</p>
+<p>Lorsque <em>decode</em> est <code class="docutils literal notranslate"><span class="pre">False</span></code> (valeur par défaut), le corps est renvoyé sous forme de chaîne sans décoder le <em class="mailheader">Content-Transfer-Encoding</em>. Cependant, pour un <em class="mailheader">Content-Transfer-Encoding</em> de 8 bits, une tentative est faite pour décoder les octets d'origine en utilisant le <code class="docutils literal notranslate"><span class="pre">charset</span></code> spécifié par l'en-tête <em class="mailheader">Content-Type</em>, en utilisant le gestionnaire d'erreurs <code class="docutils literal notranslate"><span class="pre">replace</span></code>. Si aucun <code class="docutils literal notranslate"><span class="pre">charset</span></code> n'est spécifié, ou si le <code class="docutils literal notranslate"><span class="pre">charset</span></code> donné n'est pas reconnu par le paquet de messagerie, le corps est décodé en utilisant le jeu de caractères ASCII par défaut.</p>
+<p>Il s'agit d'une ancienne méthode. Dans la classe <code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code> sa fonctionnalité est remplacée par <a class="reference internal" href="email.message.html#email.message.EmailMessage.get_content" title="email.message.EmailMessage.get_content"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_content()</span></code></a> et <a class="reference internal" href="email.message.html#email.message.EmailMessage.iter_parts" title="email.message.EmailMessage.iter_parts"><code class="xref py py-meth docutils literal notranslate"><span class="pre">iter_parts()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.set_payload">
+<span class="sig-name descname"><span class="pre">set_payload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">payload</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.set_payload" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit la charge utile de l'objet message entier à <em>payload</em>. Il est de la responsabilité du client de s'assurer des invariants de la charge utile. Le <em>charset</em> facultatif définit le jeu de caractères par défaut du message ; voir <a class="reference internal" href="#email.message.Message.set_charset" title="email.message.Message.set_charset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_charset()</span></code></a> pour plus de détails.</p>
+<p>Il s'agit d'une ancienne méthode. Dans la classe <code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code> sa fonctionnalité est remplacée par <a class="reference internal" href="email.message.html#email.message.EmailMessage.set_content" title="email.message.EmailMessage.set_content"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_content()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.set_charset">
+<span class="sig-name descname"><span class="pre">set_charset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">charset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.set_charset" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit le jeu de caractères de la charge utile à <em>charset</em>, qui peut être soit une instance de <a class="reference internal" href="email.charset.html#email.charset.Charset" title="email.charset.Charset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Charset</span></code></a> (voir <a class="reference internal" href="email.charset.html#module-email.charset" title="email.charset: Character Sets"><code class="xref py py-mod docutils literal notranslate"><span class="pre">email.charset</span></code></a>), une chaîne nommant un jeu de caractères ou <code class="docutils literal notranslate"><span class="pre">None</span></code>. S'il s'agit d'une chaîne, elle est convertie en une instance <a class="reference internal" href="email.charset.html#email.charset.Charset" title="email.charset.Charset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Charset</span></code></a>. Si <em>charset</em> est <code class="docutils literal notranslate"><span class="pre">None</span></code>, le paramètre <code class="docutils literal notranslate"><span class="pre">charset</span></code> est supprimé de l'en-tête <em class="mailheader">Content-Type</em> (le message n'est pas modifié autrement). Tout le reste lève une <a class="reference internal" href="exceptions.html#TypeError" title="TypeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a>.</p>
+<p>S'il n'y a pas d'en-tête <em class="mailheader">MIME-Version</em> existant, un en-tête est ajouté. S'il n'y a pas d'en-tête <em class="mailheader">Content-Type</em>, un en-tête est ajouté avec une valeur de <em class="mimetype">text/plain</em>. Que l'en-tête <em class="mailheader">Content-Type</em> existe déjà ou non, son paramètre <code class="docutils literal notranslate"><span class="pre">charset</span></code> est défini sur <em>charset.output_charset</em>. Si <em>charset.input_charset</em> et <em>charset.output_charset</em> diffèrent, la charge utile est ré-encodée dans le <em>output_charset</em>. S'il n'y a pas d'en-tête <em class="mailheader">Content-Transfer-Encoding</em> existant, alors la charge utile est encodée par transfert, si nécessaire, en utilisant le <a class="reference internal" href="email.charset.html#email.charset.Charset" title="email.charset.Charset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Charset</span></code></a> spécifié et un en-tête avec cette valeur est ajouté. Si un en-tête <em class="mailheader">Content-Transfer-Encoding</em> existe déjà, la charge utile est supposée être déjà correctement encodée à l'aide de cet en-tête <em class="mailheader">Content-Transfer-Encoding</em> et n'est pas modifiée.</p>
+<p>Il s'agit d'une ancienne méthode. Dans la classe <code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code> sa fonctionnalité est remplacée par le paramètre <em>charset</em> de la méthode <code class="xref py py-meth docutils literal notranslate"><span class="pre">email.emailmessage.EmailMessage.set_content()</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_charset">
+<span class="sig-name descname"><span class="pre">get_charset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_charset" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie l'instance <a class="reference internal" href="email.charset.html#email.charset.Charset" title="email.charset.Charset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Charset</span></code></a> associée à la charge utile du message.</p>
+<p>Il s'agit d'une ancienne méthode. Dans la classe <code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code>, elle renvoie toujours <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<p>Les méthodes suivantes implémentent une interface de type correspondance pour accéder aux en-têtes <span class="target" id="index-25"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2822.html"><strong>RFC 2822</strong></a> du message. Notez qu'il existe des différences sémantiques entre ces méthodes et une interface de correspondance normale (c'est-à-dire un dictionnaire). Par exemple, dans un dictionnaire, il n'y a pas de clés en double, mais ici, il peut y avoir des en-têtes de message en double. De plus, dans les dictionnaires, il n'y a pas d'ordre garanti pour les clés renvoyées par <a class="reference internal" href="#email.message.Message.keys" title="email.message.Message.keys"><code class="xref py py-meth docutils literal notranslate"><span class="pre">keys()</span></code></a>, mais dans un objet <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a>, les en-têtes sont toujours renvoyés dans l'ordre dans lequel ils sont apparus dans le message d'origine, ou ont été ajoutés au message plus tard. Tout en-tête supprimé puis rajouté est toujours ajouté à la fin de la liste des en-têtes.</p>
+<p>Ces différences sémantiques sont intentionnelles et visent une commodité maximale.</p>
+<p>Notez que dans tous les cas, tout en-tête d'enveloppe présent dans le message n'est pas inclus dans l'interface de correspondance.</p>
+<p>Dans un modèle généré à partir d'octets, toutes les valeurs d'en-tête qui (en violation des RFC) contiennent des octets non-ASCII sont, lorsqu'elles sont récupérées via cette interface, représentées comme des objets <a class="reference internal" href="email.header.html#email.header.Header" title="email.header.Header"><code class="xref py py-class docutils literal notranslate"><span class="pre">Header</span></code></a> avec un <em>charset</em> à <code class="docutils literal notranslate"><span class="pre">unknown-8bit</span></code>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.__len__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le nombre total d'en-têtes, y compris les doublons.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.__contains__">
+<span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.__contains__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> si l'objet message a un champ nommé <em>name</em>. La correspondance est insensible à la casse et <em>name</em> ne doit pas inclure les deux-points à la fin. Utilisé pour l'opérateur <code class="docutils literal notranslate"><span class="pre">in</span></code>, par exemple :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s1">&#39;message-id&#39;</span> <span class="ow">in</span> <span class="n">myMessage</span><span class="p">:</span>
+   <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Message-ID:&#39;</span><span class="p">,</span> <span class="n">myMessage</span><span class="p">[</span><span class="s1">&#39;message-id&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.__getitem__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la valeur du champ d'en-tête désigné. <em>name</em> ne doit pas inclure le séparateur de champ deux-points. Si l'en-tête est manquant, <code class="docutils literal notranslate"><span class="pre">None</span></code> est renvoyé ; <a class="reference internal" href="exceptions.html#KeyError" title="KeyError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">KeyError</span></code></a> n'est jamais levée.</p>
+<p>Notez que si le champ désigné apparaît plus d'une fois dans les en-têtes du message, la valeur exacte renvoyée n'est pas définie. Utilisez la méthode <a class="reference internal" href="#email.message.Message.get_all" title="email.message.Message.get_all"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_all()</span></code></a> pour obtenir les valeurs de tous les en-têtes existants.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.__setitem__">
+<span class="sig-name descname"><span class="pre">__setitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.__setitem__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Ajoute un en-tête au message avec le nom de champ <em>name</em> et la valeur <em>val</em>. Le champ est ajouté à la fin des champs existants du message.</p>
+<p>Notez que cela n'écrase <em>pas</em> ou ne supprime aucun en-tête existant portant le même nom. Si vous voulez vous assurer que le nouvel en-tête est le seul présent dans le message avec le nom de champ <em>name</em>, supprimez d'abord le champ, par exemple :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span>
+<span class="n">msg</span><span class="p">[</span><span class="s1">&#39;subject&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Python roolz!&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.__delitem__">
+<span class="sig-name descname"><span class="pre">__delitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.__delitem__" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Supprime toutes les occurrences du champ portant le nom <em>name</em> des en-têtes du message. Aucune exception n'est levée si le champ désigné n'est pas présent dans les en-têtes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.keys">
+<span class="sig-name descname"><span class="pre">keys</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.keys" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie une liste de tous les noms de champs d'en-tête du message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.values">
+<span class="sig-name descname"><span class="pre">values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.values" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie une liste de toutes les valeurs de champ du message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.items">
+<span class="sig-name descname"><span class="pre">items</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.items" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie une liste de couples contenant tous les en-têtes et valeurs de champs associées du message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failobj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Return the value of the named header field.  This is identical to
+<a class="reference internal" href="../reference/datamodel.html#object.__getitem__" title="object.__getitem__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__getitem__()</span></code></a> except that optional <em>failobj</em> is returned if the
+named header is missing (defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+</dd></dl>
+
+<p>Voici quelques méthodes supplémentaires utiles :</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_all">
+<span class="sig-name descname"><span class="pre">get_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failobj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_all" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la liste de toutes les valeurs du champ nommé <em>name</em>. S'il n'y a pas d'en-têtes de ce nom dans le message, <em>failobj</em> est renvoyé (la valeur par défaut est <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.add_header">
+<span class="sig-name descname"><span class="pre">add_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_value</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">_params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.add_header" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définition de paramètres d'en-têtes étendus. Cette méthode est similaire à <a class="reference internal" href="#email.message.Message.__setitem__" title="email.message.Message.__setitem__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__setitem__()</span></code></a> sauf que des paramètres d'en-tête supplémentaires peuvent être fournis en tant qu'arguments nommés. <em>_name</em> est le champ d'en-tête à ajouter et <em>_value</em> est la valeur <em>primaire</em> de l'en-tête.</p>
+<p>Pour chaque élément du dictionnaire d'arguments nommés <em>_params</em>, la clé est prise comme nom de paramètre, avec des traits de soulignement convertis en tirets (puisque les tirets sont illégaux dans les identifiants Python). Normalement, le paramètre est ajouté en tant que <code class="docutils literal notranslate"><span class="pre">key=&quot;value&quot;</span></code> sauf si la valeur est <code class="docutils literal notranslate"><span class="pre">None</span></code>, auquel cas seule la clé est ajoutée. Si la valeur contient des caractères non-ASCII, elle peut être spécifiée sous la forme d'un triplet au format <code class="docutils literal notranslate"><span class="pre">(CHARSET,</span> <span class="pre">LANGUAGE,</span> <span class="pre">VALUE)</span></code>, où <code class="docutils literal notranslate"><span class="pre">CHARSET</span></code> est une chaîne nommant le jeu de caractères à utiliser pour coder la valeur, <code class="docutils literal notranslate"><span class="pre">LANGUAGE</span></code> peut généralement être défini sur <code class="docutils literal notranslate"><span class="pre">None</span></code> ou la chaîne vide (voir la <span class="target" id="index-26"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2231.html"><strong>RFC 2231</strong></a> pour d'autres possibilités), et <code class="docutils literal notranslate"><span class="pre">VALUE</span></code> est la valeur de chaîne contenant des points de code non-ASCII. Si un triplet n'est pas passé et que la valeur contient des caractères non-ASCII, elle est automatiquement encodée au format <span class="target" id="index-27"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2231.html"><strong>RFC 2231</strong></a> en utilisant un <code class="docutils literal notranslate"><span class="pre">CHARSET</span></code> à <code class="docutils literal notranslate"><span class="pre">utf-8</span></code> et un <code class="docutils literal notranslate"><span class="pre">LANGUAGE</span></code> à <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>Voici un exemple :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">msg</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">,</span> <span class="s1">&#39;attachment&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;bud.gif&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Cela ajoute un en-tête qui ressemble à :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Content</span><span class="o">-</span><span class="n">Disposition</span><span class="p">:</span> <span class="n">attachment</span><span class="p">;</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;bud.gif&quot;</span>
+</pre></div>
+</div>
+<p>Un exemple avec des caractères non-ASCII :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">msg</span><span class="o">.</span><span class="n">add_header</span><span class="p">(</span><span class="s1">&#39;Content-Disposition&#39;</span><span class="p">,</span> <span class="s1">&#39;attachment&#39;</span><span class="p">,</span>
+               <span class="n">filename</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;iso-8859-1&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;Fußballer.ppt&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>qui produit :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">Content</span><span class="o">-</span><span class="n">Disposition</span><span class="p">:</span> <span class="n">attachment</span><span class="p">;</span> <span class="n">filename</span><span class="o">*=</span><span class="s2">&quot;iso-8859-1&#39;&#39;Fu%DFballer.ppt&quot;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.replace_header">
+<span class="sig-name descname"><span class="pre">replace_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.replace_header" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Remplace un en-tête. Remplace le premier en-tête trouvé dans le message qui correspond à <em>_name</em>, en conservant l'ordre des en-têtes et la casse des noms de champs. Si aucun en-tête correspondant n'a été trouvé, une <a class="reference internal" href="exceptions.html#KeyError" title="KeyError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">KeyError</span></code></a> est levée.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_content_type">
+<span class="sig-name descname"><span class="pre">get_content_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_content_type" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le type de contenu du message. La chaîne renvoyée est convertie en minuscules sous la forme <em class="mimetype">maintype/subtype</em>. S'il n'y avait pas d'en-tête <em class="mailheader">Content-Type</em> dans le message, le type par défaut tel qu'indiqué par <a class="reference internal" href="#email.message.Message.get_default_type" title="email.message.Message.get_default_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_default_type()</span></code></a> est renvoyé. Puisque selon la <span class="target" id="index-28"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2045.html"><strong>RFC 2045</strong></a>, les messages ont toujours un type par défaut, <a class="reference internal" href="#email.message.Message.get_content_type" title="email.message.Message.get_content_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_content_type()</span></code></a> renvoie toujours une valeur.</p>
+<p>La <span class="target" id="index-29"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2045.html"><strong>RFC 2045</strong></a> définit le type par défaut d'un message comme étant <em class="mimetype">text/plain</em> sauf s'il apparaît dans un conteneur <em class="mimetype">multipart/digest</em>, auquel cas ce serait <em class="mimetype">message/rfc822</em>. Si l'en-tête <em class="mailheader">Content-Type</em> a une spécification de type invalide, la <span class="target" id="index-30"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2045.html"><strong>RFC 2045</strong></a> exige que le type par défaut soit <em class="mimetype">text/plain</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_content_maintype">
+<span class="sig-name descname"><span class="pre">get_content_maintype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_content_maintype" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le type de contenu principal du message. C'est la partie <em class="mimetype">maintype</em> de la chaîne renvoyée par <a class="reference internal" href="#email.message.Message.get_content_type" title="email.message.Message.get_content_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_content_type()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_content_subtype">
+<span class="sig-name descname"><span class="pre">get_content_subtype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_content_subtype" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le type de sous-contenu du message. C'est la partie <em class="mimetype">subtype</em> de la chaîne renvoyée par <a class="reference internal" href="#email.message.Message.get_content_type" title="email.message.Message.get_content_type"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_content_type()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_default_type">
+<span class="sig-name descname"><span class="pre">get_default_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_default_type" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le type de contenu par défaut. La plupart des messages ont un type de contenu par défaut de <em class="mimetype">text/plain</em>, à l'exception des messages qui sont des sous-parties des conteneurs <em class="mimetype">multipart/digest</em>. Ces sous-parties ont un type de contenu par défaut de <em class="mimetype">message/rfc822</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.set_default_type">
+<span class="sig-name descname"><span class="pre">set_default_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.set_default_type" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit le type de contenu par défaut. <em>ctype</em> doit être <em class="mimetype">text/plain</em> ou <em class="mimetype">message/rfc822</em>, bien que cela ne soit pas appliqué. Le type de contenu par défaut n'est pas stocké dans l'en-tête <em class="mailheader">Content-Type</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_params">
+<span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">failobj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'content-type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unquote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_params" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie les paramètres <em class="mailheader">Content-Type</em> du message, sous forme de liste. Les éléments de la liste renvoyée sont des couples clé-valeur, ayant été séparés sur le signe <code class="docutils literal notranslate"><span class="pre">'='</span></code>. Le côté gauche du <code class="docutils literal notranslate"><span class="pre">'='</span></code> est la clé, tandis que le côté droit est la valeur. S'il n'y a pas de signe <code class="docutils literal notranslate"><span class="pre">'='</span></code> dans le paramètre, la valeur est la chaîne vide, sinon la valeur est telle que décrite dans <a class="reference internal" href="#email.message.Message.get_param" title="email.message.Message.get_param"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_param()</span></code></a> et n'est pas entre guillemets si l'option <em>unquote</em> est <code class="docutils literal notranslate"><span class="pre">True</span></code> (la valeur par défaut).</p>
+<p><em>failobj</em> (facultatif) est l'objet à renvoyer s'il n'y a pas d'en-tête <em class="mailheader">Content-Type</em>. <em>header</em> (facultatif) est l'en-tête à rechercher au lieu de <em class="mailheader">Content-Type</em>.</p>
+<p>Il s'agit d'une ancienne méthode. Dans la classe <code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code>, sa fonctionnalité est remplacée par la propriété <em>params</em> des objets d'en-tête individuels renvoyés par les méthodes d'accès aux en-têtes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_param">
+<span class="sig-name descname"><span class="pre">get_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failobj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'content-type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unquote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_param" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la valeur du paramètre <em>param</em> de l'en-tête <em class="mailheader">Content-Type</em> sous forme de chaîne. Si le message n'a pas d'en-tête <em class="mailheader">Content-Type</em> ou s'il n'y a pas un tel paramètre, alors <em>failobj</em> est renvoyé (par défaut à <code class="docutils literal notranslate"><span class="pre">None</span></code>).</p>
+<p><em>header</em> s'il est fourni, spécifie l'en-tête de message à utiliser à la place de <em class="mailheader">Content-Type</em>.</p>
+<p>Les clés en paramètre sont toujours comparées sans tenir compte de la casse. La valeur de retour peut être soit une chaîne, soit un triplet si le paramètre a été encodé selon la <span class="target" id="index-31"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2231.html"><strong>RFC 2231</strong></a>. Lorsqu'il s'agit d'un triplet, les éléments de la valeur sont de la forme <code class="docutils literal notranslate"><span class="pre">(CHARSET,</span> <span class="pre">LANGUAGE,</span> <span class="pre">VALUE)</span></code>. Notez que <code class="docutils literal notranslate"><span class="pre">CHARSET</span></code> et <code class="docutils literal notranslate"><span class="pre">LANGUAGE</span></code> peuvent être <code class="docutils literal notranslate"><span class="pre">None</span></code>, vous devriez alors considérer que <code class="docutils literal notranslate"><span class="pre">VALUE</span></code> est encodé dans le jeu de caractères <code class="docutils literal notranslate"><span class="pre">us-ascii</span></code>. Vous pouvez généralement ignorer <code class="docutils literal notranslate"><span class="pre">LANGUAGE</span></code>.</p>
+<p>Si votre application ne se soucie pas de savoir si le paramètre a été encodé conformément à la <span class="target" id="index-32"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2231.html"><strong>RFC 2231</strong></a>, vous pouvez réduire la valeur du paramètre en appelant <a class="reference internal" href="email.utils.html#email.utils.collapse_rfc2231_value" title="email.utils.collapse_rfc2231_value"><code class="xref py py-func docutils literal notranslate"><span class="pre">email.utils.collapse_rfc2231_value()</span></code></a>, en transmettant la valeur de retour de <a class="reference internal" href="#email.message.Message.get_param" title="email.message.Message.get_param"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_param()</span></code></a>. Cela renverra une chaîne Unicode convenablement décodée lorsque la valeur est un <em>n</em>-uplet, ou la chaîne d'origine sans guillemets si ce n'est pas le cas. Par exemple :</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">rawparam</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span>
+<span class="n">param</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">collapse_rfc2231_value</span><span class="p">(</span><span class="n">rawparam</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Dans tous les cas, la valeur du paramètre (soit la chaîne renvoyée, soit l'élément <code class="docutils literal notranslate"><span class="pre">VALUE</span></code> dans le triplet) est toujours sans guillemets, sauf si <em>unquote</em> est défini sur <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>Il s'agit d'une ancienne méthode. Dans la classe <code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code>, sa fonctionnalité est remplacée par la propriété <em>params</em> des objets d'en-tête individuels renvoyés par les méthodes d'accès aux en-têtes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.set_param">
+<span class="sig-name descname"><span class="pre">set_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Content-Type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">charset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.set_param" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit un paramètre dans l'en-tête <em class="mailheader">Content-Type</em>. Si le paramètre existe déjà dans l'en-tête, sa valeur est remplacée par <em>value</em>. Si l'en-tête <em class="mailheader">Content-Type</em> n'a pas encore été défini pour ce message, il est défini à <em class="mimetype">text/plain</em> et la nouvelle valeur du paramètre est ajoutée conformément à la <span class="target" id="index-33"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2045.html"><strong>RFC 2045</strong></a>.</p>
+<p>L'option <em>header</em> spécifie un en-tête alternatif à <em class="mailheader">Content-Type</em>, et tous les paramètres seront entre guillemets si nécessaire sauf si l'option <em>requote</em> est <code class="docutils literal notranslate"><span class="pre">False</span></code> (la valeur par défaut est <code class="docutils literal notranslate"><span class="pre">True</span></code>).</p>
+<p>Si <em>charset</em> est spécifié, le paramètre est encodé selon la <span class="target" id="index-34"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2231.html"><strong>RFC 2231</strong></a>. <em>language</em> (facultatif) spécifie la langue RFC 2231, par défaut c'est la chaîne vide. <em>charset</em> et <em>language</em> doivent être des chaînes.</p>
+<p>Si <em>replace</em> est <code class="docutils literal notranslate"><span class="pre">False</span></code> (valeur par défaut), l'en-tête est déplacé à la fin de la liste des en-têtes. Si <em>replace</em> est <code class="docutils literal notranslate"><span class="pre">True</span></code>, l'en-tête est mis à jour « sur place ».</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Modifié dans la version 3.4: </span>l'argument nommé <code class="docutils literal notranslate"><span class="pre">replace</span></code> a été ajouté.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.del_param">
+<span class="sig-name descname"><span class="pre">del_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">param</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'content-type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.del_param" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Supprime complètement le paramètre donné de l'en-tête <em class="mailheader">Content-Type</em>. L'en-tête est réécrit « sur place » sans le paramètre ou sa valeur. Toutes les valeurs seront entre guillemets si nécessaire sauf si <em>requote</em> est <code class="docutils literal notranslate"><span class="pre">False</span></code> (la valeur par défaut est <code class="docutils literal notranslate"><span class="pre">True</span></code>). L'option <em>header</em> spécifie une alternative à <em class="mailheader">Content-Type</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.set_type">
+<span class="sig-name descname"><span class="pre">set_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Content-Type'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requote</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.set_type" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit le type principal et le sous-type de l'en-tête <em class="mailheader">Content-Type</em>. <em>type</em> doit être une chaîne sous la forme <em class="mimetype">maintype/subtype</em>, sinon une <a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> est levée.</p>
+<p>Cette méthode remplace l'en-tête <em class="mailheader">Content-Type</em>, en gardant tous les paramètres en place. Si <em>requote</em> est <code class="docutils literal notranslate"><span class="pre">False</span></code>, cela laisse les guillemets de l'en-tête existant tels quels, sinon les paramètres sont mis entre guillemets (par défaut).</p>
+<p>Un en-tête alternatif peut être spécifié dans l'argument <em>header</em>. Lorsque l'en-tête <em class="mailheader">Content-Type</em> est défini, un en-tête <em class="mailheader">MIME-Version</em> est également ajouté.</p>
+<p>Il s'agit d'une ancienne méthode. Dans la classe <code class="xref py py-class docutils literal notranslate"><span class="pre">EmailMessage</span></code> sa fonctionnalité est remplacée par les méthodes <code class="docutils literal notranslate"><span class="pre">make_</span></code> et <code class="docutils literal notranslate"><span class="pre">add_</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_filename">
+<span class="sig-name descname"><span class="pre">get_filename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">failobj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_filename" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la valeur du paramètre <code class="docutils literal notranslate"><span class="pre">filename</span></code> de l'en-tête <em class="mailheader">Content-Disposition</em> du message. Si l'en-tête n'a pas de paramètre <code class="docutils literal notranslate"><span class="pre">filename</span></code>, cette méthode revient à rechercher le paramètre <code class="docutils literal notranslate"><span class="pre">name</span></code> dans l'en-tête <em class="mailheader">Content-Type</em>. Si aucun n'est trouvé, ou si l'en-tête est manquant, alors <em>failobj</em> est renvoyé. La chaîne renvoyée est toujours sans guillemets comme indiqué par <a class="reference internal" href="email.utils.html#email.utils.unquote" title="email.utils.unquote"><code class="xref py py-func docutils literal notranslate"><span class="pre">email.utils.unquote()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_boundary">
+<span class="sig-name descname"><span class="pre">get_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">failobj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_boundary" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la valeur du paramètre <code class="docutils literal notranslate"><span class="pre">boundary</span></code> de l'en-tête <em class="mailheader">Content-Type</em> du message, ou <em>failobj</em> si l'en-tête est manquant ou n'a pas de paramètre <code class="docutils literal notranslate"><span class="pre">boundary</span></code>. La chaîne renvoyée est toujours sans guillemets comme indiqué par <a class="reference internal" href="email.utils.html#email.utils.unquote" title="email.utils.unquote"><code class="xref py py-func docutils literal notranslate"><span class="pre">email.utils.unquote()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.set_boundary">
+<span class="sig-name descname"><span class="pre">set_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.set_boundary" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Définit le paramètre <code class="docutils literal notranslate"><span class="pre">boundary</span></code> de l'en-tête <em class="mailheader">Content-Type</em> sur <em>boundary</em>. <a class="reference internal" href="#email.message.Message.set_boundary" title="email.message.Message.set_boundary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_boundary()</span></code></a> met toujours <em>boundary</em> entre guillemets si nécessaire. Une <a class="reference internal" href="email.errors.html#email.errors.HeaderParseError" title="email.errors.HeaderParseError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">HeaderParseError</span></code></a> est levée si l'objet message n'a pas d'en-tête <em class="mailheader">Content-Type</em>.</p>
+<p>Notez que l'utilisation de cette méthode est légèrement différente de la suppression de l'ancien en-tête <em class="mailheader">Content-Type</em> et de l'ajout d'un nouveau avec la nouvelle limite via <a class="reference internal" href="#email.message.Message.add_header" title="email.message.Message.add_header"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_header()</span></code></a>, car <a class="reference internal" href="#email.message.Message.set_boundary" title="email.message.Message.set_boundary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_boundary()</span></code></a> préserve l'ordre des en-têtes <em class="mailheader">Content-Type</em> dans la liste des en-têtes. Cependant, elle ne conserve <em>pas</em> les lignes de continuation qui auraient pu être présentes dans l'en-tête original <em class="mailheader">Content-Type</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_content_charset">
+<span class="sig-name descname"><span class="pre">get_content_charset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">failobj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_content_charset" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie le paramètre <code class="docutils literal notranslate"><span class="pre">charset</span></code> de l'en-tête <em class="mailheader">Content-Type</em>, mis en minuscules. S'il n'y a pas d'en-tête <em class="mailheader">Content-Type</em>, ou si cet en-tête n'a pas de paramètre <code class="docutils literal notranslate"><span class="pre">charset</span></code>, <em>failobj</em> est renvoyé.</p>
+<p>Notez que cette méthode diffère de <a class="reference internal" href="#email.message.Message.get_charset" title="email.message.Message.get_charset"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_charset()</span></code></a> qui renvoie l'instance <a class="reference internal" href="email.charset.html#email.charset.Charset" title="email.charset.Charset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Charset</span></code></a> avec l'encodage par défaut du corps du message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_charsets">
+<span class="sig-name descname"><span class="pre">get_charsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">failobj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_charsets" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie une liste contenant les noms des jeux de caractères dans le message. Si le message est un <em class="mimetype">multipart</em>, alors la liste contient un élément pour chaque sous-partie dans la charge utile, sinon, c'est une liste de longueur 1.</p>
+<p>Chaque élément de la liste est une chaîne qui est la valeur du paramètre <code class="docutils literal notranslate"><span class="pre">charset</span></code> dans l'en-tête <em class="mailheader">Content-Type</em> pour la sous-partie représentée. Cependant, si la sous-partie n'a pas d'en-tête <em class="mailheader">Content-Type</em>, pas de paramètre <code class="docutils literal notranslate"><span class="pre">charset</span></code>, ou n'est pas du type MIME principal <em class="mimetype">text</em>, alors cet élément dans la liste renvoyée est <em>failobj</em>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.get_content_disposition">
+<span class="sig-name descname"><span class="pre">get_content_disposition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.get_content_disposition" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Renvoie la valeur en minuscules (sans paramètres) de l'en-tête <em class="mailheader">Content-Disposition</em> du message s'il en a un, ou <code class="docutils literal notranslate"><span class="pre">None</span></code>. Les valeurs possibles pour cette méthode sont <em>inline</em>, <em>attachment</em> ou <code class="docutils literal notranslate"><span class="pre">None</span></code> si le message suit la <span class="target" id="index-35"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc2183.html"><strong>RFC 2183</strong></a>.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="email.message.Message.walk">
+<span class="sig-name descname"><span class="pre">walk</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#email.message.Message.walk" title="Lien vers cette définition">¶</a></dt>
+<dd><p>La méthode <a class="reference internal" href="#email.message.Message.walk" title="email.message.Message.walk"><code class="xref py py-meth docutils literal notranslate"><span class="pre">walk()</span></code></a> est un générateur polyvalent qui peut être utilisé pour itérer sur toutes les parties et sous-parties d'une arborescence d'objets de message, dans l'ordre de parcours en profondeur d'abord. Vous utiliserez généralement <a class="reference internal" href="#email.message.Message.walk" title="email.message.Message.walk"><code class="xref py py-meth docutils literal notranslate"><span class="pre">walk()</span></code></a> comme itérateur dans une boucle <code class="docutils literal notranslate"><span class="pre">for</span></code> ; chaque itération renvoie la sous-partie suivante.</p>
+<p>Voici un exemple qui imprime le type MIME de chaque partie d'une structure de message en plusieurs parties :</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">msg</span><span class="o">.</span><span class="n">walk</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">get_content_type</span><span class="p">())</span>
+<span class="go">multipart/report</span>
+<span class="go">text/plain</span>
+<span class="go">message/delivery-status</span>
+<span class="go">text/plain</span>
+<span class="go">text/plain</span>
+<span class="go">message/rfc822</span>
+<span class="go">text/plain</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">walk</span></code> itère sur les sous-parties de toute partie où <a class="reference internal" href="#email.message.Message.is_multipart" title="email.message.Message.is_multipart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">is_multipart()</span></code></a> renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code>, même si <code class="docutils literal notranslate"><span class="pre">msg.get_content_maintype()</span> <span class="pre">==</span> <span class="pre">'multipart'</span></code> peut renvoyer <code class="docutils literal notranslate"><span class="pre">False</span></code>. Nous pouvons le voir dans notre exemple en utilisant la fonction d'aide au débogage <code class="docutils literal notranslate"><span class="pre">_structure</span></code> :</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">msg</span><span class="o">.</span><span class="n">walk</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">part</span><span class="o">.</span><span class="n">get_content_maintype</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;multipart&#39;</span><span class="p">,</span>
+<span class="gp">... </span>          <span class="n">part</span><span class="o">.</span><span class="n">is_multipart</span><span class="p">())</span>
+<span class="go">True True</span>
+<span class="go">False False</span>
+<span class="go">False True</span>
+<span class="go">False False</span>
+<span class="go">False False</span>
+<span class="go">False True</span>
+<span class="go">False False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_structure</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+<span class="go">multipart/report</span>
+<span class="go">    text/plain</span>
+<span class="go">    message/delivery-status</span>
+<span class="go">        text/plain</span>
+<span class="go">        text/plain</span>
+<span class="go">    message/rfc822</span>
+<span class="go">        text/plain</span>
+</pre></div>
+</div>
+<p>Ici, les parties <code class="docutils literal notranslate"><span class="pre">message</span></code> ne sont pas des <code class="docutils literal notranslate"><span class="pre">multiparts</span></code>, mais elles contiennent des sous-parties. <code class="docutils literal notranslate"><span class="pre">is_multipart()</span></code> renvoie <code class="docutils literal notranslate"><span class="pre">True</span></code> et <code class="docutils literal notranslate"><span class="pre">walk</span></code> descend dans les sous-parties.</p>
+</dd></dl>
+
+<p>Les objets <a class="reference internal" href="#email.message.Message" title="email.message.Message"><code class="xref py py-class docutils literal notranslate"><span class="pre">Message</span></code></a> peuvent aussi éventuellement contenir deux attributs d'instance, qui peuvent être utilisés lors de la génération du texte brut d'un message MIME.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="email.message.Message.preamble">
+<span class="sig-name descname"><span class="pre">preamble</span></span><a class="headerlink" href="#email.message.Message.preamble" title="Lien vers cette définition">¶</a></dt>
+<dd><p>Le format d'un document MIME permet d'insérer du texte entre la ligne vide suivant les en-têtes et la première chaîne de délimitation en plusieurs parties. Normalement, ce texte n'est jamais visible dans un lecteur de courrier compatible MIME car il ne fait pas partie du cadre MIME standard. Toutefois, lors de l'affichage du texte brut du message ou lors de l'affichage du message dans un lecteur non compatible MIME, ce texte peut devenir visible.</p>
+<p>L'attribut <em>preamble</em> contient ce texte hors-cadre de tête pour les documents MIME. Lorsque <a class="reference internal" href="email.parser.html#email.parser.Parser" title="email.parser.Parser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Parser</span></code></a> découvre du texte après les en-têtes mais avant la première chaîne de délimitation, il attribue ce texte à l'attribut <em>preamble</em> du message. Lorsque <a class="reference internal" href="email.generator.html#email.generator.Generator" title="email.generator.Generator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code></a> écrit la représentation en texte brut d'un message MIME, et qu'il trouve que le message a un attribut <em>preamble</em>, il écrit ce texte dans la zone entre les en-têtes et la première frontière. Voir <a class="reference internal" href="email.parser.html#module-email.parser" title="email.parser: Parse flat text email messages to produce a message object structure."><code class="xref py py-mod docutils literal notranslate"><span class="pre">email.parser</span></code></a> et <a class="reference internal" href="email.generator.html#module-email.generator" title="email.generator: Generate flat text email messages from a message structure."><code class="xref py py-mod docutils literal notranslate"><span class="pre">email.generator</span></code></a> pour plus de détails.</p>
+<p>Notez que si l'objet message n'a pas de préambule, l'attribut <em>preamble</em> est <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="email.message.Message.epilogue">
+<span class="sig-name descname"><span class="pre">epilogue</span></span><a class="headerlink" href="#email.message.Message.epilogue" title="Lien vers cette définition">¶</a></dt>
+<dd><p>L'attribut <em>epilogue</em> agit de la même manière que l'attribut <em>preamble</em>, sauf qu'il contient du texte qui apparaît entre la dernière limite et la fin du message.</p>
+<p>Vous n'avez pas besoin de définir l'épilogue sur la chaîne vide pour que <a class="reference internal" href="email.generator.html#email.generator.Generator" title="email.generator.Generator"><code class="xref py py-class docutils literal notranslate"><span class="pre">Generator</span></code></a> imprime une nouvelle ligne à la fin du fichier.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="email.message.Message.defects">
+<span class="sig-name descname"><span class="pre">defects</span></span><a class="headerlink" href="#email.message.Message.defects" title="Lien vers cette définition">¶</a></dt>
+<dd><p>L'attribut <em>defects</em> contient une liste de tous les problèmes rencontrés lors de l'analyse de ce message. Voir <a class="reference internal" href="email.errors.html#module-email.errors" title="email.errors: The exception classes used by the email package."><code class="xref py py-mod docutils literal notranslate"><span class="pre">email.errors</span></code></a> pour une description détaillée des défauts d'analyse possibles.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Sujet précédent</h4>
+    <p class="topless"><a href="email.examples.html"
+                          title="Chapitre précédent"><code class="xref py py-mod docutils literal notranslate"><span class="pre">email</span></code>: Exemples</a></p>
+  </div>
+  <div>
+    <h4>Sujet suivant</h4>
+    <p class="topless"><a href="email.mime.html"
+                          title="Chapitre suivant"><code class="xref py py-mod docutils literal notranslate"><span class="pre">email.mime</span></code>: Creating email and MIME objects from scratch</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">Signalement de bogue</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/email.compat32-message.rst"
+            rel="nofollow">Voir la source
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="Réduire la barre latérale">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="Index général"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Index des modules Python"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="email.mime.html" title="email.mime: Creating email and MIME objects from scratch"
+             >suivant</a> |</li>
+        <li class="right" >
+          <a href="email.examples.html" title="email: Exemples"
+             >précédent</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >La bibliothèque standard</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="netdata.html" >Traitement des données provenant d'Internet</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="email.html" ><code class="xref py py-mod docutils literal notranslate"><span class="pre">email</span></code> --- An email and MIME handling package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">email.message.Message</span></code> : représentation d'un message électronique à l'aide de l'API <code class="xref py py-data docutils literal notranslate"><span class="pre">compat32</span></code></a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="Recherche rapide" aria-label="Recherche rapide" type="search" name="q" id="search-box" />
+          <input type="submit" value="Go" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="/license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      Mis à jour le Jun 09, 2024 (22:21 UTC).
+    
+      <a href="/bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Créé en utilisant <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="pkgutil --- パッケージ拡張ユーティリティ" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/pkgutil.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/pkgutil.py このモジュールはインポートシステムの、特にパッケージサポートに関するユーティリティです。" />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/pkgutil.py このモジュールはインポートシステムの、特にパッケージサポートに関するユーティリティです。" />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>pkgutil --- パッケージ拡張ユーティリティ &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="modulefinder --- スクリプト中で使用されているモジュールの検索" href="modulefinder.html" />
+    <link rel="prev" title="zipimport --- Zip アーカイブからモジュールをインポートする" href="zipimport.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/pkgutil.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="zipimport.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">zipimport</span></code> --- Zip アーカイブからモジュールをインポートする</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="modulefinder.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">modulefinder</span></code> --- スクリプト中で使用されているモジュールの検索</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/pkgutil.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="modulefinder.html" title="modulefinder --- スクリプト中で使用されているモジュールの検索"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="zipimport.html" title="zipimport --- Zip アーカイブからモジュールをインポートする"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" accesskey="U">モジュールのインポート</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="pkgutil.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pkgutil</span></code> --- パッケージ拡張ユーティリティ</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-pkgutil">
+<span id="pkgutil-package-extension-utility"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">pkgutil</span></code> --- パッケージ拡張ユーティリティ<a class="headerlink" href="pkgutil.html#module-pkgutil" title="Link to this heading">¶</a></h1>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/pkgutil.py">Lib/pkgutil.py</a></p>
+<hr class="docutils" />
+<p>このモジュールはインポートシステムの、特にパッケージサポートに関するユーティリティです。</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pkgutil.ModuleInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">ModuleInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_finder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ispkg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="pkgutil.html#pkgutil.ModuleInfo" title="Link to this definition">¶</a></dt>
+<dd><p>モジュールの概要情報を格納する namedtuple</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.6.</span></p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.extend_path">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">extend_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="pkgutil.html#pkgutil.extend_path" title="Link to this definition">¶</a></dt>
+<dd><p>パッケージを構成するモジュールの検索パスを拡張します。パッケージの <code class="file docutils literal notranslate"><span class="pre">__init__.py</span></code> で次のように書くことを意図したものです:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pkgutil</span> <span class="kn">import</span> <span class="n">extend_path</span>
+<span class="n">__path__</span> <span class="o">=</span> <span class="n">extend_path</span><span class="p">(</span><span class="n">__path__</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For each directory on <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> that has a subdirectory that matches the
+package name, add the subdirectory to the package's <a class="reference internal" href="../reference/import.html#path__" title="__path__"><code class="xref py py-attr docutils literal notranslate"><span class="pre">__path__</span></code></a>.  This is useful
+if one wants to distribute different parts of a single logical package as multiple
+directories.</p>
+<p>同時に <code class="file docutils literal notranslate"><span class="pre">*.pkg</span></code> の <code class="docutils literal notranslate"><span class="pre">*</span></code> の部分が <em>name</em> 引数に指定された文字列に一致するファイルの検索もおこないます。この機能は <code class="docutils literal notranslate"><span class="pre">import</span></code> で始まる特別な行がないことを除き <code class="file docutils literal notranslate"><span class="pre">*.pth</span></code> ファイルに似ています (<a class="reference internal" href="site.html#module-site" title="site: Module responsible for site-specific configuration."><code class="xref py py-mod docutils literal notranslate"><span class="pre">site</span></code></a> の項を参照)。 <code class="file docutils literal notranslate"><span class="pre">*.pkg</span></code> は重複のチェックを除き、信頼できるものとして扱われます。 <code class="file docutils literal notranslate"><span class="pre">*.pkg</span></code> ファイルの中に見つかったエントリはファイルシステム上に実在するか否かを問わず、そのまますべてパスに追加されます。(このような仕様です。)</p>
+<p>入力パスがリストでない場合(フリーズされたパッケージのとき)は何もせずにリターンします。入力パスが変更されていなければ、アイテムを末尾に追加しただけのコピーを返します。</p>
+<p><a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> はシーケンスであることが前提になっています。 <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> の要素の内、実在するディレクトリを指す文字列となっていないものは無視されます。ファイル名として使ったときにエラーが発生する <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> の Unicode要素がある場合、この関数(<a class="reference internal" href="os.path.html#os.path.isdir" title="os.path.isdir"><code class="xref py py-func docutils literal notranslate"><span class="pre">os.path.isdir()</span></code></a> を実行している行) で例外が発生する可能性があります。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.find_loader">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">find_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="pkgutil.html#pkgutil.find_loader" title="Link to this definition">¶</a></dt>
+<dd><p><em>fullname</em> に対するモジュール <a class="reference internal" href="../glossary.html#term-loader"><span class="xref std std-term">loader</span></a> オブジェクトを取得します。</p>
+<p>これは後方互換性のために提供している <a class="reference internal" href="importlib.html#importlib.util.find_spec" title="importlib.util.find_spec"><code class="xref py py-func docutils literal notranslate"><span class="pre">importlib.util.find_spec()</span></code></a> へのラッパーで、そこでのほどんどの失敗を <a class="reference internal" href="exceptions.html#ImportError" title="ImportError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ImportError</span></code></a> に変換し、完全な <a class="reference internal" href="importlib.html#importlib.machinery.ModuleSpec" title="importlib.machinery.ModuleSpec"><code class="xref py py-class docutils literal notranslate"><span class="pre">importlib.machinery.ModuleSpec</span></code></a> を返す代わりにローダのみを返しています。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.3 で変更: </span>パッケージ内部の <span class="target" id="index-16"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> エミュレーションに依存するのではなく直接的に <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> に基くように更新されました。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.4 で変更: </span><span class="target" id="index-17"></span><a class="pep reference external" href="https://peps.python.org/pep-0451/"><strong>PEP 451</strong></a> ベースに更新されました。</p>
+</div>
+<div class="deprecated-removed">
+<p><span class="versionmodified">バージョン 3.12 で非推奨、バージョン 3.14 で削除予定: </span>代わりに <a class="reference internal" href="importlib.html#importlib.util.find_spec" title="importlib.util.find_spec"><code class="xref py py-func docutils literal notranslate"><span class="pre">importlib.util.find_spec()</span></code></a> を使用してください。</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.get_importer">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">get_importer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path_item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="pkgutil.html#pkgutil.get_importer" title="Link to this definition">¶</a></dt>
+<dd><p>指定された <em>path_item</em> に対する <a class="reference internal" href="../glossary.html#term-finder"><span class="xref std std-term">finder</span></a> を取得します。</p>
+<p>path hook により新しい finder が作成された場合は、それは <a class="reference internal" href="sys.html#sys.path_importer_cache" title="sys.path_importer_cache"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path_importer_cache</span></code></a> にキャッシュされます。</p>
+<p>キャッシュ (やその一部) は、 <a class="reference internal" href="sys.html#sys.path_hooks" title="sys.path_hooks"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path_hooks</span></code></a> のリスキャンが必要になった場合は手動でクリアすることができます。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.3 で変更: </span>パッケージ内部の <span class="target" id="index-18"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> エミュレーションに依存するのではなく直接的に <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> に基くように更新されました。</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.get_loader">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">get_loader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_or_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="pkgutil.html#pkgutil.get_loader" title="Link to this definition">¶</a></dt>
+<dd><p><em>module_or_name</em> に対する <a class="reference internal" href="../glossary.html#term-loader"><span class="xref std std-term">loader</span></a> オブジェクトを取得します。</p>
+<p>module か package が通常の import 機構によってアクセスできる場合、その機構の該当部分に対するラッパーを返します。モジュールが見つからなかったり import できない場合は <code class="docutils literal notranslate"><span class="pre">None</span></code> を返します。その名前のモジュールがまだ import されていない場合、そのモジュールを含むパッケージが(あれば)そのパッケージの <code class="docutils literal notranslate"><span class="pre">__path__</span></code> を確立するために import されます。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.3 で変更: </span>パッケージ内部の <span class="target" id="index-19"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> エミュレーションに依存するのではなく直接的に <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> に基くように更新されました。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.4 で変更: </span><span class="target" id="index-20"></span><a class="pep reference external" href="https://peps.python.org/pep-0451/"><strong>PEP 451</strong></a> ベースに更新されました。</p>
+</div>
+<div class="deprecated-removed">
+<p><span class="versionmodified">バージョン 3.12 で非推奨、バージョン 3.14 で削除予定: </span>代わりに <a class="reference internal" href="importlib.html#importlib.util.find_spec" title="importlib.util.find_spec"><code class="xref py py-func docutils literal notranslate"><span class="pre">importlib.util.find_spec()</span></code></a> を使用してください。</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.iter_importers">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">iter_importers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fullname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="pkgutil.html#pkgutil.iter_importers" title="Link to this definition">¶</a></dt>
+<dd><p>Yield <a class="reference internal" href="../glossary.html#term-finder"><span class="xref std std-term">finder</span></a> objects for the given module name.</p>
+<p>If fullname contains a <code class="docutils literal notranslate"><span class="pre">'.'</span></code>, the finders will be for the package
+containing fullname, otherwise they will be all registered top level
+finders (i.e. those on both <a class="reference internal" href="sys.html#sys.meta_path" title="sys.meta_path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.meta_path</span></code></a> and <a class="reference internal" href="sys.html#sys.path_hooks" title="sys.path_hooks"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path_hooks</span></code></a>).</p>
+<p>その名前のついたモジュールがパッケージ内に含まれている場合、この関数を実行した副作用としてそのパッケージが import されます。</p>
+<p>モジュール名が指定されない場合は全てのトップレベルの finder が生成されます。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.3 で変更: </span>パッケージ内部の <span class="target" id="index-21"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> エミュレーションに依存するのではなく直接的に <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> に基くように更新されました。</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.iter_modules">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">iter_modules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="pkgutil.html#pkgutil.iter_modules" title="Link to this definition">¶</a></dt>
+<dd><p><em>path</em> を指定すればそのすべてのサブモジュールに対して、 <em>path</em> が <code class="docutils literal notranslate"><span class="pre">None</span></code> なら <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> のすべてのトップレベルモジュールに対して、<a class="reference internal" href="pkgutil.html#pkgutil.ModuleInfo" title="pkgutil.ModuleInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModuleInfo</span></code></a> を yield します。</p>
+<p><em>path</em> は <code class="docutils literal notranslate"><span class="pre">None</span></code> か、モジュールを検索する path のリストのどちらかでなければなりません。</p>
+<p><em>prefix</em> は出力の全てのモジュール名の頭に出力する文字列です。</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>これは <code class="docutils literal notranslate"><span class="pre">iter_modules()</span></code> メソッドを定義している <a class="reference internal" href="../glossary.html#term-finder"><span class="xref std std-term">finder</span></a> に対してのみ動作します。このインターフェイスは非標準なので、モジュールは <a class="reference internal" href="importlib.html#importlib.machinery.FileFinder" title="importlib.machinery.FileFinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">importlib.machinery.FileFinder</span></code></a> と <a class="reference internal" href="zipimport.html#zipimport.zipimporter" title="zipimport.zipimporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">zipimport.zipimporter</span></code></a> の実装も提供します。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.3 で変更: </span>パッケージ内部の <span class="target" id="index-22"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> エミュレーションに依存するのではなく直接的に <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> に基くように更新されました。</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.walk_packages">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">walk_packages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">onerror</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="pkgutil.html#pkgutil.walk_packages" title="Link to this definition">¶</a></dt>
+<dd><p><em>path</em> を指定すれば再帰的にその中のモジュールすべてに対して、 <em>path</em> が <code class="docutils literal notranslate"><span class="pre">None</span></code> ならばアクセスできるすべてのモジュールに対して、<a class="reference internal" href="pkgutil.html#pkgutil.ModuleInfo" title="pkgutil.ModuleInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModuleInfo</span></code></a> を yield します。</p>
+<p><em>path</em> は <code class="docutils literal notranslate"><span class="pre">None</span></code> か、モジュールを検索する path のリストのどちらかでなければなりません。</p>
+<p><em>prefix</em> は出力の全てのモジュール名の頭に出力する文字列です。</p>
+<p>この関数は与えられた <em>path</em> 上の全ての <em>パッケージ</em> (全てのモジュール <em>ではない</em>) を、サブモジュールを検索するのに必要な <code class="docutils literal notranslate"><span class="pre">__path__</span></code> 属性にアクセスするために import します。</p>
+<p><em>onerror</em> は、パッケージを import しようとしたときに何かの例外が発生した場合に、 1つの引数 (import しようとしていたパッケージの名前) で呼び出される関数です。 <em>onerror</em> 関数が提供されない場合、 <a class="reference internal" href="exceptions.html#ImportError" title="ImportError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ImportError</span></code></a> は補足され無視されます。それ以外の全ての例外は伝播し、検索を停止させます。</p>
+<p>例:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># list all modules python can access</span>
+<span class="n">walk_packages</span><span class="p">()</span>
+
+<span class="c1"># list all submodules of ctypes</span>
+<span class="n">walk_packages</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">__path__</span><span class="p">,</span> <span class="n">ctypes</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>これは <code class="docutils literal notranslate"><span class="pre">iter_modules()</span></code> メソッドを定義している <a class="reference internal" href="../glossary.html#term-finder"><span class="xref std std-term">finder</span></a> に対してのみ動作します。このインターフェイスは非標準なので、モジュールは <a class="reference internal" href="importlib.html#importlib.machinery.FileFinder" title="importlib.machinery.FileFinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">importlib.machinery.FileFinder</span></code></a> と <a class="reference internal" href="zipimport.html#zipimport.zipimporter" title="zipimport.zipimporter"><code class="xref py py-class docutils literal notranslate"><span class="pre">zipimport.zipimporter</span></code></a> の実装も提供します。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.3 で変更: </span>パッケージ内部の <span class="target" id="index-23"></span><a class="pep reference external" href="https://peps.python.org/pep-0302/"><strong>PEP 302</strong></a> エミュレーションに依存するのではなく直接的に <a class="reference internal" href="importlib.html#module-importlib" title="importlib: The implementation of the import machinery."><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib</span></code></a> に基くように更新されました。</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.get_data">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">get_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">package</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="pkgutil.html#pkgutil.get_data" title="Link to this definition">¶</a></dt>
+<dd><p>パッケージからリソースを取得します。</p>
+<p>この関数は <a class="reference internal" href="../glossary.html#term-loader"><span class="xref std std-term">loader</span></a> <a class="reference internal" href="importlib.html#importlib.abc.ResourceLoader.get_data" title="importlib.abc.ResourceLoader.get_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_data</span></code></a> API のラッパーです。 <em>package</em> 引数は標準的なモジュール形式 (<code class="docutils literal notranslate"><span class="pre">foo.bar</span></code>) のパッケージ名でなければなりません。 <em>resource</em> 引数は <code class="docutils literal notranslate"><span class="pre">/</span></code> をパス区切りに使った相対ファイル名の形式です。親ディレクトリを <code class="docutils literal notranslate"><span class="pre">..</span></code> としたり、ルートからの (<code class="docutils literal notranslate"><span class="pre">/</span></code> で始まる) 名前を使うことはできません。</p>
+<p>この関数が返すのは指定されたリソースの内容であるバイナリ文字列です。</p>
+<p>ファイルシステム中に位置するパッケージで既にインポートされているものに対しては、次と大体同じです:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">package</span><span class="p">]</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">resource</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If the package cannot be located or loaded, or it uses a <a class="reference internal" href="../glossary.html#term-loader"><span class="xref std std-term">loader</span></a>
+which does not support <a class="reference internal" href="importlib.html#importlib.abc.ResourceLoader.get_data" title="importlib.abc.ResourceLoader.get_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_data</span></code></a>,
+then <code class="docutils literal notranslate"><span class="pre">None</span></code> is returned.  In particular, the <a class="reference internal" href="../glossary.html#term-loader"><span class="xref std std-term">loader</span></a> for
+<a class="reference internal" href="../glossary.html#term-namespace-package"><span class="xref std std-term">namespace packages</span></a> does not support
+<a class="reference internal" href="importlib.html#importlib.abc.ResourceLoader.get_data" title="importlib.abc.ResourceLoader.get_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_data</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pkgutil.resolve_name">
+<span class="sig-prename descclassname"><span class="pre">pkgutil.</span></span><span class="sig-name descname"><span class="pre">resolve_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="pkgutil.html#pkgutil.resolve_name" title="Link to this definition">¶</a></dt>
+<dd><p>Resolve a name to an object.</p>
+<p>This functionality is used in numerous places in the standard library (see
+<a class="reference external" href="https://bugs.python.org/issue?&#64;action=redirect&amp;bpo=12915">bpo-12915</a>) - and equivalent functionality is also in widely used
+third-party packages such as setuptools, Django and Pyramid.</p>
+<p>It is expected that <em>name</em> will be a string in one of the following
+formats, where W is shorthand for a valid Python identifier and dot stands
+for a literal period in these pseudo-regexes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">W(.W)*</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">W(.W)*:(W(.W)*)?</span></code></p></li>
+</ul>
+<p>The first form is intended for backward compatibility only. It assumes that
+some part of the dotted name is a package, and the rest is an object
+somewhere within that package, possibly nested inside other objects.
+Because the place where the package stops and the object hierarchy starts
+can't be inferred by inspection, repeated attempts to import must be done
+with this form.</p>
+<p>In the second form, the caller makes the division point clear through the
+provision of a single colon: the dotted name to the left of the colon is a
+package to be imported, and the dotted name to the right is the object
+hierarchy within that package. Only one import is needed in this form. If
+it ends with the colon, then a module object is returned.</p>
+<p>The function will return an object (which might be a module), or raise one
+of the following exceptions:</p>
+<p><a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> -- if <em>name</em> isn't in a recognised format.</p>
+<p><a class="reference internal" href="exceptions.html#ImportError" title="ImportError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ImportError</span></code></a> -- if an import failed when it shouldn't have.</p>
+<p><a class="reference internal" href="exceptions.html#AttributeError" title="AttributeError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AttributeError</span></code></a> -- If a failure occurred when traversing the object
+hierarchy within the imported package to get to the desired object.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.9.</span></p>
+</div>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="zipimport.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">zipimport</span></code> --- Zip アーカイブからモジュールをインポートする</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="modulefinder.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">modulefinder</span></code> --- スクリプト中で使用されているモジュールの検索</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/pkgutil.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="modulefinder.html" title="modulefinder --- スクリプト中で使用されているモジュールの検索"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="zipimport.html" title="zipimport --- Zip アーカイブからモジュールをインポートする"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >モジュールのインポート</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="pkgutil.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">pkgutil</span></code> --- パッケージ拡張ユーティリティ</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

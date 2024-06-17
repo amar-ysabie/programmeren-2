@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="xdrlib --- XDR データのエンコードおよびデコード" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/xdrlib.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/xdrlib.py xdrlib モジュールは外部データ表現標準 (External Data Representation Standard) のサポートを実現します。この標準は 1987 年に Sun Microsystems, Inc. によって書かれ、 RFC 1014 で定義されています。このモジュールでは RFC で記述されているほとんどのデータ型をサポー..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/xdrlib.py xdrlib モジュールは外部データ表現標準 (External Data Representation Standard) のサポートを実現します。この標準は 1987 年に Sun Microsystems, Inc. によって書かれ、 RFC 1014 で定義されています。このモジュールでは RFC で記述されているほとんどのデータ型をサポー..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>xdrlib --- XDR データのエンコードおよびデコード &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="セキュリティで考慮すべき点" href="security_warnings.html" />
+    <link rel="prev" title="uu --- uuencode形式のエンコードとデコード" href="uu.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/xdrlib.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="xdrlib.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xdrlib</span></code> --- XDR データのエンコードおよびデコード</a><ul>
+<li><a class="reference internal" href="xdrlib.html#packer-objects">Packer オブジェクト</a></li>
+<li><a class="reference internal" href="xdrlib.html#unpacker-objects">Unpacker オブジェクト</a></li>
+<li><a class="reference internal" href="xdrlib.html#exceptions">例外</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="uu.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">uu</span></code> --- uuencode形式のエンコードとデコード</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="security_warnings.html"
+                          title="次の章へ">セキュリティで考慮すべき点</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/xdrlib.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="security_warnings.html" title="セキュリティで考慮すべき点"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="uu.html" title="uu --- uuencode形式のエンコードとデコード"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="superseded.html" accesskey="U">取って代わられたモジュール群</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="xdrlib.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xdrlib</span></code> --- XDR データのエンコードおよびデコード</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-xdrlib">
+<span id="xdrlib-encode-and-decode-xdr-data"></span><h1><a class="reference internal" href="xdrlib.html#module-xdrlib" title="xdrlib: Encoders and decoders for the External Data Representation (XDR). (非推奨)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xdrlib</span></code></a> --- XDR データのエンコードおよびデコード<a class="headerlink" href="xdrlib.html#module-xdrlib" title="Link to this heading">¶</a></h1>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/xdrlib.py">Lib/xdrlib.py</a></p>
+<div class="deprecated-removed" id="index-0">
+<p><span class="versionmodified">バージョン 3.11 で非推奨、バージョン 3.13 で削除予定: </span>The <a class="reference internal" href="xdrlib.html#module-xdrlib" title="xdrlib: Encoders and decoders for the External Data Representation (XDR). (非推奨)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xdrlib</span></code></a> module is deprecated
+(see <span class="target" id="index-1"></span><a class="pep reference external" href="https://peps.python.org/pep-0594/#xdrlib"><strong>PEP 594</strong></a> for details).</p>
+</div>
+<hr class="docutils" />
+<p><a class="reference internal" href="xdrlib.html#module-xdrlib" title="xdrlib: Encoders and decoders for the External Data Representation (XDR). (非推奨)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xdrlib</span></code></a> モジュールは外部データ表現標準 (External Data  Representation Standard) のサポートを実現します。この標準は 1987 年に Sun Microsystems, Inc. によって書かれ、 <span class="target" id="index-8"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc1014.html"><strong>RFC 1014</strong></a> で定義されています。このモジュールでは RFC で記述されているほとんどのデータ型をサポートしています。</p>
+<p><a class="reference internal" href="xdrlib.html#module-xdrlib" title="xdrlib: Encoders and decoders for the External Data Representation (XDR). (非推奨)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xdrlib</span></code></a> モジュールでは 2 つのクラスが定義されています。一つは変数を XDR 表現にパックするためのクラスで、もう一方は XDR 表現からアンパックするためのものです。2 つの例外クラスが同様にして定義されています。</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xdrlib.Packer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xdrlib.</span></span><span class="sig-name descname"><span class="pre">Packer</span></span><a class="headerlink" href="xdrlib.html#xdrlib.Packer" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xdrlib.html#xdrlib.Packer" title="xdrlib.Packer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Packer</span></code></a> はデータを XDR 表現にパックするためのクラスです。 <a class="reference internal" href="xdrlib.html#xdrlib.Packer" title="xdrlib.Packer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Packer</span></code></a> クラスのインスタンス生成は引数なしで行われます。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xdrlib.Unpacker">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xdrlib.</span></span><span class="sig-name descname"><span class="pre">Unpacker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker" title="Link to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">Unpacker</span></code> は Packer と対をなしていて、文字列バッファから XDR をアンパックするためのクラスです。入力バッファ <em>data</em> を引数に与えてインスタンスを生成します。</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<dl class="simple">
+<dt><span class="target" id="index-3"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc1014.html"><strong>RFC 1014</strong></a> - XDR: External Data Representation Standard</dt><dd><p>この RFC が、かつてこのモジュールが最初に書かれた当時に XDR 標準であったデータのエンコード方法を定義していました。現在は <span class="target" id="index-9"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc1832.html"><strong>RFC 1832</strong></a> に更新されているようです。</p>
+</dd>
+<dt><span class="target" id="index-5"></span><a class="rfc reference external" href="https://datatracker.ietf.org/doc/html/rfc1832.html"><strong>RFC 1832</strong></a> - XDR: External Data Representation Standard</dt><dd><p>こちらが新しい方のRFCで、XDR の改訂版が定義されています。</p>
+</dd>
+</dl>
+</div>
+<section id="packer-objects">
+<span id="xdr-packer-objects"></span><h2>Packer オブジェクト<a class="headerlink" href="xdrlib.html#packer-objects" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="xdrlib.html#xdrlib.Packer" title="xdrlib.Packer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Packer</span></code></a> インスタンスには以下のメソッドがあります:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.get_buffer">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">get_buffer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.get_buffer" title="Link to this definition">¶</a></dt>
+<dd><p>現在のパック処理用バッファを文字列で返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.reset">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.reset" title="Link to this definition">¶</a></dt>
+<dd><p>パック処理用バッファをリセットして、空文字にします。</p>
+</dd></dl>
+
+<p>一般的には、適切な <code class="docutils literal notranslate"><span class="pre">pack_type()</span></code> メソッドを使えば、一般に用いられているほとんどの XDR データをパックすることができます。各々のメソッドは一つの引数をとり、パックしたい値を与えます。単純なデータ型をパックするメソッドとして、以下のメソッド: <code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_uint()</span></code> 、 <code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_int()</span></code> 、 <code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_enum()</span></code> 、 <code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_bool()</span></code> 、 <code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_uhyper()</span></code> そして <code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_hyper()</span></code> がサポートされています。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.pack_float">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">pack_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.pack_float" title="Link to this definition">¶</a></dt>
+<dd><p>単精度 (single-precision) の浮動小数点数 <em>value</em> をパックします。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.pack_double">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">pack_double</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.pack_double" title="Link to this definition">¶</a></dt>
+<dd><p>倍精度 (double-precision) の浮動小数点数 <em>value</em> をパックします。</p>
+</dd></dl>
+
+<p>以下のメソッドは文字列、バイト列、不透明データ (opaque data) のパック処理をサポートします:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.pack_fstring">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">pack_fstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.pack_fstring" title="Link to this definition">¶</a></dt>
+<dd><p>固定長の文字列、<em>s</em> をパックします。<em>n</em> は文字列の長さですが、この値自体はデータバッファにはパック <em>されません</em>。4 バイトのアラインメントを保証するために、文字列は必要に応じて null  バイト列でパディングされます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.pack_fopaque">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">pack_fopaque</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.pack_fopaque" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xdrlib.html#xdrlib.Packer.pack_fstring" title="xdrlib.Packer.pack_fstring"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_fstring()</span></code></a> と同じく、固定長の不透明データストリームをパックします。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.pack_string">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">pack_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.pack_string" title="Link to this definition">¶</a></dt>
+<dd><p>可変長の文字列 <em>s</em> をパックします。文字列の長さが最初に符号なし整数でパックされ、続いて <a class="reference internal" href="xdrlib.html#xdrlib.Packer.pack_fstring" title="xdrlib.Packer.pack_fstring"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_fstring()</span></code></a> を使って文字列データがパックされます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.pack_opaque">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">pack_opaque</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.pack_opaque" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xdrlib.html#xdrlib.Packer.pack_string" title="xdrlib.Packer.pack_string"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_string()</span></code></a> と同じく、可変長の不透明データ文字列をパックします。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.pack_bytes">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">pack_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.pack_bytes" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xdrlib.html#xdrlib.Packer.pack_string" title="xdrlib.Packer.pack_string"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_string()</span></code></a> と同じく、可変長のバイトストリームをパックします。</p>
+</dd></dl>
+
+<p>以下のメソッドはアレイやリストのパック処理をサポートします:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.pack_list">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">pack_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pack_item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.pack_list" title="Link to this definition">¶</a></dt>
+<dd><p>一様な項目からなる <em>list</em> をパックします。このメソッドはサイズ不定、すなわち、全てのリスト内容を網羅するまでサイズが分からないリストに対して有用です。リストのすべての項目に対し、最初に符号無し整数 <code class="docutils literal notranslate"><span class="pre">1</span></code> がパックされ、続いてリスト中のデータがパックされます。<em>pack_item</em> は個々の項目をパックするために呼び出される関数です。リストの末端に到達すると、符号無し整数 <code class="docutils literal notranslate"><span class="pre">0</span></code> がパックされます。</p>
+<p>例えば、整数のリストをパックするには、コードは以下のようになるはずです:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xdrlib</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">xdrlib</span><span class="o">.</span><span class="n">Packer</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">pack_list</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">p</span><span class="o">.</span><span class="n">pack_int</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.pack_farray">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">pack_farray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pack_item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.pack_farray" title="Link to this definition">¶</a></dt>
+<dd><p>一様な項目からなる固定長のリスト (<em>array</em>) をパックします。 <em>n</em> はリストの長さです。この値はデータバッファにパック <em>されません</em> が、 <code class="docutils literal notranslate"><span class="pre">len(array)</span></code> が <em>n</em> と等しくない場合、例外 <a class="reference internal" href="exceptions.html#ValueError" title="ValueError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> が送出されます。上と同様に、 <em>pack_item</em> は個々の要素をパック処理するための関数です。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Packer.pack_array">
+<span class="sig-prename descclassname"><span class="pre">Packer.</span></span><span class="sig-name descname"><span class="pre">pack_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pack_item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Packer.pack_array" title="Link to this definition">¶</a></dt>
+<dd><p>一様の項目からなる可変長の <em>list</em> をパックします。まず、リストの長さが符号無し整数でパックされ、つづいて各要素が上の <a class="reference internal" href="xdrlib.html#xdrlib.Packer.pack_farray" title="xdrlib.Packer.pack_farray"><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_farray()</span></code></a> と同じやり方でパックされます。</p>
+</dd></dl>
+
+</section>
+<section id="unpacker-objects">
+<span id="xdr-unpacker-objects"></span><h2>Unpacker オブジェクト<a class="headerlink" href="xdrlib.html#unpacker-objects" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="xdrlib.html#xdrlib.Unpacker" title="xdrlib.Unpacker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unpacker</span></code></a> クラスは以下のメソッドを提供します:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.reset">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.reset" title="Link to this definition">¶</a></dt>
+<dd><p>文字列バッファを <em>data</em> でリセットします。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.get_position">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">get_position</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.get_position" title="Link to this definition">¶</a></dt>
+<dd><p>データバッファ中の現在のアンパック処理位置を返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.set_position">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">set_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">position</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.set_position" title="Link to this definition">¶</a></dt>
+<dd><p>データバッファ中のアンパック処理位置を <em>position</em> に設定します。 <a class="reference internal" href="xdrlib.html#xdrlib.Unpacker.get_position" title="xdrlib.Unpacker.get_position"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_position()</span></code></a> および <a class="reference internal" href="xdrlib.html#xdrlib.Unpacker.set_position" title="xdrlib.Unpacker.set_position"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_position()</span></code></a> は注意して使わなければなりません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.get_buffer">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">get_buffer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.get_buffer" title="Link to this definition">¶</a></dt>
+<dd><p>現在のアンパック処理用データバッファを文字列で返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.done">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">done</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.done" title="Link to this definition">¶</a></dt>
+<dd><p>アンパック処理を終了させます。全てのデータがまだアンパックされていなければ、例外 <a class="reference internal" href="xdrlib.html#xdrlib.Error" title="xdrlib.Error"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Error</span></code></a> が送出されます。</p>
+</dd></dl>
+
+<p>上のメソッドに加えて、 <a class="reference internal" href="xdrlib.html#xdrlib.Packer" title="xdrlib.Packer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Packer</span></code></a> でパック処理できるデータ型はいずれも <a class="reference internal" href="xdrlib.html#xdrlib.Unpacker" title="xdrlib.Unpacker"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unpacker</span></code></a> でアンパック処理できます。アンパック処理メソッドは <code class="docutils literal notranslate"><span class="pre">unpack_type()</span></code> の形式をとり、引数をとりません。これらのメソッドはアンパックされたデータオブジェクトを返します。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.unpack_float">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">unpack_float</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.unpack_float" title="Link to this definition">¶</a></dt>
+<dd><p>単精度の浮動小数点数をアンパックします。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.unpack_double">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">unpack_double</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.unpack_double" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xdrlib.html#xdrlib.Unpacker.unpack_float" title="xdrlib.Unpacker.unpack_float"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unpack_float()</span></code></a> と同様に、倍精度の浮動小数点数をアンパックします。</p>
+</dd></dl>
+
+<p>上のメソッドに加えて、文字列、バイト列、不透明データをアンパックする以下のメソッドが提供されています:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.unpack_fstring">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">unpack_fstring</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.unpack_fstring" title="Link to this definition">¶</a></dt>
+<dd><p>固定長の文字列をアンパックして返します。<em>n</em> は予想される文字列の長さです。4 バイトのアラインメントを保証するために null バイトによるパディングが行われているものと仮定して処理を行います。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.unpack_fopaque">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">unpack_fopaque</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.unpack_fopaque" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xdrlib.html#xdrlib.Unpacker.unpack_fstring" title="xdrlib.Unpacker.unpack_fstring"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unpack_fstring()</span></code></a> と同様に、固定長の不透明データストリームをアンパックして返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.unpack_string">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">unpack_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.unpack_string" title="Link to this definition">¶</a></dt>
+<dd><p>可変長の文字列をアンパックして返します。最初に文字列の長さが符号無し整数としてアンパックされ、次に <a class="reference internal" href="xdrlib.html#xdrlib.Unpacker.unpack_fstring" title="xdrlib.Unpacker.unpack_fstring"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unpack_fstring()</span></code></a> を使って文字列データがアンパックされます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.unpack_opaque">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">unpack_opaque</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.unpack_opaque" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xdrlib.html#xdrlib.Unpacker.unpack_string" title="xdrlib.Unpacker.unpack_string"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unpack_string()</span></code></a> と同様に、可変長の不透明データ文字列をアンパックして返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.unpack_bytes">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">unpack_bytes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.unpack_bytes" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xdrlib.html#xdrlib.Unpacker.unpack_string" title="xdrlib.Unpacker.unpack_string"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unpack_string()</span></code></a> と同様に、可変長のバイトストリームをアンパックして返します。</p>
+</dd></dl>
+
+<p>以下メソッドはアレイおよびリストのアンパック処理をサポートします:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.unpack_list">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">unpack_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unpack_item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.unpack_list" title="Link to this definition">¶</a></dt>
+<dd><p>一様な項目からなるリストをアンパック処理して返します。リストは、まず符号無し整数によるフラグをアンパックすることで、一度に 1 要素づつアンパック処理されます。フラグが <code class="docutils literal notranslate"><span class="pre">1</span></code> の場合、要素はアンパックされ、返り値のリストに追加されます。フラグが <code class="docutils literal notranslate"><span class="pre">0</span></code> の場合、リストの終端を示します。<em>unpack_item</em> は個々の項目をアンパック処理するために呼び出される関数です。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.unpack_farray">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">unpack_farray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unpack_item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.unpack_farray" title="Link to this definition">¶</a></dt>
+<dd><p>一様な項目からなる固定長のアレイをアンパックして（リストとして）返します。<em>n</em> はバッファ内に存在すると期待されるリストの要素数です。上と同様に、<em>unpack_item</em> は各要素をアンパックするために使われる関数です。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xdrlib.Unpacker.unpack_array">
+<span class="sig-prename descclassname"><span class="pre">Unpacker.</span></span><span class="sig-name descname"><span class="pre">unpack_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unpack_item</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="xdrlib.html#xdrlib.Unpacker.unpack_array" title="Link to this definition">¶</a></dt>
+<dd><p>一様な項目からなる可変長の <em>list</em> をアンパックして返します。まず、リストの長さが符号無し整数としてアンパックされ、続いて各要素が上の <a class="reference internal" href="xdrlib.html#xdrlib.Unpacker.unpack_farray" title="xdrlib.Unpacker.unpack_farray"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unpack_farray()</span></code></a> のようにしてアンパック処理されます。</p>
+</dd></dl>
+
+</section>
+<section id="exceptions">
+<span id="xdr-exceptions"></span><h2>例外<a class="headerlink" href="xdrlib.html#exceptions" title="Link to this heading">¶</a></h2>
+<p>このモジュールでの例外はクラスインスタンスとしてコードされています:</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="xdrlib.Error">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xdrlib.</span></span><span class="sig-name descname"><span class="pre">Error</span></span><a class="headerlink" href="xdrlib.html#xdrlib.Error" title="Link to this definition">¶</a></dt>
+<dd><p>ベースとなる例外クラスです。 <a class="reference internal" href="xdrlib.html#xdrlib.Error" title="xdrlib.Error"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Error</span></code></a> public な属性として <code class="xref py py-attr docutils literal notranslate"><span class="pre">msg</span></code> を持ち、エラーの詳細が収められています。</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="xdrlib.ConversionError">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xdrlib.</span></span><span class="sig-name descname"><span class="pre">ConversionError</span></span><a class="headerlink" href="xdrlib.html#xdrlib.ConversionError" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xdrlib.html#xdrlib.Error" title="xdrlib.Error"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Error</span></code></a> から派生したクラスです。インスタンス変数は追加されていません。</p>
+</dd></dl>
+
+<p>これらの例外を補足する方法を以下の例に示します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">xdrlib</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">xdrlib</span><span class="o">.</span><span class="n">Packer</span><span class="p">()</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">pack_double</span><span class="p">(</span><span class="mf">8.01</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">xdrlib</span><span class="o">.</span><span class="n">ConversionError</span> <span class="k">as</span> <span class="n">instance</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;packing the double failed:&#39;</span><span class="p">,</span> <span class="n">instance</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="xdrlib.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xdrlib</span></code> --- XDR データのエンコードおよびデコード</a><ul>
+<li><a class="reference internal" href="xdrlib.html#packer-objects">Packer オブジェクト</a></li>
+<li><a class="reference internal" href="xdrlib.html#unpacker-objects">Unpacker オブジェクト</a></li>
+<li><a class="reference internal" href="xdrlib.html#exceptions">例外</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="uu.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">uu</span></code> --- uuencode形式のエンコードとデコード</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="security_warnings.html"
+                          title="次の章へ">セキュリティで考慮すべき点</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/xdrlib.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="security_warnings.html" title="セキュリティで考慮すべき点"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="uu.html" title="uu --- uuencode形式のエンコードとデコード"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="superseded.html" >取って代わられたモジュール群</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="xdrlib.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xdrlib</span></code> --- XDR データのエンコードおよびデコード</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

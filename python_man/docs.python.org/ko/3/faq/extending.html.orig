@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+
+<html lang="ko" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="확장/내장 FAQ" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/faq/extending.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="목차: 확장/내장 FAQ- C로 나만의 함수를 만들 수 있습니까?, C++로 나만의 함수를 만들 수 있습니까?, C를 쓰는 것은 어렵습니다; 대안이 있습니까?, C에서 임의의 파이썬 문장을 어떻게 실행할 수 있습니까?, C에서 임의의 파이썬 표현식을 어떻게 평가할 수 있습니까?, 파이썬 객체에서 C값을 어떻게 추출합니까?, Py_BuildValue()..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="목차: 확장/내장 FAQ- C로 나만의 함수를 만들 수 있습니까?, C++로 나만의 함수를 만들 수 있습니까?, C를 쓰는 것은 어렵습니다; 대안이 있습니까?, C에서 임의의 파이썬 문장을 어떻게 실행할 수 있습니까?, C에서 임의의 파이썬 표현식을 어떻게 평가할 수 있습니까?, 파이썬 객체에서 C값을 어떻게 추출합니까?, Py_BuildValue()..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>확장/내장 FAQ &#8212; Python 3.12.4 문서</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?v=bb723527" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css?v=b20cc3f5" />
+    
+    <script src="../_static/documentation_options.js?v=3050f571"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=b5f768d8"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 문서에서 찾기"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="이 문서 정보" href="../about.html" />
+    <link rel="index" title="색인" href="../genindex.html" />
+    <link rel="search" title="검색" href="../search.html" />
+    <link rel="copyright" title="저작권" href="../copyright.html" />
+    <link rel="next" title="윈도우 파이썬 FAQ" href="windows.html" />
+    <link rel="prev" title="라이브러리와 확장 FAQ" href="library.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="https://docs.python.org/3/faq/extending.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="빠른 검색" aria-label="빠른 검색" type="search" name="q" />
+                <input type="submit" value="이동"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">목차</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">확장/내장 FAQ</a><ul>
+<li><a class="reference internal" href="#can-i-create-my-own-functions-in-c">C로 나만의 함수를 만들 수 있습니까?</a></li>
+<li><a class="reference internal" href="#id2">C++로 나만의 함수를 만들 수 있습니까?</a></li>
+<li><a class="reference internal" href="#writing-c-is-hard-are-there-any-alternatives">C를 쓰는 것은 어렵습니다; 대안이 있습니까?</a></li>
+<li><a class="reference internal" href="#how-can-i-execute-arbitrary-python-statements-from-c">C에서 임의의 파이썬 문장을 어떻게 실행할 수 있습니까?</a></li>
+<li><a class="reference internal" href="#how-can-i-evaluate-an-arbitrary-python-expression-from-c">C에서 임의의 파이썬 표현식을 어떻게 평가할 수 있습니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-extract-c-values-from-a-python-object">파이썬 객체에서 C값을 어떻게 추출합니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-use-py-buildvalue-to-create-a-tuple-of-arbitrary-length">Py_BuildValue()를 사용하여 임의 길이의 튜플을 만드는 방법은 무엇입니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-call-an-object-s-method-from-c">C에서 객체의 메서드를 어떻게 호출합니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-catch-the-output-from-pyerr-print-or-anything-that-prints-to-stdout-stderr">PyErr_Print()의 출력(또는 stdout/stderr로 인쇄되는 모든 것)을 어떻게 잡습니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-access-a-module-written-in-python-from-c">C에서 파이썬으로 작성된 모듈에 어떻게 액세스합니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-interface-to-c-objects-from-python">파이썬에서 C++ 객체에 어떻게 인터페이스 합니까?</a></li>
+<li><a class="reference internal" href="#i-added-a-module-using-the-setup-file-and-the-make-fails-why">Setup 파일을 사용하여 모듈을 추가했는데 make가 실패합니다; 왜 그렇습니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-debug-an-extension">확장을 어떻게 디버깅합니까?</a></li>
+<li><a class="reference internal" href="#i-want-to-compile-a-python-module-on-my-linux-system-but-some-files-are-missing-why">리눅스 시스템에서 파이썬 모듈을 컴파일하고 싶지만, 일부 파일이 없습니다. 왜 그렇습니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-tell-incomplete-input-from-invalid-input">“잘못된 입력”과 “불완전한 입력”을 어떻게 구별할 수 있습니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-find-undefined-g-symbols-builtin-new-or-pure-virtual">정의되지 않은 g++ 기호 __builtin_new나 __pure_virtual을 어떻게 찾을 수 있습니까?</a></li>
+<li><a class="reference internal" href="#can-i-create-an-object-class-with-some-methods-implemented-in-c-and-others-in-python-e-g-through-inheritance">일부 메서드는 C로 구현되고 그 밖의 것은 파이썬으로 구현된 (예를 들어 상속을 통해) 객체 클래스를 만들 수 있습니까?</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>이전 항목</h4>
+    <p class="topless"><a href="library.html"
+                          title="이전 장">라이브러리와 확장 FAQ</a></p>
+  </div>
+  <div>
+    <h4>다음 항목</h4>
+    <p class="topless"><a href="windows.html"
+                          title="다음 장">윈도우 파이썬 FAQ</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>이 페이지</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">버그 보고하기</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/faq/extending.rst"
+            rel="nofollow">소스 보기
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>탐색</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="일반 색인"
+             accesskey="I">색인</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 모듈 목록"
+             >모듈</a> |</li>
+        <li class="right" >
+          <a href="windows.html" title="윈도우 파이썬 FAQ"
+             accesskey="N">다음</a> |</li>
+        <li class="right" >
+          <a href="library.html" title="라이브러리와 확장 FAQ"
+             accesskey="P">이전</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">파이썬 자주 나오는 질문들</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">확장/내장 FAQ</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="빠른 검색" aria-label="빠른 검색" type="search" name="q" id="search-box" />
+          <input type="submit" value="이동" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="extending-embedding-faq">
+<h1><a class="toc-backref" href="#id3" role="doc-backlink">확장/내장 FAQ</a><a class="headerlink" href="#extending-embedding-faq" title="Link to this heading">¶</a></h1>
+<nav class="contents" id="id1">
+<p class="topic-title">목차</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#extending-embedding-faq" id="id3">확장/내장 FAQ</a></p>
+<ul>
+<li><p><a class="reference internal" href="#can-i-create-my-own-functions-in-c" id="id4">C로 나만의 함수를 만들 수 있습니까?</a></p></li>
+<li><p><a class="reference internal" href="#id2" id="id5">C++로 나만의 함수를 만들 수 있습니까?</a></p></li>
+<li><p><a class="reference internal" href="#writing-c-is-hard-are-there-any-alternatives" id="id6">C를 쓰는 것은 어렵습니다; 대안이 있습니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-can-i-execute-arbitrary-python-statements-from-c" id="id7">C에서 임의의 파이썬 문장을 어떻게 실행할 수 있습니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-can-i-evaluate-an-arbitrary-python-expression-from-c" id="id8">C에서 임의의 파이썬 표현식을 어떻게 평가할 수 있습니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-extract-c-values-from-a-python-object" id="id9">파이썬 객체에서 C값을 어떻게 추출합니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-use-py-buildvalue-to-create-a-tuple-of-arbitrary-length" id="id10">Py_BuildValue()를 사용하여 임의 길이의 튜플을 만드는 방법은 무엇입니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-call-an-object-s-method-from-c" id="id11">C에서 객체의 메서드를 어떻게 호출합니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-catch-the-output-from-pyerr-print-or-anything-that-prints-to-stdout-stderr" id="id12">PyErr_Print()의 출력(또는 stdout/stderr로 인쇄되는 모든 것)을 어떻게 잡습니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-access-a-module-written-in-python-from-c" id="id13">C에서 파이썬으로 작성된 모듈에 어떻게 액세스합니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-interface-to-c-objects-from-python" id="id14">파이썬에서 C++ 객체에 어떻게 인터페이스 합니까?</a></p></li>
+<li><p><a class="reference internal" href="#i-added-a-module-using-the-setup-file-and-the-make-fails-why" id="id15">Setup 파일을 사용하여 모듈을 추가했는데 make가 실패합니다; 왜 그렇습니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-debug-an-extension" id="id16">확장을 어떻게 디버깅합니까?</a></p></li>
+<li><p><a class="reference internal" href="#i-want-to-compile-a-python-module-on-my-linux-system-but-some-files-are-missing-why" id="id17">리눅스 시스템에서 파이썬 모듈을 컴파일하고 싶지만, 일부 파일이 없습니다. 왜 그렇습니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-tell-incomplete-input-from-invalid-input" id="id18">“잘못된 입력”과 “불완전한 입력”을 어떻게 구별할 수 있습니까?</a></p></li>
+<li><p><a class="reference internal" href="#how-do-i-find-undefined-g-symbols-builtin-new-or-pure-virtual" id="id19">정의되지 않은 g++ 기호 __builtin_new나 __pure_virtual을 어떻게 찾을 수 있습니까?</a></p></li>
+<li><p><a class="reference internal" href="#can-i-create-an-object-class-with-some-methods-implemented-in-c-and-others-in-python-e-g-through-inheritance" id="id20">일부 메서드는 C로 구현되고 그 밖의 것은 파이썬으로 구현된 (예를 들어 상속을 통해) 객체 클래스를 만들 수 있습니까?</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<section id="can-i-create-my-own-functions-in-c">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink">C로 나만의 함수를 만들 수 있습니까?</a><a class="headerlink" href="#can-i-create-my-own-functions-in-c" title="Link to this heading">¶</a></h2>
+<p>그렇습니다. 함수, 변수, 예외 및 심지어 새로운 형을 포함하는 내장 모듈을 C로 만들 수 있습니다. <a class="reference internal" href="../extending/index.html#extending-index"><span class="std std-ref">파이썬 인터프리터 확장 및 내장</span></a> 문서에 설명되어 있습니다.</p>
+<p>대부분의 중급이나 고급 파이썬 서적에서도 이 주제를 다룰 것입니다.</p>
+</section>
+<section id="id2">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink">C++로 나만의 함수를 만들 수 있습니까?</a><a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>그렇습니다, C++에 있는 C 호환성 기능을 사용합니다. 파이썬 인클루드(include) 파일 주위에 <code class="docutils literal notranslate"><span class="pre">extern</span> <span class="pre">&quot;C&quot;</span> <span class="pre">{</span> <span class="pre">...</span> <span class="pre">}</span></code>를 배치하고 파이썬 인터프리터가 호출할 각 함수 앞에 <code class="docutils literal notranslate"><span class="pre">extern</span> <span class="pre">&quot;C&quot;</span></code>를 배치하십시오. 생성자를 가진 전역이나 정적(static) C++ 객체는 대개 좋은 생각이 아닙니다.</p>
+</section>
+<section id="writing-c-is-hard-are-there-any-alternatives">
+<span id="c-wrapper-software"></span><h2><a class="toc-backref" href="#id6" role="doc-backlink">C를 쓰는 것은 어렵습니다; 대안이 있습니까?</a><a class="headerlink" href="#writing-c-is-hard-are-there-any-alternatives" title="Link to this heading">¶</a></h2>
+<p>수행하려는 작업에 따라, 여러분 만의 C 확장을 작성하는 여러 가지 대안이 있습니다.</p>
+<p><a class="reference external" href="https://cython.org">Cython</a> and its relative <a class="reference external" href="https://www.csse.canterbury.ac.nz/greg.ewing/python/Pyrex/">Pyrex</a> are compilers
+that accept a slightly modified form of Python and generate the corresponding
+C code.  Cython and Pyrex make it possible to write an extension without having
+to learn Python’s C API.</p>
+<p>If you need to interface to some C or C++ library for which no Python extension
+currently exists, you can try wrapping the library’s data types and functions
+with a tool such as <a class="reference external" href="https://www.swig.org">SWIG</a>.  <a class="reference external" href="https://github.com/Python-SIP/sip">SIP</a>, <a class="reference external" href="https://cxx.sourceforge.net/">CXX</a> <a class="reference external" href="https://www.boost.org/libs/python/doc/index.html">Boost</a>, or <a class="reference external" href="https://github.com/scipy/weave">Weave</a> are also
+alternatives for wrapping C++ libraries.</p>
+</section>
+<section id="how-can-i-execute-arbitrary-python-statements-from-c">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink">C에서 임의의 파이썬 문장을 어떻게 실행할 수 있습니까?</a><a class="headerlink" href="#how-can-i-execute-arbitrary-python-statements-from-c" title="Link to this heading">¶</a></h2>
+<p>이를 수행하는 최상위 수준 함수는 <a class="reference internal" href="../c-api/veryhigh.html#c.PyRun_SimpleString" title="PyRun_SimpleString"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyRun_SimpleString()</span></code></a>이며, 이는 모듈 <code class="docutils literal notranslate"><span class="pre">__main__</span></code>의 컨텍스트에서 실행될 단일 문자열 인자를 취하고 성공하면 <code class="docutils literal notranslate"><span class="pre">0</span></code>을 반환하고 (<a class="reference internal" href="../library/exceptions.html#SyntaxError" title="SyntaxError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SyntaxError</span></code></a>를 포함하는) 예외가 발생하면 <code class="docutils literal notranslate"><span class="pre">-1</span></code>을 반환합니다. 더 많은 제어를 원하면, <a class="reference internal" href="../c-api/veryhigh.html#c.PyRun_String" title="PyRun_String"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyRun_String()</span></code></a>을 사용하십시오; <code class="docutils literal notranslate"><span class="pre">Python/pythonrun.c</span></code>에 있는 <a class="reference internal" href="../c-api/veryhigh.html#c.PyRun_SimpleString" title="PyRun_SimpleString"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyRun_SimpleString()</span></code></a> 소스를 참조하십시오.</p>
+</section>
+<section id="how-can-i-evaluate-an-arbitrary-python-expression-from-c">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink">C에서 임의의 파이썬 표현식을 어떻게 평가할 수 있습니까?</a><a class="headerlink" href="#how-can-i-evaluate-an-arbitrary-python-expression-from-c" title="Link to this heading">¶</a></h2>
+<p>이전 질문에서 나온 <a class="reference internal" href="../c-api/veryhigh.html#c.PyRun_String" title="PyRun_String"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyRun_String()</span></code></a> 함수를 start 기호 <a class="reference internal" href="../c-api/veryhigh.html#c.Py_eval_input" title="Py_eval_input"><code class="xref c c-data docutils literal notranslate"><span class="pre">Py_eval_input</span></code></a>을 사용하여 호출하십시오; 표현식을 구문 분석하고, 평가하고 값을 반환합니다.</p>
+</section>
+<section id="how-do-i-extract-c-values-from-a-python-object">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink">파이썬 객체에서 C값을 어떻게 추출합니까?</a><a class="headerlink" href="#how-do-i-extract-c-values-from-a-python-object" title="Link to this heading">¶</a></h2>
+<p>That depends on the object’s type.  If it’s a tuple, <a class="reference internal" href="../c-api/tuple.html#c.PyTuple_Size" title="PyTuple_Size"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyTuple_Size()</span></code></a>
+returns its length and <a class="reference internal" href="../c-api/tuple.html#c.PyTuple_GetItem" title="PyTuple_GetItem"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyTuple_GetItem()</span></code></a> returns the item at a specified
+index.  Lists have similar functions, <a class="reference internal" href="../c-api/list.html#c.PyList_Size" title="PyList_Size"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyList_Size()</span></code></a> and
+<a class="reference internal" href="../c-api/list.html#c.PyList_GetItem" title="PyList_GetItem"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyList_GetItem()</span></code></a>.</p>
+<p>For bytes, <a class="reference internal" href="../c-api/bytes.html#c.PyBytes_Size" title="PyBytes_Size"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyBytes_Size()</span></code></a> returns its length and
+<a class="reference internal" href="../c-api/bytes.html#c.PyBytes_AsStringAndSize" title="PyBytes_AsStringAndSize"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyBytes_AsStringAndSize()</span></code></a> provides a pointer to its value and its
+length.  Note that Python bytes objects may contain null bytes so C’s
+<code class="xref c c-func docutils literal notranslate"><span class="pre">strlen()</span></code> should not be used.</p>
+<p>객체의 형을 검사하려면, 먼저 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>이 아닌지 확인한 다음 <a class="reference internal" href="../c-api/bytes.html#c.PyBytes_Check" title="PyBytes_Check"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyBytes_Check()</span></code></a>, <a class="reference internal" href="../c-api/tuple.html#c.PyTuple_Check" title="PyTuple_Check"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyTuple_Check()</span></code></a>, <a class="reference internal" href="../c-api/list.html#c.PyList_Check" title="PyList_Check"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyList_Check()</span></code></a> 등을 사용하십시오.</p>
+<p>소위 ‘추상’ 인터페이스가 제공하는 파이썬 객체에 대한 고수준 API도 있습니다 – 자세한 내용은 <code class="docutils literal notranslate"><span class="pre">Include/abstract.h</span></code>를 읽으십시오. <a class="reference internal" href="../c-api/sequence.html#c.PySequence_Length" title="PySequence_Length"><code class="xref c c-func docutils literal notranslate"><span class="pre">PySequence_Length()</span></code></a>, <a class="reference internal" href="../c-api/sequence.html#c.PySequence_GetItem" title="PySequence_GetItem"><code class="xref c c-func docutils literal notranslate"><span class="pre">PySequence_GetItem()</span></code></a> 등과 같은 호출로 모든 종류의 파이썬 시퀀스와 인터페이스 할 수 있을 뿐만 아니라 숫자(<a class="reference internal" href="../c-api/number.html#c.PyNumber_Index" title="PyNumber_Index"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyNumber_Index()</span></code></a> 등)와 PyMapping API의 매핑과 같은 다른 많은 유용한 프로토콜을 지원합니다.</p>
+</section>
+<section id="how-do-i-use-py-buildvalue-to-create-a-tuple-of-arbitrary-length">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink">Py_BuildValue()를 사용하여 임의 길이의 튜플을 만드는 방법은 무엇입니까?</a><a class="headerlink" href="#how-do-i-use-py-buildvalue-to-create-a-tuple-of-arbitrary-length" title="Link to this heading">¶</a></h2>
+<p>그럴 수 없습니다. 대신 <a class="reference internal" href="../c-api/tuple.html#c.PyTuple_Pack" title="PyTuple_Pack"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyTuple_Pack()</span></code></a>을 사용하십시오.</p>
+</section>
+<section id="how-do-i-call-an-object-s-method-from-c">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink">C에서 객체의 메서드를 어떻게 호출합니까?</a><a class="headerlink" href="#how-do-i-call-an-object-s-method-from-c" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="../c-api/call.html#c.PyObject_CallMethod" title="PyObject_CallMethod"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_CallMethod()</span></code></a> 함수는 객체의 임의의 메서드를 호출하는 데 사용할 수 있습니다. 매개 변수는 객체, 호출할 메서드의 이름, <a class="reference internal" href="../c-api/arg.html#c.Py_BuildValue" title="Py_BuildValue"><code class="xref c c-func docutils literal notranslate"><span class="pre">Py_BuildValue()</span></code></a>에 사용되는 것과 같은 포맷 문자열 및 인자 값입니다:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span>
+<span class="nf">PyObject_CallMethod</span><span class="p">(</span><span class="n">PyObject</span><span class="w"> </span><span class="o">*</span><span class="n">object</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">method_name</span><span class="p">,</span>
+<span class="w">                    </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">arg_format</span><span class="p">,</span><span class="w"> </span><span class="p">...);</span>
+</pre></div>
+</div>
+<p>메서드가 있는 모든 객체에서 작동합니다 – 내장이나 사용자 정의 모두 작동합니다. 반환 값을 <a class="reference internal" href="../c-api/refcounting.html#c.Py_DECREF" title="Py_DECREF"><code class="xref c c-func docutils literal notranslate"><span class="pre">Py_DECREF()</span></code></a>할 책임은 여러분에게 있습니다.</p>
+<p>예를 들어, 인자 10, 0으로 파일 객체의 “seek” 메서드를 호출하려면 (파일 객체 포인터가 “f”라고 가정합니다):</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyObject_CallMethod</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;seek&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;(ii)&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">res</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">...</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">exception</span><span class="w"> </span><span class="n">occurred</span><span class="w"> </span><span class="p">...</span>
+<span class="p">}</span>
+<span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Py_DECREF</span><span class="p">(</span><span class="n">res</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../c-api/call.html#c.PyObject_CallObject" title="PyObject_CallObject"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_CallObject()</span></code></a>는 <em>항상</em> 인자 목록에 대한 튜플을 원하므로, 인자 없이 함수를 호출하려면, format으로 “()”를 전달하고, 하나의 인자로 함수를 호출하려면, 인자를 괄호로 묶습니다, 예를 들어 “(i)”.</p>
+</section>
+<section id="how-do-i-catch-the-output-from-pyerr-print-or-anything-that-prints-to-stdout-stderr">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink">PyErr_Print()의 출력(또는 stdout/stderr로 인쇄되는 모든 것)을 어떻게 잡습니까?</a><a class="headerlink" href="#how-do-i-catch-the-output-from-pyerr-print-or-anything-that-prints-to-stdout-stderr" title="Link to this heading">¶</a></h2>
+<p>파이썬 코드에서, <code class="docutils literal notranslate"><span class="pre">write()</span></code> 메서드를 지원하는 객체를 정의하십시오. 이 객체를 <a class="reference internal" href="../library/sys.html#sys.stdout" title="sys.stdout"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.stdout</span></code></a>과 <a class="reference internal" href="../library/sys.html#sys.stderr" title="sys.stderr"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.stderr</span></code></a>에 대입하십시오. print_error를 호출하거나 표준 트레이스백 메커니즘이 작동하도록 두십시오. 그러면 출력은 여러분의 <code class="docutils literal notranslate"><span class="pre">write()</span></code> 메서드가 보내는 곳으로 갑니다.</p>
+<p>이렇게 하는 가장 쉬운 방법은 <a class="reference internal" href="../library/io.html#io.StringIO" title="io.StringIO"><code class="xref py py-class docutils literal notranslate"><span class="pre">io.StringIO</span></code></a> 클래스를 사용하는 것입니다:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">io</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hello world!&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+<span class="go">foo</span>
+<span class="go">hello world!</span>
+</pre></div>
+</div>
+<p>같은 작업을 수행하는 사용자 정의 객체는 다음과 같습니다:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">io</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">StdoutCatcher</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">TextIOBase</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">... </span>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stuff</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">stuff</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">StdoutCatcher</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;foo&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;hello world!&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">data</span><span class="p">))</span>
+<span class="go">foo</span>
+<span class="go">hello world!</span>
+</pre></div>
+</div>
+</section>
+<section id="how-do-i-access-a-module-written-in-python-from-c">
+<h2><a class="toc-backref" href="#id13" role="doc-backlink">C에서 파이썬으로 작성된 모듈에 어떻게 액세스합니까?</a><a class="headerlink" href="#how-do-i-access-a-module-written-in-python-from-c" title="Link to this heading">¶</a></h2>
+<p>다음과 같이 모듈 객체에 대한 포인터를 얻을 수 있습니다:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">module</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyImport_ImportModule</span><span class="p">(</span><span class="s">&quot;&lt;modulename&gt;&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>모듈을 아직 임포트 하지 않았으면 (즉, <a class="reference internal" href="../library/sys.html#sys.modules" title="sys.modules"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.modules</span></code></a>에 아직 없으면), 이것은 모듈을 초기화합니다; 그렇지 않으면 단순히 <code class="docutils literal notranslate"><span class="pre">sys.modules[&quot;&lt;modulename&gt;&quot;]</span></code>의 값을 반환합니다. 이것은 모듈을 어떤 이름 공간에도 넣지 않음에 유의하십시오 – 단지 초기화되도록 하고 <a class="reference internal" href="../library/sys.html#sys.modules" title="sys.modules"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.modules</span></code></a>에 저장되도록 합니다.</p>
+<p>그런 다음, 다음과 같이 모듈의 어트리뷰트(즉 모듈에 정의된 모든 이름)에 액세스할 수 있습니다:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">attr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PyObject_GetAttrString</span><span class="p">(</span><span class="n">module</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;&lt;attrname&gt;&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>모듈에 있는 변수에 대입하기 위해 <a class="reference internal" href="../c-api/object.html#c.PyObject_SetAttrString" title="PyObject_SetAttrString"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyObject_SetAttrString()</span></code></a>을 호출하는 것도 작동합니다.</p>
+</section>
+<section id="how-do-i-interface-to-c-objects-from-python">
+<h2><a class="toc-backref" href="#id14" role="doc-backlink">파이썬에서 C++ 객체에 어떻게 인터페이스 합니까?</a><a class="headerlink" href="#how-do-i-interface-to-c-objects-from-python" title="Link to this heading">¶</a></h2>
+<p>요구 사항에 따라 여러 가지 접근 방식이 있습니다. 이 작업을 수동으로 수행하려면, <a class="reference internal" href="../extending/index.html#extending-index"><span class="std std-ref">“확장 및 내장” 문서</span></a>를 읽는 것으로 시작하십시오. 파이썬 런타임 시스템의 경우 C와 C++ 사이에는 큰 차이가 없다는 것을 상기하십시오 – 따라서 C 구조체 (포인터) 형을 중심으로 새로운 파이썬 형을 작성하는 전략이 C++ 객체에도 적용됩니다.</p>
+<p>C++ 라이브러리의 경우, <a class="reference internal" href="#c-wrapper-software"><span class="std std-ref">C를 쓰는 것은 어렵습니다; 대안이 있습니까?</span></a>를 참조하십시오.</p>
+</section>
+<section id="i-added-a-module-using-the-setup-file-and-the-make-fails-why">
+<h2><a class="toc-backref" href="#id15" role="doc-backlink">Setup 파일을 사용하여 모듈을 추가했는데 make가 실패합니다; 왜 그렇습니까?</a><a class="headerlink" href="#i-added-a-module-using-the-setup-file-and-the-make-fails-why" title="Link to this heading">¶</a></h2>
+<p>Setup은 개행으로 끝나야 하며, 개행이 없으면 빌드 프로세스가 실패합니다. (이 문제를 해결하려면 지저분한 셸 스크립트 해킹이 필요하며, 이 버그는 너무 사소해서 그런 노력을 들일만 한 가치가 없는 것 같습니다.)</p>
+</section>
+<section id="how-do-i-debug-an-extension">
+<h2><a class="toc-backref" href="#id16" role="doc-backlink">확장을 어떻게 디버깅합니까?</a><a class="headerlink" href="#how-do-i-debug-an-extension" title="Link to this heading">¶</a></h2>
+<p>동적으로 로드된 확장에 GDB를 사용할 때, 확장이 로드될 때까지 확장에 중단점을 설정할 수 없습니다.</p>
+<p><code class="docutils literal notranslate"><span class="pre">.gdbinit</span></code> 파일에서 (또는 대화식으로) 다음 명령을 추가하십시오:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>br _PyImport_LoadDynamicModule
+</pre></div>
+</div>
+<p>그런 다음, GDB를 실행할 때:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>gdb<span class="w"> </span>/local/bin/python
+<span class="go">gdb) run myscript.py</span>
+<span class="go">gdb) continue # repeat until your extension is loaded</span>
+<span class="go">gdb) finish   # so that your extension is loaded</span>
+<span class="go">gdb) br myfunction.c:50</span>
+<span class="go">gdb) continue</span>
+</pre></div>
+</div>
+</section>
+<section id="i-want-to-compile-a-python-module-on-my-linux-system-but-some-files-are-missing-why">
+<h2><a class="toc-backref" href="#id17" role="doc-backlink">리눅스 시스템에서 파이썬 모듈을 컴파일하고 싶지만, 일부 파일이 없습니다. 왜 그렇습니까?</a><a class="headerlink" href="#i-want-to-compile-a-python-module-on-my-linux-system-but-some-files-are-missing-why" title="Link to this heading">¶</a></h2>
+<p>대부분의 포장된 버전의 파이썬은 파이썬 확장을 컴파일하는 데 필요한 다양한 파일이 포함된 <code class="file docutils literal notranslate"><span class="pre">/usr/lib/python2.</span><em><span class="pre">x</span></em><span class="pre">/config/</span></code> 디렉터리가 포함되어 있지 않습니다.</p>
+<p>레드햇의 경우, 필요한 파일을 얻으려면 python-devel RPM을 설치하십시오.</p>
+<p>데비안의 경우, <code class="docutils literal notranslate"><span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">python-dev</span></code>를 실행하십시오.</p>
+</section>
+<section id="how-do-i-tell-incomplete-input-from-invalid-input">
+<h2><a class="toc-backref" href="#id18" role="doc-backlink">“잘못된 입력”과 “불완전한 입력”을 어떻게 구별할 수 있습니까?</a><a class="headerlink" href="#how-do-i-tell-incomplete-input-from-invalid-input" title="Link to this heading">¶</a></h2>
+<p>때로 파이썬 대화식 인터프리터의 동작을 흉내 내고 싶을 때가 있습니다. 이것은 입력이 불완전할 때 (예를 들어, “if” 문의 시작을 입력했거나 괄호나 삼중 문자열 따옴표를 닫지 않았을 때) 계속 프롬프트를 표시하지만, 입력이 유효하지 않으면 즉시 문법 에러 메시지를 표시합니다.</p>
+<p>파이썬에서는 <a class="reference internal" href="../library/codeop.html#module-codeop" title="codeop: Compile (possibly incomplete) Python code."><code class="xref py py-mod docutils literal notranslate"><span class="pre">codeop</span></code></a> 모듈을 사용할 수 있습니다. 이 모듈은 구문 분석기의 동작을 충분히 근사합니다. 예를 들어, IDLE은 이것을 사용합니다.</p>
+<p>C에서 이렇게 하는 가장 쉬운 방법은 <a class="reference internal" href="../c-api/veryhigh.html#c.PyRun_InteractiveLoop" title="PyRun_InteractiveLoop"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyRun_InteractiveLoop()</span></code></a>를 호출하고 (아마 별도의 스레드에서), 파이썬 인터프리터가 입력을 처리하도록 하는 것입니다. <a class="reference internal" href="../c-api/veryhigh.html#c.PyOS_ReadlineFunctionPointer" title="PyOS_ReadlineFunctionPointer"><code class="xref c c-func docutils literal notranslate"><span class="pre">PyOS_ReadlineFunctionPointer()</span></code></a> 가 여러분의 사용자 정의 입력 함수를 가리 키도록 설정할 수도 있습니다. 자세한 힌트는 <code class="docutils literal notranslate"><span class="pre">Modules/readline.c</span></code>와 <code class="docutils literal notranslate"><span class="pre">Parser/myreadline.c</span></code>를 참조하십시오.</p>
+</section>
+<section id="how-do-i-find-undefined-g-symbols-builtin-new-or-pure-virtual">
+<h2><a class="toc-backref" href="#id19" role="doc-backlink">정의되지 않은 g++ 기호 __builtin_new나 __pure_virtual을 어떻게 찾을 수 있습니까?</a><a class="headerlink" href="#how-do-i-find-undefined-g-symbols-builtin-new-or-pure-virtual" title="Link to this heading">¶</a></h2>
+<p>g++ 확장 모듈을 동적으로 로드하려면, 파이썬을 다시 컴파일하고, g++를 사용하여 다시 링크하고 (파이썬 Modules Makefile에서 LINKCC를 변경하십시오), g++를 사용하여 여러분의 확장 모듈을 링크해야 합니다 (예를 들어, <code class="docutils literal notranslate"><span class="pre">g++</span> <span class="pre">-shared</span> <span class="pre">-o</span> <span class="pre">mymodule.so</span> <span class="pre">mymodule.o</span></code>).</p>
+</section>
+<section id="can-i-create-an-object-class-with-some-methods-implemented-in-c-and-others-in-python-e-g-through-inheritance">
+<h2><a class="toc-backref" href="#id20" role="doc-backlink">일부 메서드는 C로 구현되고 그 밖의 것은 파이썬으로 구현된 (예를 들어 상속을 통해) 객체 클래스를 만들 수 있습니까?</a><a class="headerlink" href="#can-i-create-an-object-class-with-some-methods-implemented-in-c-and-others-in-python-e-g-through-inheritance" title="Link to this heading">¶</a></h2>
+<p>그렇습니다, <a class="reference internal" href="../library/functions.html#int" title="int"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>, <a class="reference internal" href="../library/stdtypes.html#list" title="list"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>, <a class="reference internal" href="../library/stdtypes.html#dict" title="dict"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a> 등과 같은 내장 클래스를 상속할 수 있습니다.</p>
+<p>The Boost Python Library (BPL, <a class="reference external" href="https://www.boost.org/libs/python/doc/index.html">https://www.boost.org/libs/python/doc/index.html</a>)
+provides a way of doing this from C++ (i.e. you can inherit from an extension
+class written in C++ using the BPL).</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">목차</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">확장/내장 FAQ</a><ul>
+<li><a class="reference internal" href="#can-i-create-my-own-functions-in-c">C로 나만의 함수를 만들 수 있습니까?</a></li>
+<li><a class="reference internal" href="#id2">C++로 나만의 함수를 만들 수 있습니까?</a></li>
+<li><a class="reference internal" href="#writing-c-is-hard-are-there-any-alternatives">C를 쓰는 것은 어렵습니다; 대안이 있습니까?</a></li>
+<li><a class="reference internal" href="#how-can-i-execute-arbitrary-python-statements-from-c">C에서 임의의 파이썬 문장을 어떻게 실행할 수 있습니까?</a></li>
+<li><a class="reference internal" href="#how-can-i-evaluate-an-arbitrary-python-expression-from-c">C에서 임의의 파이썬 표현식을 어떻게 평가할 수 있습니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-extract-c-values-from-a-python-object">파이썬 객체에서 C값을 어떻게 추출합니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-use-py-buildvalue-to-create-a-tuple-of-arbitrary-length">Py_BuildValue()를 사용하여 임의 길이의 튜플을 만드는 방법은 무엇입니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-call-an-object-s-method-from-c">C에서 객체의 메서드를 어떻게 호출합니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-catch-the-output-from-pyerr-print-or-anything-that-prints-to-stdout-stderr">PyErr_Print()의 출력(또는 stdout/stderr로 인쇄되는 모든 것)을 어떻게 잡습니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-access-a-module-written-in-python-from-c">C에서 파이썬으로 작성된 모듈에 어떻게 액세스합니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-interface-to-c-objects-from-python">파이썬에서 C++ 객체에 어떻게 인터페이스 합니까?</a></li>
+<li><a class="reference internal" href="#i-added-a-module-using-the-setup-file-and-the-make-fails-why">Setup 파일을 사용하여 모듈을 추가했는데 make가 실패합니다; 왜 그렇습니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-debug-an-extension">확장을 어떻게 디버깅합니까?</a></li>
+<li><a class="reference internal" href="#i-want-to-compile-a-python-module-on-my-linux-system-but-some-files-are-missing-why">리눅스 시스템에서 파이썬 모듈을 컴파일하고 싶지만, 일부 파일이 없습니다. 왜 그렇습니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-tell-incomplete-input-from-invalid-input">“잘못된 입력”과 “불완전한 입력”을 어떻게 구별할 수 있습니까?</a></li>
+<li><a class="reference internal" href="#how-do-i-find-undefined-g-symbols-builtin-new-or-pure-virtual">정의되지 않은 g++ 기호 __builtin_new나 __pure_virtual을 어떻게 찾을 수 있습니까?</a></li>
+<li><a class="reference internal" href="#can-i-create-an-object-class-with-some-methods-implemented-in-c-and-others-in-python-e-g-through-inheritance">일부 메서드는 C로 구현되고 그 밖의 것은 파이썬으로 구현된 (예를 들어 상속을 통해) 객체 클래스를 만들 수 있습니까?</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>이전 항목</h4>
+    <p class="topless"><a href="library.html"
+                          title="이전 장">라이브러리와 확장 FAQ</a></p>
+  </div>
+  <div>
+    <h4>다음 항목</h4>
+    <p class="topless"><a href="windows.html"
+                          title="다음 장">윈도우 파이썬 FAQ</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>이 페이지</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">버그 보고하기</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/faq/extending.rst"
+            rel="nofollow">소스 보기
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="사이드바 닫기">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>탐색</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="일반 색인"
+             >색인</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python 모듈 목록"
+             >모듈</a> |</li>
+        <li class="right" >
+          <a href="windows.html" title="윈도우 파이썬 FAQ"
+             >다음</a> |</li>
+        <li class="right" >
+          <a href="library.html" title="라이브러리와 확장 FAQ"
+             >이전</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >파이썬 자주 나오는 질문들</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">확장/내장 FAQ</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="빠른 검색" aria-label="빠른 검색" type="search" name="q" id="search-box" />
+          <input type="submit" value="이동" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    저작권
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="/license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      최종 업데이트: Jun 09, 2024 (17:23 UTC)
+    
+      <a href="/bugs.html">Found a bug</a>?
+    
+    <br />
+
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7 버전으로 생성되었습니다.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

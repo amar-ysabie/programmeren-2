@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="xml.dom.pulldom --- 部分的な DOM ツリー構築のサポート" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/xml.dom.pulldom.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="Source code: Lib/xml/dom/pulldom.py xml.dom.pulldom モジュールは &quot;プルパーザ&quot; を提供します。 プルパーザは必要に応じて文書の DOM アクセス可能な断片を生成することができます。 基本概念は、入力 XML のストリームから &quot;イベント&quot; を取り出し (pull し) て処理することです。 SAX とは、コールバックつきのイベント駆動処理..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="Source code: Lib/xml/dom/pulldom.py xml.dom.pulldom モジュールは &quot;プルパーザ&quot; を提供します。 プルパーザは必要に応じて文書の DOM アクセス可能な断片を生成することができます。 基本概念は、入力 XML のストリームから &quot;イベント&quot; を取り出し (pull し) て処理することです。 SAX とは、コールバックつきのイベント駆動処理..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>xml.dom.pulldom --- 部分的な DOM ツリー構築のサポート &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?v=bb723527" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css?v=b20cc3f5" />
+    
+    <script src="../_static/documentation_options.js?v=7e11ab17"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="xml.sax --- SAX2 バーサーのサポート" href="xml.sax.html" />
+    <link rel="prev" title="xml.dom.minidom --- 最小限の DOM の実装" href="xml.dom.minidom.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="https://docs.python.org/3/library/xml.dom.pulldom.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.dom.pulldom</span></code> --- 部分的な DOM ツリー構築のサポート</a><ul>
+<li><a class="reference internal" href="#domeventstream-objects">DOMEventStream オブジェクト</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="xml.dom.minidom.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.dom.minidom</span></code> --- 最小限の DOM の実装</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="xml.sax.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax</span></code> --- SAX2 バーサーのサポート</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/xml.dom.pulldom.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="xml.sax.html" title="xml.sax --- SAX2 バーサーのサポート"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="xml.dom.minidom.html" title="xml.dom.minidom --- 最小限の DOM の実装"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="markup.html" accesskey="U">構造化マークアップツール</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.dom.pulldom</span></code> --- 部分的な DOM ツリー構築のサポート</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-xml.dom.pulldom">
+<span id="xml-dom-pulldom-support-for-building-partial-dom-trees"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.dom.pulldom</span></code> --- 部分的な DOM ツリー構築のサポート<a class="headerlink" href="#module-xml.dom.pulldom" title="Link to this heading">¶</a></h1>
+<p><strong>Source code:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/xml/dom/pulldom.py">Lib/xml/dom/pulldom.py</a></p>
+<hr class="docutils" />
+<p><a class="reference internal" href="#module-xml.dom.pulldom" title="xml.dom.pulldom: Support for building partial DOM trees from SAX events."><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.dom.pulldom</span></code></a> モジュールは &quot;プルパーザ&quot; を提供します。
+プルパーザは必要に応じて文書の DOM アクセス可能な断片を生成することができます。
+基本概念は、入力 XML のストリームから &quot;イベント&quot; を取り出し (pull し) て処理することです。
+SAX とは、コールバックつきのイベント駆動処理モデルを採用しているという点で同様ですが、SAX とは対照的に、プルパーザの使用者には処理が完了するかエラー状態が発生するまで、明示的にストリームからイベントを取り出し、イベントに対しループを回す責任があります。</p>
+<div class="admonition warning">
+<p class="admonition-title">警告</p>
+<p><a class="reference internal" href="#module-xml.dom.pulldom" title="xml.dom.pulldom: Support for building partial DOM trees from SAX events."><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.dom.pulldom</span></code></a> モジュールは悪意を持って作成されたデータに対して安全ではありません。信頼できないデータや認証されていないデータをパースする必要がある場合は <a class="reference internal" href="xml.html#xml-vulnerabilities"><span class="std std-ref">XML の脆弱性</span></a> を参照してください。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.7.1 で変更: </span>SAXパーサーは、デフォルトでセキュリティーを向上させるために、一般的な外部エンティティーをデフォルトでは処理しなくなりました。外部エンティティの処理を有効にするには、次の場所にカスタムパーサーインスタンスを渡します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xml.dom.pulldom</span> <span class="kn">import</span> <span class="n">parse</span>
+<span class="kn">from</span> <span class="nn">xml.sax</span> <span class="kn">import</span> <span class="n">make_parser</span>
+<span class="kn">from</span> <span class="nn">xml.sax.handler</span> <span class="kn">import</span> <span class="n">feature_external_ges</span>
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">make_parser</span><span class="p">()</span>
+<span class="n">parser</span><span class="o">.</span><span class="n">setFeature</span><span class="p">(</span><span class="n">feature_external_ges</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">parse</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="n">parser</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>以下はプログラム例です:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">pulldom</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">pulldom</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;sales_items.xml&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">event</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="n">pulldom</span><span class="o">.</span><span class="n">START_ELEMENT</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">tagName</span> <span class="o">==</span> <span class="s1">&#39;item&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">getAttribute</span><span class="p">(</span><span class="s1">&#39;price&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+            <span class="n">doc</span><span class="o">.</span><span class="n">expandNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">toxml</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">event</span></code> は定数で以下の内の一つです:</p>
+<ul class="simple">
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">START_ELEMENT</span></code></p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">END_ELEMENT</span></code></p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">COMMENT</span></code></p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">START_DOCUMENT</span></code></p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">END_DOCUMENT</span></code></p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">CHARACTERS</span></code></p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">PROCESSING_INSTRUCTION</span></code></p></li>
+<li><p><code class="xref py py-data docutils literal notranslate"><span class="pre">IGNORABLE_WHITESPACE</span></code></p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">node</span></code> は型 <code class="xref py py-class docutils literal notranslate"><span class="pre">xml.dom.minidom.Document</span></code>、 <code class="xref py py-class docutils literal notranslate"><span class="pre">xml.dom.minidom.Element</span></code> または <code class="xref py py-class docutils literal notranslate"><span class="pre">xml.dom.minidom.Text</span></code> のオブジェクトです。</p>
+<p>文書はイベントの <em>フラットな</em> 流れとして扱われるため、文書の &quot;木&quot; は暗黙のうちに全て読み込まれ、目的の要素は木の中の深さに依らずに見つけられます。つまり、文書ノードの再帰的な検索のような階層的な問題を考える必要はありません。しかしながら要素の前後関係が重要な場合は、前後関係の状態を維持する (すなわち文章中の任意の点の場所を記憶する) か、 <a class="reference internal" href="#xml.dom.pulldom.DOMEventStream.expandNode" title="xml.dom.pulldom.DOMEventStream.expandNode"><code class="xref py py-func docutils literal notranslate"><span class="pre">DOMEventStream.expandNode()</span></code></a> メソッドを使用して DOM 関連の処理に切り替える必要があります。</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="xml.dom.pulldom.PullDom">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xml.dom.pulldom.</span></span><span class="sig-name descname"><span class="pre">PullDom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">documentFactory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.dom.pulldom.PullDom" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xml.sax.handler.html#xml.sax.handler.ContentHandler" title="xml.sax.handler.ContentHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.sax.handler.ContentHandler</span></code></a> のサブクラスです。</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="xml.dom.pulldom.SAX2DOM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xml.dom.pulldom.</span></span><span class="sig-name descname"><span class="pre">SAX2DOM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">documentFactory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.dom.pulldom.SAX2DOM" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="xml.sax.handler.html#xml.sax.handler.ContentHandler" title="xml.sax.handler.ContentHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">xml.sax.handler.ContentHandler</span></code></a> のサブクラスです。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xml.dom.pulldom.parse">
+<span class="sig-prename descclassname"><span class="pre">xml.dom.pulldom.</span></span><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream_or_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bufsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.dom.pulldom.parse" title="Link to this definition">¶</a></dt>
+<dd><p>与えられた入力から <a class="reference internal" href="#xml.dom.pulldom.DOMEventStream" title="xml.dom.pulldom.DOMEventStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">DOMEventStream</span></code></a> を返します。<em>stream_or_string</em> はファイル名かファイル様オブジェクトのいずれかです。<em>parser</em> は、与えれた場合、 <a class="reference internal" href="xml.sax.reader.html#xml.sax.xmlreader.XMLReader" title="xml.sax.xmlreader.XMLReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XMLReader</span></code></a> オブジェクトでなければなりません。この関数はパーザの文書ハンドラを変えて名前空間のサポートを有効にします。パーザの他の設定 (例えばエンティティリゾルバ) は前もってしておかなければなりません。</p>
+</dd></dl>
+
+<p>XML データを文字列で持っている場合、 <a class="reference internal" href="#xml.dom.pulldom.parseString" title="xml.dom.pulldom.parseString"><code class="xref py py-func docutils literal notranslate"><span class="pre">parseString()</span></code></a> を代わりに使うことができます:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="xml.dom.pulldom.parseString">
+<span class="sig-prename descclassname"><span class="pre">xml.dom.pulldom.</span></span><span class="sig-name descname"><span class="pre">parseString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.dom.pulldom.parseString" title="Link to this definition">¶</a></dt>
+<dd><p>(ユニコード) <em>string</em> を表す <a class="reference internal" href="#xml.dom.pulldom.DOMEventStream" title="xml.dom.pulldom.DOMEventStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">DOMEventStream</span></code></a> を返します。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="xml.dom.pulldom.default_bufsize">
+<span class="sig-prename descclassname"><span class="pre">xml.dom.pulldom.</span></span><span class="sig-name descname"><span class="pre">default_bufsize</span></span><a class="headerlink" href="#xml.dom.pulldom.default_bufsize" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#xml.dom.pulldom.parse" title="xml.dom.pulldom.parse"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse()</span></code></a> の <em>bufsize</em> パラメタのデフォルト値です。</p>
+<p>この変数の値は <a class="reference internal" href="#xml.dom.pulldom.parse" title="xml.dom.pulldom.parse"><code class="xref py py-func docutils literal notranslate"><span class="pre">parse()</span></code></a> を呼び出す前に変更することができます。その場合、その新しい値が有効になります。</p>
+</dd></dl>
+
+<section id="domeventstream-objects">
+<span id="id1"></span><h2>DOMEventStream オブジェクト<a class="headerlink" href="#domeventstream-objects" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="xml.dom.pulldom.DOMEventStream">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">xml.dom.pulldom.</span></span><span class="sig-name descname"><span class="pre">DOMEventStream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parser</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bufsize</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.dom.pulldom.DOMEventStream" title="Link to this definition">¶</a></dt>
+<dd><div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.11 で変更: </span>Support for <a class="reference internal" href="../reference/datamodel.html#object.__getitem__" title="object.__getitem__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__getitem__()</span></code></a> method has been removed.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.dom.pulldom.DOMEventStream.getEvent">
+<span class="sig-name descname"><span class="pre">getEvent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xml.dom.pulldom.DOMEventStream.getEvent" title="Link to this definition">¶</a></dt>
+<dd><p>event が <code class="xref py py-data docutils literal notranslate"><span class="pre">START_DOCUMENT</span></code> の場合は <em>event</em> と <code class="xref py py-class docutils literal notranslate"><span class="pre">xml.dom.minidom.Document</span></code> としての現在の <em>node</em> からなるタプルを、
+<code class="xref py py-data docutils literal notranslate"><span class="pre">START_ELEMENT</span></code> か <code class="xref py py-data docutils literal notranslate"><span class="pre">END_ELEMENT</span></code> の場合は <code class="xref py py-class docutils literal notranslate"><span class="pre">xml.dom.minidom.Element</span></code> を、
+<code class="xref py py-data docutils literal notranslate"><span class="pre">CHARACTERS</span></code> の場合は <code class="xref py py-class docutils literal notranslate"><span class="pre">xml.dom.minidom.Text</span></code> を返します。
+<a class="reference internal" href="#xml.dom.pulldom.DOMEventStream.expandNode" title="xml.dom.pulldom.DOMEventStream.expandNode"><code class="xref py py-func docutils literal notranslate"><span class="pre">expandNode()</span></code></a> が呼ばれない限り、現在のノードは子ノードの情報を持ちません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.dom.pulldom.DOMEventStream.expandNode">
+<span class="sig-name descname"><span class="pre">expandNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#xml.dom.pulldom.DOMEventStream.expandNode" title="Link to this definition">¶</a></dt>
+<dd><p><em>node</em> の全子ノードを <em>node</em> に展開します。例:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">xml.dom</span> <span class="kn">import</span> <span class="n">pulldom</span>
+
+<span class="n">xml</span> <span class="o">=</span> <span class="s1">&#39;&lt;html&gt;&lt;title&gt;Foo&lt;/title&gt; &lt;p&gt;Some text &lt;div&gt;and more&lt;/div&gt;&lt;/p&gt; &lt;/html&gt;&#39;</span>
+<span class="n">doc</span> <span class="o">=</span> <span class="n">pulldom</span><span class="o">.</span><span class="n">parseString</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">event</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="n">pulldom</span><span class="o">.</span><span class="n">START_ELEMENT</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">tagName</span> <span class="o">==</span> <span class="s1">&#39;p&#39;</span><span class="p">:</span>
+        <span class="c1"># Following statement only prints &#39;&lt;p/&gt;&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">toxml</span><span class="p">())</span>
+        <span class="n">doc</span><span class="o">.</span><span class="n">expandNode</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+        <span class="c1"># Following statement prints node with all its children &#39;&lt;p&gt;Some text &lt;div&gt;and more&lt;/div&gt;&lt;/p&gt;&#39;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">toxml</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="xml.dom.pulldom.DOMEventStream.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#xml.dom.pulldom.DOMEventStream.reset" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.dom.pulldom</span></code> --- 部分的な DOM ツリー構築のサポート</a><ul>
+<li><a class="reference internal" href="#domeventstream-objects">DOMEventStream オブジェクト</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="xml.dom.minidom.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.dom.minidom</span></code> --- 最小限の DOM の実装</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="xml.sax.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.sax</span></code> --- SAX2 バーサーのサポート</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/xml.dom.pulldom.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="xml.sax.html" title="xml.sax --- SAX2 バーサーのサポート"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="xml.dom.minidom.html" title="xml.dom.minidom --- 最小限の DOM の実装"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="markup.html" >構造化マークアップツール</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">xml.dom.pulldom</span></code> --- 部分的な DOM ツリー構築のサポート</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="/license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="/bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="mimetypes --- ファイル名を MIME タイプへマップする" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/mimetypes.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/mimetypes.py mimetypes モジュールは、ファイル名あるいは URL と、ファイル名拡張子に関連付けられた MIME 型とを変換します。ファイル名から MIME 型へと、 MIME 型からファイル名拡張子への変換が提供されます; 後者の変換では符号化方式はサポートされていません。 このモジュールは、一つのクラスと多くの便利な関数を提供します。これらの..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/mimetypes.py mimetypes モジュールは、ファイル名あるいは URL と、ファイル名拡張子に関連付けられた MIME 型とを変換します。ファイル名から MIME 型へと、 MIME 型からファイル名拡張子への変換が提供されます; 後者の変換では符号化方式はサポートされていません。 このモジュールは、一つのクラスと多くの便利な関数を提供します。これらの..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>mimetypes --- ファイル名を MIME タイプへマップする &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="base64 --- Base16, Base32, Base64, Base85 データのエンコード" href="base64.html" />
+    <link rel="prev" title="mailbox --- 様々な形式のメールボックスを操作する" href="mailbox.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/mimetypes.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="mimetypes.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mimetypes</span></code> --- ファイル名を MIME タイプへマップする</a><ul>
+<li><a class="reference internal" href="mimetypes.html#mimetypes-objects">Mime 型オブジェクト</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="mailbox.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mailbox</span></code> --- 様々な形式のメールボックスを操作する</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="base64.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base64</span></code> --- Base16, Base32, Base64, Base85 データのエンコード</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/mimetypes.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="base64.html" title="base64 --- Base16, Base32, Base64, Base85 データのエンコード"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="mailbox.html" title="mailbox --- 様々な形式のメールボックスを操作する"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="netdata.html" accesskey="U">インターネット上のデータの操作</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="mimetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mimetypes</span></code> --- ファイル名を MIME タイプへマップする</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mimetypes">
+<span id="mimetypes-map-filenames-to-mime-types"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">mimetypes</span></code> --- ファイル名を MIME タイプへマップする<a class="headerlink" href="mimetypes.html#module-mimetypes" title="Link to this heading">¶</a></h1>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/mimetypes.py">Lib/mimetypes.py</a></p>
+<hr class="docutils" id="index-0" />
+<p><a class="reference internal" href="mimetypes.html#module-mimetypes" title="mimetypes: Mapping of filename extensions to MIME types."><code class="xref py py-mod docutils literal notranslate"><span class="pre">mimetypes</span></code></a> モジュールは、ファイル名あるいは URL と、ファイル名拡張子に関連付けられた MIME 型とを変換します。ファイル名から MIME 型へと、 MIME 型からファイル名拡張子への変換が提供されます; 後者の変換では符号化方式はサポートされていません。</p>
+<p>このモジュールは、一つのクラスと多くの便利な関数を提供します。これらの関数がこのモジュールへの標準のインターフェースですが、アプリケーションによっては、そのクラスにも関係するかもしれません。</p>
+<p>以下で説明されている関数は、このモジュールへの主要なインターフェースを提供します。たとえモジュールが初期化されていなくても、もしこれらの関数が、 <a class="reference internal" href="mimetypes.html#mimetypes.init" title="mimetypes.init"><code class="xref py py-func docutils literal notranslate"><span class="pre">init()</span></code></a> がセットアップする情報に依存していれば、これらの関数は、 <a class="reference internal" href="mimetypes.html#mimetypes.init" title="mimetypes.init"><code class="xref py py-func docutils literal notranslate"><span class="pre">init()</span></code></a> を呼びます。</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="mimetypes.guess_type">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">guess_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.guess_type" title="Link to this definition">¶</a></dt>
+<dd><p id="index-1"><em>url</em> で与えられるファイル名あるいは URL に基づいて、ファイルの型を推定します。URL は文字列または <a class="reference internal" href="../glossary.html#term-path-like-object"><span class="xref std std-term">path-like object</span></a> です。</p>
+<p>戻り値は、タプル <code class="docutils literal notranslate"><span class="pre">(type,</span> <span class="pre">encoding)</span></code> です、ここで  <em>type</em> は、もし型が(拡張子がないあるいは未定義のため)推定できない場合は、 <code class="docutils literal notranslate"><span class="pre">None</span></code> を、あるいは、 MIME <em class="mailheader">content-type</em> ヘッダ  に利用できる、 <code class="docutils literal notranslate"><span class="pre">'type/subtype'</span></code> の形の文字列です。</p>
+<p><em>encoding</em> は、符合化方式がない場合は <code class="docutils literal notranslate"><span class="pre">None</span></code> を、あるいは、符号化に使われるプログラムの名前 (たとえば、 <strong class="program">compress</strong> あるいは <strong class="program">gzip</strong>)です。符号化方式は <em class="mailheader">Content-Encoding</em> ヘッダとして使うのに適しており、 <em class="mailheader">Content-Transfer-Encoding</em> ヘッダには適して <strong>いません</strong> 。マッピングはテーブル駆動です。符号化方式のサフィックスは大/小文字を区別します; データ型サフィックスは、最初大/小文字を区別して試し、それから大/小文字を区別せずに試します。</p>
+<p>省略可能な <em>strict</em> 引数は、既知の MIME 型のリストとして認識されるものが、<a class="reference external" href="https://www.iana.org/assignments/media-types/media-types.xhtml">IANAに登録された</a> 正式な型のみに限定されるかどうかを指定するフラグです。<em>strict</em> が <code class="docutils literal notranslate"><span class="pre">True</span></code> (デフォルト)の時は、IANA 型のみがサポートされます; <em>strict</em> が <code class="docutils literal notranslate"><span class="pre">False</span></code> のときは、いくつかの追加の、非標準ではあるが、一般的に使用される MIME 型も認識されます。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.8 で変更: </span>Added support for url being a <a class="reference internal" href="../glossary.html#term-path-like-object"><span class="xref std std-term">path-like object</span></a>.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mimetypes.guess_all_extensions">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">guess_all_extensions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.guess_all_extensions" title="Link to this definition">¶</a></dt>
+<dd><p>Guess the extensions for a file based on its MIME type, given by <em>type</em>. The
+return value is a list of strings giving all possible filename extensions,
+including the leading dot (<code class="docutils literal notranslate"><span class="pre">'.'</span></code>).  The extensions are not guaranteed to have
+been associated with any particular data stream, but would be mapped to the MIME
+type <em>type</em> by <a class="reference internal" href="mimetypes.html#mimetypes.guess_type" title="mimetypes.guess_type"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_type()</span></code></a>.</p>
+<p>省略可能な <em>strict</em> 引数は <a class="reference internal" href="mimetypes.html#mimetypes.guess_type" title="mimetypes.guess_type"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_type()</span></code></a> 関数のものと同じ意味を持ちます。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mimetypes.guess_extension">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">guess_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.guess_extension" title="Link to this definition">¶</a></dt>
+<dd><p>Guess the extension for a file based on its MIME type, given by <em>type</em>. The
+return value is a string giving a filename extension, including the leading dot
+(<code class="docutils literal notranslate"><span class="pre">'.'</span></code>).  The extension is not guaranteed to have been associated with any
+particular data stream, but would be mapped to the MIME type <em>type</em> by
+<a class="reference internal" href="mimetypes.html#mimetypes.guess_type" title="mimetypes.guess_type"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_type()</span></code></a>.  If no extension can be guessed for <em>type</em>, <code class="docutils literal notranslate"><span class="pre">None</span></code> is
+returned.</p>
+<p>省略可能な <em>strict</em> 引数は <a class="reference internal" href="mimetypes.html#mimetypes.guess_type" title="mimetypes.guess_type"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_type()</span></code></a> 関数のものと同じ意味を持ちます。</p>
+</dd></dl>
+
+<p>モジュールの動作を制御するために、いくつかの追加の関数とデータ項目が利用できます。</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="mimetypes.init">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.init" title="Link to this definition">¶</a></dt>
+<dd><p>内部のデータ構造を初期化します。もし  <em>files</em> が与えられていれば、これはデフォルトの type map を増やすために使われる、一連のファイル名でなければなりません。もし省略されていれば、使われるファイル名は <a class="reference internal" href="mimetypes.html#mimetypes.knownfiles" title="mimetypes.knownfiles"><code class="xref py py-const docutils literal notranslate"><span class="pre">knownfiles</span></code></a> から取られます。 Windows であれば、現在のレジストリの設定が読み込まれます。 <em>files</em> あるいは <a class="reference internal" href="mimetypes.html#mimetypes.knownfiles" title="mimetypes.knownfiles"><code class="xref py py-const docutils literal notranslate"><span class="pre">knownfiles</span></code></a> 内の各ファイル名は、それ以前に現れる名前より優先されます。繰り返し <a class="reference internal" href="mimetypes.html#mimetypes.init" title="mimetypes.init"><code class="xref py py-func docutils literal notranslate"><span class="pre">init()</span></code></a> を呼び出すことは許されています。</p>
+<p><em>files</em> に空リストを与えることで、システムのデフォルトが適用されるのを避けることが出来ます; 組み込みのリストから well-known な値だけが取り込まれます。</p>
+<p><em>files</em> が <code class="docutils literal notranslate"><span class="pre">None</span></code> の場合、内部のデータ構造は初期のデフォルト値に完全に再構築されます。
+これは安定な操作であり、複数回呼び出されたときは同じ結果になります。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.2 で変更: </span>前のバージョンでは、 Windows のレジストリの設定は無視されていました。</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mimetypes.read_mime_types">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">read_mime_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.read_mime_types" title="Link to this definition">¶</a></dt>
+<dd><p>ファイル <em>filename</em> で与えられた型のマップが、もしあればロードします。型のマップは、先頭の dot (<code class="docutils literal notranslate"><span class="pre">'.'</span></code>) を含むファイル名拡張子を、<code class="docutils literal notranslate"><span class="pre">'type/subtype'</span></code> の形の文字列にマッピングする辞書として返されます。もしファイル <em>filename</em> が存在しないか、読み込めなければ、<code class="docutils literal notranslate"><span class="pre">None</span></code> が返されます。</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mimetypes.add_type">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">add_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.add_type" title="Link to this definition">¶</a></dt>
+<dd><p>MIME 型 <em>type</em> からのマッピングを拡張子 <em>ext</em> に追加します。拡張子がすでに既知であれば、新しい型が古いものに置き替わります。その型がすでに既知であれば、その拡張子が、既知の拡張子のリストに追加されます。</p>
+<p><em>strict</em> が <code class="docutils literal notranslate"><span class="pre">True</span></code> の時(デフォルト)は、そのマッピングは正式な MIME 型に、そうでなければ、非標準の MIME 型に追加されます。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mimetypes.inited">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">inited</span></span><a class="headerlink" href="mimetypes.html#mimetypes.inited" title="Link to this definition">¶</a></dt>
+<dd><p>グローバルなデータ構造が初期化されているかどうかを示すフラグ。これは <a class="reference internal" href="mimetypes.html#mimetypes.init" title="mimetypes.init"><code class="xref py py-func docutils literal notranslate"><span class="pre">init()</span></code></a> により <code class="docutils literal notranslate"><span class="pre">True</span></code> に設定されます。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mimetypes.knownfiles">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">knownfiles</span></span><a class="headerlink" href="mimetypes.html#mimetypes.knownfiles" title="Link to this definition">¶</a></dt>
+<dd><p id="index-2">共通にインストールされた型マップファイル名のリスト。これらのファイルは、普通 <code class="file docutils literal notranslate"><span class="pre">mime.types</span></code> という名前であり、パッケージごとに異なる場所にインストールされます。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mimetypes.suffix_map">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">suffix_map</span></span><a class="headerlink" href="mimetypes.html#mimetypes.suffix_map" title="Link to this definition">¶</a></dt>
+<dd><p>サフィックスをサフィックスにマップする辞書。これは、符号化方式と型が同一拡張子で示される符号化ファイルが認識できるように使用されます。例えば、 <code class="file docutils literal notranslate"><span class="pre">.tgz</span></code> 拡張子は、符号化と型が別個に認識できるように <code class="file docutils literal notranslate"><span class="pre">.tar.gz</span></code> にマップされます。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mimetypes.encodings_map">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">encodings_map</span></span><a class="headerlink" href="mimetypes.html#mimetypes.encodings_map" title="Link to this definition">¶</a></dt>
+<dd><p>ファイル名拡張子を符号化方式型にマッピングする辞書。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mimetypes.types_map">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">types_map</span></span><a class="headerlink" href="mimetypes.html#mimetypes.types_map" title="Link to this definition">¶</a></dt>
+<dd><p>ファイル名拡張子を MIME 型にマップする辞書。</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mimetypes.common_types">
+<span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">common_types</span></span><a class="headerlink" href="mimetypes.html#mimetypes.common_types" title="Link to this definition">¶</a></dt>
+<dd><p>ファイル名拡張子を非標準ではあるが、一般に使われている MIME 型にマップする辞書。</p>
+</dd></dl>
+
+<p>モジュールの使用例:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">mimetypes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mimetypes</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mimetypes</span><span class="o">.</span><span class="n">knownfiles</span>
+<span class="go">[&#39;/etc/mime.types&#39;, &#39;/etc/httpd/mime.types&#39;, ... ]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mimetypes</span><span class="o">.</span><span class="n">suffix_map</span><span class="p">[</span><span class="s1">&#39;.tgz&#39;</span><span class="p">]</span>
+<span class="go">&#39;.tar.gz&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mimetypes</span><span class="o">.</span><span class="n">encodings_map</span><span class="p">[</span><span class="s1">&#39;.gz&#39;</span><span class="p">]</span>
+<span class="go">&#39;gzip&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mimetypes</span><span class="o">.</span><span class="n">types_map</span><span class="p">[</span><span class="s1">&#39;.tgz&#39;</span><span class="p">]</span>
+<span class="go">&#39;application/x-tar-gz&#39;</span>
+</pre></div>
+</div>
+<section id="mimetypes-objects">
+<span id="id1"></span><h2>Mime 型オブジェクト<a class="headerlink" href="mimetypes.html#mimetypes-objects" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="mimetypes.html#mimetypes.MimeTypes" title="mimetypes.MimeTypes"><code class="xref py py-class docutils literal notranslate"><span class="pre">MimeTypes</span></code></a> クラスは一つ以上の MIME 型データベースが欲しいアプリケーションにとって有用でしょう。これは <a class="reference internal" href="mimetypes.html#module-mimetypes" title="mimetypes: Mapping of filename extensions to MIME types."><code class="xref py py-mod docutils literal notranslate"><span class="pre">mimetypes</span></code></a> モジュールのそれと似たインターフェースを提供します。</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mimetypes.</span></span><span class="sig-name descname"><span class="pre">MimeTypes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filenames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes" title="Link to this definition">¶</a></dt>
+<dd><p>このクラスは、MIME 型データベースを表現します。デフォルトでは、このモジュールの他のものと同じデータベースへのアクセスを提供します。初期データベースは、このモジュールによって提供されるもののコピーで、追加の <code class="file docutils literal notranslate"><span class="pre">mime.types</span></code> 形式のファイルを、 <a class="reference internal" href="mimetypes.html#mimetypes.MimeTypes.read" title="mimetypes.MimeTypes.read"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read()</span></code></a> あるいは <a class="reference internal" href="mimetypes.html#mimetypes.MimeTypes.readfp" title="mimetypes.MimeTypes.readfp"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readfp()</span></code></a> メソッドを使って、データベースにロードすることで拡張されます。マッピング辞書も、もしデフォルトのデータが望むものでなければ、追加のデータをロードする前にクリアされます。</p>
+<p>省略可能な <em>filenames</em> パラメータは、追加のファイルを、デフォルトデータベースの&quot;トップに&quot;ロードさせるのに使うことができます。</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes.suffix_map">
+<span class="sig-name descname"><span class="pre">suffix_map</span></span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes.suffix_map" title="Link to this definition">¶</a></dt>
+<dd><p>サフィックスをサフィックスにマップする辞書。これは、符号化方式と型が同一拡張子で示されるような符号化ファイルが認識できるように使用されます。例えば、 <code class="file docutils literal notranslate"><span class="pre">.tgz</span></code> 拡張子は、符号化方式と型が別個に認識できるように <code class="file docutils literal notranslate"><span class="pre">.tar.gz</span></code> に対応づけられます。これは、最初はモジュールで定義されたグローバルな <a class="reference internal" href="mimetypes.html#mimetypes.suffix_map" title="mimetypes.suffix_map"><code class="xref py py-data docutils literal notranslate"><span class="pre">suffix_map</span></code></a> のコピーです。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes.encodings_map">
+<span class="sig-name descname"><span class="pre">encodings_map</span></span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes.encodings_map" title="Link to this definition">¶</a></dt>
+<dd><p>ファイル名拡張子を符号化型にマッピングする辞書。これは、最初はモジュールで定義されたグローバルな <a class="reference internal" href="mimetypes.html#mimetypes.encodings_map" title="mimetypes.encodings_map"><code class="xref py py-data docutils literal notranslate"><span class="pre">encodings_map</span></code></a> のコピーです。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes.types_map">
+<span class="sig-name descname"><span class="pre">types_map</span></span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes.types_map" title="Link to this definition">¶</a></dt>
+<dd><p>ファイル名拡張子を MIME 型にマッピングする 2 種類の辞書のタプル; 最初の辞書は非標準型、二つ目は標準型の辞書です。初期状態ではそれぞれ <a class="reference internal" href="mimetypes.html#mimetypes.common_types" title="mimetypes.common_types"><code class="xref py py-data docutils literal notranslate"><span class="pre">common_types</span></code></a> と <a class="reference internal" href="mimetypes.html#mimetypes.types_map" title="mimetypes.types_map"><code class="xref py py-data docutils literal notranslate"><span class="pre">types_map</span></code></a> です。</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes.types_map_inv">
+<span class="sig-name descname"><span class="pre">types_map_inv</span></span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes.types_map_inv" title="Link to this definition">¶</a></dt>
+<dd><p>MIME 型をファイル名拡張子のリストにマッピングする 2 種類の辞書のタプル; 最初の辞書は非標準型、二つ目は標準型の辞書です。初期状態ではそれぞれ <a class="reference internal" href="mimetypes.html#mimetypes.common_types" title="mimetypes.common_types"><code class="xref py py-data docutils literal notranslate"><span class="pre">common_types</span></code></a> と <a class="reference internal" href="mimetypes.html#mimetypes.types_map" title="mimetypes.types_map"><code class="xref py py-data docutils literal notranslate"><span class="pre">types_map</span></code></a> です。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes.guess_extension">
+<span class="sig-name descname"><span class="pre">guess_extension</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes.guess_extension" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="mimetypes.html#mimetypes.guess_extension" title="mimetypes.guess_extension"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_extension()</span></code></a> 関数と同様ですが、オブジェクトに保存されたテーブルを使用します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes.guess_type">
+<span class="sig-name descname"><span class="pre">guess_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes.guess_type" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="mimetypes.html#mimetypes.guess_type" title="mimetypes.guess_type"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_type()</span></code></a> 関数と同様ですが、オブジェクトに保存されたテーブルを使用します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes.guess_all_extensions">
+<span class="sig-name descname"><span class="pre">guess_all_extensions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes.guess_all_extensions" title="Link to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="mimetypes.html#mimetypes.guess_all_extensions" title="mimetypes.guess_all_extensions"><code class="xref py py-func docutils literal notranslate"><span class="pre">guess_all_extensions()</span></code></a> と同様ですが、オブジェクトに保存されたテーブルを参照します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes.read" title="Link to this definition">¶</a></dt>
+<dd><p>MIME 情報を、 <em>filename</em> という名のファイルからロードします。これはファイルを解析するのに <a class="reference internal" href="mimetypes.html#mimetypes.MimeTypes.readfp" title="mimetypes.MimeTypes.readfp"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readfp()</span></code></a> を使用します。</p>
+<p><em>strict</em> が <code class="docutils literal notranslate"><span class="pre">True</span></code> の時 (デフォルト) は、そのマッピングは標準 MIME 型のリストに、そうでなければ、非標準 MIME 型のリストに追加されます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes.readfp">
+<span class="sig-name descname"><span class="pre">readfp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes.readfp" title="Link to this definition">¶</a></dt>
+<dd><p>MIME 型情報を、オープンしたファイル <em>fp</em> からロードします。ファイルは、標準の <code class="file docutils literal notranslate"><span class="pre">mime.types</span></code> ファイルの形式でなければなりません。</p>
+<p><em>strict</em> が <code class="docutils literal notranslate"><span class="pre">True</span></code> の時 (デフォルト) は、そのマッピングは標準 MIME 型のリストに、そうでなければ、非標準 MIME 型のリストに追加されます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mimetypes.MimeTypes.read_windows_registry">
+<span class="sig-name descname"><span class="pre">read_windows_registry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="mimetypes.html#mimetypes.MimeTypes.read_windows_registry" title="Link to this definition">¶</a></dt>
+<dd><p>MIME type 情報を Windows のレジストリから読み込みます。</p>
+<div class="availability docutils container">
+<p><a class="reference internal" href="intro.html#availability"><span class="std std-ref">利用可能な環境</span></a>: Windows 。</p>
+</div>
+<p><em>strict</em> が <code class="docutils literal notranslate"><span class="pre">True</span></code> の時 (デフォルト) は、そのマッピングは標準 MIME 型のリストに、そうでなければ、非標準 MIME 型のリストに追加されます。</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.2.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="mimetypes.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mimetypes</span></code> --- ファイル名を MIME タイプへマップする</a><ul>
+<li><a class="reference internal" href="mimetypes.html#mimetypes-objects">Mime 型オブジェクト</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="mailbox.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mailbox</span></code> --- 様々な形式のメールボックスを操作する</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="base64.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">base64</span></code> --- Base16, Base32, Base64, Base85 データのエンコード</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/mimetypes.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="base64.html" title="base64 --- Base16, Base32, Base64, Base85 データのエンコード"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="mailbox.html" title="mailbox --- 様々な形式のメールボックスを操作する"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="netdata.html" >インターネット上のデータの操作</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="mimetypes.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mimetypes</span></code> --- ファイル名を MIME タイプへマップする</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

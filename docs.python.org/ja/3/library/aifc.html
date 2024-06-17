@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="aifc --- AIFFおよびAIFCファイルの読み書き" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/aifc.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/aifc.py このモジュールはAIFFとAIFF-Cファイルの読み書きをサポートします。AIFF（Audio Interchange File Format）はデジタルオーディオサンプルをファイルに保存するためのフォーマットです。AIFF-CはAIFFの新しいバージョンで、オーディオデータの圧縮に対応しています。 オーディオファイルには、オーディオデータについて記述..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/aifc.py このモジュールはAIFFとAIFF-Cファイルの読み書きをサポートします。AIFF（Audio Interchange File Format）はデジタルオーディオサンプルをファイルに保存するためのフォーマットです。AIFF-CはAIFFの新しいバージョンで、オーディオデータの圧縮に対応しています。 オーディオファイルには、オーディオデータについて記述..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>aifc --- AIFFおよびAIFCファイルの読み書き &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css?v=bb723527" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css?v=b20cc3f5" />
+    
+    <script src="../_static/documentation_options.js?v=7e11ab17"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/translations.js?v=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="audioop --- 生の音声データを操作する" href="audioop.html" />
+    <link rel="prev" title="取って代わられたモジュール群" href="superseded.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="https://docs.python.org/3/library/aifc.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="superseded.html"
+                          title="前の章へ">取って代わられたモジュール群</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="audioop.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">audioop</span></code> --- 生の音声データを操作する</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/aifc.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="audioop.html" title="audioop --- 生の音声データを操作する"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="superseded.html" title="取って代わられたモジュール群"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="superseded.html" accesskey="U">取って代わられたモジュール群</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">aifc</span></code> --- AIFFおよびAIFCファイルの読み書き</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-aifc">
+<span id="aifc-read-and-write-aiff-and-aifc-files"></span><h1><a class="reference internal" href="#module-aifc" title="aifc: Read and write audio files in AIFF or AIFC format. (非推奨)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aifc</span></code></a> --- AIFFおよびAIFCファイルの読み書き<a class="headerlink" href="#module-aifc" title="Link to this heading">¶</a></h1>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/aifc.py">Lib/aifc.py</a></p>
+<div class="deprecated-removed" id="index-0">
+<p><span class="versionmodified">バージョン 3.11 で非推奨、バージョン 3.13 で削除予定: </span>The <a class="reference internal" href="#module-aifc" title="aifc: Read and write audio files in AIFF or AIFC format. (非推奨)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aifc</span></code></a> module is deprecated
+(see <span class="target" id="index-1"></span><a class="pep reference external" href="https://peps.python.org/pep-0594/#aifc"><strong>PEP 594</strong></a> for details).</p>
+</div>
+<hr class="docutils" />
+<p>このモジュールはAIFFとAIFF-Cファイルの読み書きをサポートします。AIFF（Audio Interchange File Format）はデジタルオーディオサンプルをファイルに保存するためのフォーマットです。AIFF-CはAIFFの新しいバージョンで、オーディオデータの圧縮に対応しています。</p>
+<p>オーディオファイルには、オーディオデータについて記述したパラメータがたくさん含まれています。サンプリングレートあるいはフレームレートは、1秒あたりのオーディオサンプル数です。チャンネル数は、モノラル、ステレオ、4チャンネルかどうかを示します。フレームはそれぞれ、チャンネルごとに一つのサンプルからなります。サンプルサイズは、一つのサンプルの大きさをバイト数で示したものです。したがって、一つのフレームは <code class="docutils literal notranslate"><span class="pre">nchannels</span> <span class="pre">*</span> <span class="pre">samplesize</span></code> バイト からなり、1秒間では <code class="docutils literal notranslate"><span class="pre">nchannels</span> <span class="pre">*</span> <span class="pre">samplesize</span> <span class="pre">*</span> <span class="pre">framerate</span></code> バイトで構成されます。</p>
+<p>例えば、CD品質のオーディオは2バイト（16ビット）のサンプルサイズを持っていて、2チャンネル（ステレオ）であり、44,100フレーム／秒のフレームレートを持っています。そのため、フレームサイズは4バイト（2*2）で、1秒間では2*2*44100バイト（176,400バイト）になります。</p>
+<p><a class="reference internal" href="#module-aifc" title="aifc: Read and write audio files in AIFF or AIFC format. (非推奨)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">aifc</span></code></a> モジュールは以下の関数を定義しています:</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="aifc.open">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.open" title="Link to this definition">¶</a></dt>
+<dd><p>AIFFあるいはAIFF-Cファイルを開き、後述するメソッドを持つインスタンスを返します。引数 <em>file</em> はファイルを示す文字列か、 <a class="reference internal" href="../glossary.html#term-file-object"><span class="xref std std-term">file object</span></a> のいずれかです。 <em>mode</em> は、読み込み用に開くときには <code class="docutils literal notranslate"><span class="pre">'r'</span></code> か <code class="docutils literal notranslate"><span class="pre">'rb'</span></code> のどちらかでなければならず、書き込み用に開くときには <code class="docutils literal notranslate"><span class="pre">'w'</span></code> か <code class="docutils literal notranslate"><span class="pre">'wb'</span></code> のどちらかでなければなりません。もし省略されたら、 <code class="docutils literal notranslate"><span class="pre">file.mode</span></code> が存在すればそれが使用され、なければ <code class="docutils literal notranslate"><span class="pre">'rb'</span></code> が使われます。書き込み用にこのメソッドを使用するときには、これから全部でどれだけのサンプル数を書き込むのか分からなかったり、 <code class="xref py py-meth docutils literal notranslate"><span class="pre">writeframesraw()</span></code> と <code class="xref py py-meth docutils literal notranslate"><span class="pre">setnframes()</span></code> を使わないなら、ファイルオブジェクトはシーク可能でなければなりません。<a class="reference internal" href="#aifc.open" title="aifc.open"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> 関数は <a class="reference internal" href="../reference/compound_stmts.html#with"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> 文の中で使われるかもしれません。<code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code> ブロックの実行が終了したら、<a class="reference internal" href="#aifc.aifc.close" title="aifc.aifc.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> メソッドが呼び出されます。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.4 で変更: </span><a class="reference internal" href="../reference/compound_stmts.html#with"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">with</span></code></a> 構文のサポートが追加されました。</p>
+</div>
+</dd></dl>
+
+<p>ファイルが <a class="reference internal" href="#aifc.open" title="aifc.open"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> によって読み込み用に開かれたときに返されるオブジェクトには、以下のメソッドがあります:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.getnchannels">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">getnchannels</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.getnchannels" title="Link to this definition">¶</a></dt>
+<dd><p>オーディオチャンネル数（モノラルなら1、ステレオなら2）を返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.getsampwidth">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">getsampwidth</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.getsampwidth" title="Link to this definition">¶</a></dt>
+<dd><p>サンプルサイズをバイト数で返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.getframerate">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">getframerate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.getframerate" title="Link to this definition">¶</a></dt>
+<dd><p>サンプリングレート（1秒あたりのオーディオフレーム数）を返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.getnframes">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">getnframes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.getnframes" title="Link to this definition">¶</a></dt>
+<dd><p>ファイルの中のオーディオフレーム数を返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.getcomptype">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">getcomptype</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.getcomptype" title="Link to this definition">¶</a></dt>
+<dd><p>オーディオファイルで使用されている圧縮形式を示す4バイトの bytes を返します。AIFFファイルでは <code class="docutils literal notranslate"><span class="pre">b'NONE'</span></code> が返されます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.getcompname">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">getcompname</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.getcompname" title="Link to this definition">¶</a></dt>
+<dd><p>オーディオファイルの圧縮形式を人に判読可能な形に変換できる bytes で返します。AIFFファイルでは <code class="docutils literal notranslate"><span class="pre">b'not</span> <span class="pre">compressed'</span></code> が返されます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.getparams">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">getparams</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.getparams" title="Link to this definition">¶</a></dt>
+<dd><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">get*()</span></code> メソッドが返すのと同じ <code class="docutils literal notranslate"><span class="pre">(nchannels,</span> <span class="pre">sampwidth,</span> <span class="pre">framerate,</span> <span class="pre">nframes,</span> <span class="pre">comptype,</span> <span class="pre">compname)</span></code> の <a class="reference internal" href="collections.html#collections.namedtuple" title="collections.namedtuple"><code class="xref py py-func docutils literal notranslate"><span class="pre">namedtuple()</span></code></a> を返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.getmarkers">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">getmarkers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.getmarkers" title="Link to this definition">¶</a></dt>
+<dd><p>オーディオファイルのマーカーのリストを返します。一つのマーカーは三つの要素のタプルです。要素の1番目はマークID（整数）、2番目はマーク位置のフレーム数をデータの始めから数えた値（整数）、3番目はマークの名称（文字列）です。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.getmark">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">getmark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.getmark" title="Link to this definition">¶</a></dt>
+<dd><p>与えられた <em>id</em> のマークの要素を <a class="reference internal" href="#aifc.aifc.getmarkers" title="aifc.aifc.getmarkers"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getmarkers()</span></code></a> で述べたタプルで返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.readframes">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">readframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nframes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.readframes" title="Link to this definition">¶</a></dt>
+<dd><p>オーディオファイルの次の <em>nframes</em> 個のフレームを読み込んで返します。返されるデータは、全チャンネルの圧縮されていないサンプルをフレームごとに文字列にしたものです。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.rewind">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">rewind</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.rewind" title="Link to this definition">¶</a></dt>
+<dd><p>読み込むポインタをデータの始めに巻き戻します。次に <a class="reference internal" href="#aifc.aifc.readframes" title="aifc.aifc.readframes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readframes()</span></code></a> を使用すると、データの始めから読み込みます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.setpos">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">setpos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.setpos" title="Link to this definition">¶</a></dt>
+<dd><p>指定したフレーム数の位置にポインタを設定します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.tell">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">tell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.tell" title="Link to this definition">¶</a></dt>
+<dd><p>現在のポインタのフレーム位置を返します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.close">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.close" title="Link to this definition">¶</a></dt>
+<dd><p>AIFFファイルを閉じます。このメソッドを呼び出したあとでは、オブジェクトはもう使用できません。</p>
+</dd></dl>
+
+<p>ファイルが <a class="reference internal" href="#aifc.open" title="aifc.open"><code class="xref py py-func docutils literal notranslate"><span class="pre">open()</span></code></a> によって書き込み用に開かれたときに返されるオブジェクトには、 <code class="xref py py-meth docutils literal notranslate"><span class="pre">readframes()</span></code> と <code class="xref py py-meth docutils literal notranslate"><span class="pre">setpos()</span></code> を除く上述の全てのメソッドがあります。さらに以下のメソッドが定義されています。 <code class="xref py py-meth docutils literal notranslate"><span class="pre">get*()</span></code> メソッドは、対応する <code class="xref py py-meth docutils literal notranslate"><span class="pre">set*()</span></code> を呼び出したあとでのみ呼び出し可能です。最初に <code class="xref py py-meth docutils literal notranslate"><span class="pre">writeframes()</span></code> あるいは <code class="xref py py-meth docutils literal notranslate"><span class="pre">writeframesraw()</span></code> を呼び出す前に、フレーム数を除く全てのパラメータが設定されていなければなりません。</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.aiff">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">aiff</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.aiff" title="Link to this definition">¶</a></dt>
+<dd><p>AIFFファイルを作ります。デフォルトではAIFF-Cファイルが作られますが、ファイル名が <code class="docutils literal notranslate"><span class="pre">'.aiff'</span></code> で終わっていればAIFFファイルが作られます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.aifc">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">aifc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.aifc" title="Link to this definition">¶</a></dt>
+<dd><p>AIFF-Cファイルを作ります。デフォルトではAIFF-Cファイルが作られますが、ファイル名が <code class="docutils literal notranslate"><span class="pre">'.aiff'</span></code> で終わっていればAIFFファイルが作られます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.setnchannels">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">setnchannels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nchannels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.setnchannels" title="Link to this definition">¶</a></dt>
+<dd><p>オーディオファイルのチャンネル数を設定します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.setsampwidth">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">setsampwidth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.setsampwidth" title="Link to this definition">¶</a></dt>
+<dd><p>オーディオのサンプルサイズをバイト数で設定します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.setframerate">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">setframerate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.setframerate" title="Link to this definition">¶</a></dt>
+<dd><p>サンプリングレートを1秒あたりのフレーム数で設定します。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.setnframes">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">setnframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nframes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.setnframes" title="Link to this definition">¶</a></dt>
+<dd><p>オーディオファイルに書き込まれるフレーム数を設定します。もしこのパラメータが設定されていなかったり正しくなかったら、ファイルはシークに対応していなければなりません。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.setcomptype">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">setcomptype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.setcomptype" title="Link to this definition">¶</a></dt>
+<dd><p id="index-2">圧縮形式を設定します。もし設定しなければ、オーディオデータは圧縮されません。AIFFファイルは圧縮できません。name 引数は人間が読める圧縮形式の説明を bytes にしたもので、type 引数は4バイトの bytes でなければなりません。現在のところ、以下の圧縮形式がサポートされています： <code class="docutils literal notranslate"><span class="pre">b'NONE'</span></code>, <code class="docutils literal notranslate"><span class="pre">b'ULAW'</span></code>, <code class="docutils literal notranslate"><span class="pre">b'ALAW'</span></code>, <code class="docutils literal notranslate"><span class="pre">b'G722'</span></code>。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.setparams">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">setparams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nchannels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampwidth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">framerate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comptype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.setparams" title="Link to this definition">¶</a></dt>
+<dd><p>上の全パラメータを一度に設定します。引数はそれぞれのパラメータからなるタプルです。つまり、 <a class="reference internal" href="#aifc.aifc.setparams" title="aifc.aifc.setparams"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setparams()</span></code></a> の引数として、 <a class="reference internal" href="#aifc.aifc.getparams" title="aifc.aifc.getparams"><code class="xref py py-meth docutils literal notranslate"><span class="pre">getparams()</span></code></a> を呼び出した結果を使うことができます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.setmark">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">setmark</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.setmark" title="Link to this definition">¶</a></dt>
+<dd><p>指定したID（1以上）、位置、名称でマークを加えます。このメソッドは、 <a class="reference internal" href="#aifc.aifc.close" title="aifc.aifc.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> の前ならいつでも呼び出すことができます。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">tell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>出力ファイルの現在の書き込み位置を返します。 <a class="reference internal" href="#aifc.aifc.setmark" title="aifc.aifc.setmark"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setmark()</span></code></a> との組み合わせで使うと便利です。</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.writeframes">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">writeframes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.writeframes" title="Link to this definition">¶</a></dt>
+<dd><p>出力ファイルにデータを書き込みます。このメソッドは、オーディオファイルのパラメータを設定したあとでのみ呼び出し可能です。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.4 で変更: </span>どのような <a class="reference internal" href="../glossary.html#term-bytes-like-object"><span class="xref std std-term">bytes-like object</span></a> も使用できるようになりました。</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="aifc.aifc.writeframesraw">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">writeframesraw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#aifc.aifc.writeframesraw" title="Link to this definition">¶</a></dt>
+<dd><p>オーディオファイルのヘッダ情報が更新されないことを除いて、 <a class="reference internal" href="#aifc.aifc.writeframes" title="aifc.aifc.writeframes"><code class="xref py py-meth docutils literal notranslate"><span class="pre">writeframes()</span></code></a> と同じです。</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.4 で変更: </span>どのような <a class="reference internal" href="../glossary.html#term-bytes-like-object"><span class="xref std std-term">bytes-like object</span></a> も使用できるようになりました。</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">aifc.</span></span><span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>AIFFファイルを閉じます。ファイルのヘッダ情報は、オーディオデータの実際のサイズを反映して更新されます。このメソッドを呼び出したあとでは、オブジェクトはもう使用できません。</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="superseded.html"
+                          title="前の章へ">取って代わられたモジュール群</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="audioop.html"
+                          title="次の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">audioop</span></code> --- 生の音声データを操作する</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/aifc.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="audioop.html" title="audioop --- 生の音声データを操作する"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="superseded.html" title="取って代わられたモジュール群"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="superseded.html" >取って代わられたモジュール群</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><code class="xref py py-mod docutils literal notranslate"><span class="pre">aifc</span></code> --- AIFFおよびAIFCファイルの読み書き</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="/license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="/bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>

@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+
+<html lang="ja" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="importlib.metadata -- パッケージメタデータへのアクセス" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://docs.python.org/3/library/importlib.metadata.html" />
+<meta property="og:site_name" content="Python documentation" />
+<meta property="og:description" content="ソースコード: Lib/importlib/metadata/__init__.py importlib.metadata はインストールされた 配布パッケージ のエントリポイントやトップレベル名 (あれば、 パッケージ やモジュール) のようなメタデータへのアクセスを提供するライブラリです。Pythonのインポートシステムをベースに構築されており、このライブラリは pkg_resource..." />
+<meta property="og:image" content="https://docs.python.org/3/_static/og-image.png" />
+<meta property="og:image:alt" content="Python documentation" />
+<meta name="description" content="ソースコード: Lib/importlib/metadata/__init__.py importlib.metadata はインストールされた 配布パッケージ のエントリポイントやトップレベル名 (あれば、 パッケージ やモジュール) のようなメタデータへのアクセスを提供するライブラリです。Pythonのインポートシステムをベースに構築されており、このライブラリは pkg_resource..." />
+<meta property="og:image:width" content="200" />
+<meta property="og:image:height" content="200" />
+<meta name="theme-color" content="#3776ab" />
+
+    <title>importlib.metadata -- パッケージメタデータへのアクセス &#8212; Python 3.12.4 ドキュメント</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css%3Fv=80d5e7a1.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/pydoctheme.css%3Fv=bb723527.css" />
+    <link id="pygments_dark_css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css" href="../_static/pygments_dark.css%3Fv=b20cc3f5.css" />
+    
+    <script src="../_static/documentation_options.js%3Fv=7e11ab17"></script>
+    <script src="../_static/doctools.js%3Fv=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js%3Fv=dc90522c"></script>
+    <script src="../_static/translations.js%3Fv=4dbe4bdc"></script>
+    
+    <script src="../_static/sidebar.js"></script>
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Python 3.12.4 ドキュメント 内を検索"
+          href="../_static/opensearch.xml"/>
+    <link rel="author" title="このドキュメントについて" href="../about.html" />
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="検索" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="sys.path モジュール検索パスの初期化" href="sys_path_init.html" />
+    <link rel="prev" title="importlib.resources.abc -- リソースの抽象基底クラス" href="importlib.resources.abc.html" />
+    
+      <script defer data-domain="docs.python.org" src="https://plausible.io/js/script.js"></script>
+    
+    <link rel="canonical" href="../../../3/library/importlib.metadata.html" />
+    
+      
+    
+
+    
+    <style>
+      @media only screen {
+        table.full-width-table {
+            width: 100%;
+        }
+      }
+    </style>
+<link rel="stylesheet" href="../_static/pydoctheme_dark.css" media="(prefers-color-scheme: dark)" id="pydoctheme_dark_css">
+    <link rel="shortcut icon" type="image/png" href="../_static/py.svg" />
+            <script type="text/javascript" src="../_static/copybutton.js"></script>
+            <script type="text/javascript" src="../_static/menu.js"></script>
+            <script type="text/javascript" src="../_static/search-focus.js"></script>
+            <script type="text/javascript" src="../_static/themetoggle.js"></script> 
+<meta name="readthedocs-addons-api-version" content="1">
+<script type="text/javascript">
+ function onSwitch(event) {
+     const option = event.target.selectedIndex;
+     const item = event.target.options[option];
+     window.location.href = item.dataset.url;
+ }
+
+ document.addEventListener("readthedocs-addons-data-ready", function(event) {
+   const config = event.detail.data()
+
+   // Add some mocked hardcoded versions pointing to the official
+   // documentation while migrating to Read the Docs.
+   // These are only for testing purposes.
+   // TODO: remove them when managing all the versions on Read the Docs,
+   // since all the "active, built and not hidden" versions will be shown automatically.
+   let versions = config.versions.active.concat([
+       {
+           slug: "dev (3.13)",
+           urls: {
+               documentation: "https://docs.python.org/3.13/",
+           }
+       },
+       {
+           slug: "3.12",
+           urls: {
+               documentation: "https://docs.python.org/3.12/",
+           }
+       },
+       {
+           slug: "3.11",
+           urls: {
+               documentation: "https://docs.python.org/3.11/",
+           }
+       },
+   ]);
+
+   const versionSelect = `
+   <select id="version_select">
+   ${ versions.map(
+       (version) => `
+       <option
+           value="${ version.slug }"
+           ${ config.versions.current.slug === version.slug ? 'selected="selected"' : '' }
+           data-url="${ version.urls.documentation }">
+           ${ version.slug }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Prepend the current language to the options on the selector
+   let languages = config.projects.translations.concat(config.projects.current);
+   languages = languages.sort((a, b) => a.language.name.localeCompare(b.language.name));
+
+   const languageSelect = `
+   <select id="language_select">
+   ${ languages.map(
+       (translation) => `
+       <option
+           value="${ translation.slug }"
+           ${ config.projects.current.slug === translation.slug ? 'selected="selected"' : '' }
+           data-url="${ translation.urls.documentation }">
+           ${ translation.language.name }
+       </option>`
+   ).join("\n") }
+   </select>
+   `;
+
+   // Query all the placeholders because there are different ones for Desktop/Mobile
+   const versionPlaceholders = document.querySelectorAll(".version_switcher_placeholder");
+   for (placeholder of versionPlaceholders) {
+       placeholder.innerHTML = versionSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+
+   const languagePlaceholders = document.querySelectorAll(".language_switcher_placeholder");
+   for (placeholder of languagePlaceholders) {
+       placeholder.innerHTML = languageSelect;
+       let selectElement = placeholder.querySelector("select");
+       selectElement.addEventListener("change", onSwitch);
+   }
+ });
+</script>
+
+  </head>
+<body>
+<div class="mobile-nav">
+    <input type="checkbox" id="menuToggler" class="toggler__input" aria-controls="navigation"
+           aria-pressed="false" aria-expanded="false" role="button" aria-label="Menu" />
+    <nav class="nav-content" role="navigation">
+        <label for="menuToggler" class="toggler__label">
+            <span></span>
+        </label>
+        <span class="nav-items-wrapper">
+            <a href="https://www.python.org/" class="nav-logo">
+                <img src="../_static/py.svg" alt="Python logo"/>
+            </a>
+            <span class="version_switcher_placeholder"></span>
+            <form role="search" class="search" action="../search.html" method="get">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="search-icon">
+                    <path fill-rule="nonzero" fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 001.48-5.34c-.47-2.78-2.79-5-5.59-5.34a6.505 6.505 0 00-7.27 7.27c.34 2.8 2.56 5.12 5.34 5.59a6.5 6.5 0 005.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path>
+                </svg>
+                <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" />
+                <input type="submit" value="検索"/>
+            </form>
+        </span>
+    </nav>
+    <div class="menu-wrapper">
+        <nav class="menu" role="navigation" aria-label="main navigation">
+            <div class="language_switcher_placeholder"></div>
+            
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label>
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="importlib.metadata.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib.metadata</span></code> -- パッケージメタデータへのアクセス</a><ul>
+<li><a class="reference internal" href="importlib.metadata.html#overview">概要</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#functional-api">機能 API</a><ul>
+<li><a class="reference internal" href="importlib.metadata.html#entry-points">エントリポイント</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#distribution-metadata">配布物メタデータ</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#distribution-versions">配布物バージョン</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#distribution-files">配布物ファイル</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#distribution-requirements">配布物の要件</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#mapping-import-to-distribution-packages">Mapping import to distribution packages</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="importlib.metadata.html#distributions">Distributions</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#distribution-discovery">Distribution Discovery</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#extending-the-search-algorithm">検索アルゴリズムの拡張</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="importlib.resources.abc.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib.resources.abc</span></code> -- リソースの抽象基底クラス</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="sys_path_init.html"
+                          title="次の章へ"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code> モジュール検索パスの初期化</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/importlib.metadata.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </nav>
+    </div>
+</div>
+
+  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="sys_path_init.html" title="sys.path モジュール検索パスの初期化"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="importlib.resources.abc.html" title="importlib.resources.abc -- リソースの抽象基底クラス"
+             accesskey="P">前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" accesskey="U">モジュールのインポート</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="importlib.metadata.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib.metadata</span></code> -- パッケージメタデータへのアクセス</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-importlib.metadata">
+<span id="importlib-metadata-accessing-package-metadata"></span><span id="using"></span><h1><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib.metadata</span></code> -- パッケージメタデータへのアクセス<a class="headerlink" href="importlib.metadata.html#module-importlib.metadata" title="Link to this heading">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.8.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.10 で変更: </span><code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code> は暫定的なものではなくなりました。</p>
+</div>
+<p><strong>ソースコード:</strong> <a class="reference external" href="https://github.com/python/cpython/tree/3.12/Lib/importlib/metadata/__init__.py">Lib/importlib/metadata/__init__.py</a></p>
+<p><code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code> はインストールされた <a class="reference external" href="https://packaging.python.org/ja/latest/glossary/#term-Distribution-Package">配布パッケージ</a> のエントリポイントやトップレベル名 (あれば、 <a class="reference external" href="https://packaging.python.org/ja/latest/glossary/#term-Import-Package">パッケージ</a> やモジュール) のようなメタデータへのアクセスを提供するライブラリです。Pythonのインポートシステムをベースに構築されており、このライブラリは <code class="docutils literal notranslate"><span class="pre">pkg_resources</span></code> の <a class="reference external" href="https://setuptools.readthedocs.io/en/latest/pkg_resources.html#entry-points">entry point API</a> と <a class="reference external" href="https://setuptools.readthedocs.io/en/latest/pkg_resources.html#metadata-api">metadata API</a> にある同様の機能を置き換えることを目的としています。<a class="reference internal" href="importlib.resources.html#module-importlib.resources" title="importlib.resources: Package resource reading, opening, and access"><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib.resources</span></code></a> と共に、このパッケージは古くて効率の悪い <code class="docutils literal notranslate"><span class="pre">pkg_resources</span></code> パッケージを使う必要性を無くすことができます。</p>
+<p><code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code> は、Pythonの <code class="docutils literal notranslate"><span class="pre">site-packages</span></code> ディレクトリに <a class="reference external" href="https://pypi.org/project/pip/">pip</a> などのツールでインストールしたサードパーティの <em>配布パッケージ</em> に対して動作します。具体的には、 <code class="docutils literal notranslate"><span class="pre">dist-info</span></code> や <code class="docutils literal notranslate"><span class="pre">egg-info</span></code> ディレクトリを持つ配布物や、 <a class="reference external" href="https://packaging.python.org/ja/latest/specifications/core-metadata/#core-metadata">コアとなるメタデータの仕様</a> で定義されたメタデータを検出できるようにします。</p>
+<div class="admonition important">
+<p class="admonition-title">重要</p>
+<p>These are <em>not</em> necessarily equivalent to or correspond 1:1 with
+the top-level <em>import package</em> names
+that can be imported inside Python code.
+One <em>distribution package</em> can contain multiple <em>import packages</em>
+(and single modules),
+and one top-level <em>import package</em>
+may map to multiple <em>distribution packages</em>
+if it is a namespace package.
+You can use <a class="reference internal" href="importlib.metadata.html#package-distributions"><span class="std std-ref">package_distributions()</span></a>
+to get a mapping between them.</p>
+</div>
+<p>デフォルトでは、配布物のメタデータはファイルシステム上、または <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> のzipアーカイブに保存されます。拡張機構により、メタデータはほとんどどこにでも置くことができます。</p>
+<div class="admonition seealso">
+<p class="admonition-title">参考</p>
+<dl class="simple">
+<dt><a class="reference external" href="https://importlib-metadata.readthedocs.io/">https://importlib-metadata.readthedocs.io/</a></dt><dd><p><code class="docutils literal notranslate"><span class="pre">importlib_metadata</span></code> のドキュメントは <code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code> のバックポートです。これには、このモジュールのクラスと関数の <a class="reference external" href="https://importlib-metadata.readthedocs.io/en/latest/api.html">APIリファレンス</a> と、 <code class="docutils literal notranslate"><span class="pre">pkg_resources</span></code> の既存のユーザーのための <a class="reference external" href="https://importlib-metadata.readthedocs.io/en/latest/migration.html">移行ガイド</a> があります。</p>
+</dd>
+</dl>
+</div>
+<section id="overview">
+<h2>概要<a class="headerlink" href="importlib.metadata.html#overview" title="Link to this heading">¶</a></h2>
+<p>例えば、<code class="docutils literal notranslate"><span class="pre">pip</span></code> を使ってインストールした <a class="reference external" href="https://packaging.python.org/ja/latest/glossary/#term-Distribution-Package">配布パッケージ</a> のバージョン文字列を取得したいとします。 まず、仮想環境を作成し、そこに何かをインストールすることから始めましょう:</p>
+<div class="highlight-shell-session notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>example
+<span class="gp">$ </span><span class="nb">source</span><span class="w"> </span>example/bin/activate
+<span class="gp gp-VirtualEnv">(example)</span> <span class="gp">$ </span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>wheel
+</pre></div>
+</div>
+<p>以下のように実行することで、<code class="docutils literal notranslate"><span class="pre">wheel</span></code> のバージョン文字列を取得することができます:</p>
+<div class="highlight-pycon notranslate"><div class="highlight"><pre><span></span><span class="go">(example) $ python</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">importlib.metadata</span> <span class="kn">import</span> <span class="n">version</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">version</span><span class="p">(</span><span class="s1">&#39;wheel&#39;</span><span class="p">)</span>  
+<span class="go">&#39;0.32.3&#39;</span>
+</pre></div>
+</div>
+<p>また、 <code class="docutils literal notranslate"><span class="pre">console_scripts</span></code> や <code class="docutils literal notranslate"><span class="pre">distutils.commands</span></code> などのエントリポイントのプロパティ(通常は 'group' や 'name' )で選択可能なエントリポイントの集合を取得することができます。 各グループは <a class="reference internal" href="importlib.metadata.html#entry-points"><span class="std std-ref">エントリポイント</span></a> オブジェクトの集合を含んでいます。</p>
+<p><a class="reference internal" href="importlib.metadata.html#metadata"><span class="std std-ref">ディストリビューションのメタデータ</span></a> を取得することができます。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="p">(</span><span class="s1">&#39;wheel&#39;</span><span class="p">))</span>  
+<span class="go">[&#39;Metadata-Version&#39;, &#39;Name&#39;, &#39;Version&#39;, &#39;Summary&#39;, &#39;Home-page&#39;, &#39;Author&#39;, &#39;Author-email&#39;, &#39;Maintainer&#39;, &#39;Maintainer-email&#39;, &#39;License&#39;, &#39;Project-URL&#39;, &#39;Project-URL&#39;, &#39;Project-URL&#39;, &#39;Keywords&#39;, &#39;Platform&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Classifier&#39;, &#39;Requires-Python&#39;, &#39;Provides-Extra&#39;, &#39;Requires-Dist&#39;, &#39;Requires-Dist&#39;]</span>
+</pre></div>
+</div>
+<p>また、 <a class="reference internal" href="importlib.metadata.html#version"><span class="std std-ref">配布物のバージョン番号</span></a> を取得し、 <a class="reference internal" href="importlib.metadata.html#files"><span class="std std-ref">構成ファイル</span></a> をリストアップし、配布物の <a class="reference internal" href="importlib.metadata.html#requirements"><span class="std std-ref">配布物の要件</span></a> のリストを取得することができます。</p>
+</section>
+<section id="functional-api">
+<h2>機能 API<a class="headerlink" href="importlib.metadata.html#functional-api" title="Link to this heading">¶</a></h2>
+<p>本パッケージは、公開APIを通じて以下の機能を提供します。</p>
+<section id="entry-points">
+<span id="id2"></span><h3>エントリポイント<a class="headerlink" href="importlib.metadata.html#entry-points" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">entry_points()</span></code> 関数は、エントリポイントの集合を返します。各 <code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code> は <code class="docutils literal notranslate"><span class="pre">.name</span></code>, <code class="docutils literal notranslate"><span class="pre">.group</span></code>, <code class="docutils literal notranslate"><span class="pre">.value</span></code> 属性と値を解決する <code class="docutils literal notranslate"><span class="pre">.load()</span></code> メソッドを持っています。 また、 <code class="docutils literal notranslate"><span class="pre">.value</span></code> 属性の構成要素を取得するための <code class="docutils literal notranslate"><span class="pre">.module</span></code>, <code class="docutils literal notranslate"><span class="pre">.attr</span></code>, <code class="docutils literal notranslate"><span class="pre">.extras</span></code> 属性が存在します。</p>
+<p>すべてのエントリポイントに問い合わせる:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">eps</span> <span class="o">=</span> <span class="n">entry_points</span><span class="p">()</span>  
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">entry_points()</span></code> 関数は、すべての <code class="docutils literal notranslate"><span class="pre">EntryPoint</span></code> オブジェクトを集めた <code class="docutils literal notranslate"><span class="pre">EntryPoints</span></code> オブジェクトを、便宜上 <code class="docutils literal notranslate"><span class="pre">names</span></code> と <code class="docutils literal notranslate"><span class="pre">groups</span></code> 属性を付けて返します。</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">eps</span><span class="o">.</span><span class="n">groups</span><span class="p">)</span>  
+<span class="go">[&#39;console_scripts&#39;, &#39;distutils.commands&#39;, &#39;distutils.setup_keywords&#39;, &#39;egg_info.writers&#39;, &#39;setuptools.installation&#39;]</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">EntryPoints</span></code> には、特定のプロパティに一致するエントリポイントを選択するための <code class="docutils literal notranslate"><span class="pre">select</span></code> メソッドがあります。<code class="docutils literal notranslate"><span class="pre">console_scripts</span></code> グループ内のエントリポイントを選択する:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scripts</span> <span class="o">=</span> <span class="n">eps</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s1">&#39;console_scripts&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>Equivalently, since <code class="docutils literal notranslate"><span class="pre">entry_points</span></code> passes keyword arguments
+through to select:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">scripts</span> <span class="o">=</span> <span class="n">entry_points</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s1">&#39;console_scripts&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>&quot;wheel&quot; という名前の特定のスクリプトを選択します。(wheelプロジェクトにあります):</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;wheel&#39;</span> <span class="ow">in</span> <span class="n">scripts</span><span class="o">.</span><span class="n">names</span>  
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wheel</span> <span class="o">=</span> <span class="n">scripts</span><span class="p">[</span><span class="s1">&#39;wheel&#39;</span><span class="p">]</span>  
+</pre></div>
+</div>
+<p>同様に、選択時にそのエントリポイントを問い合わせます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">wheel</span><span class="p">,)</span> <span class="o">=</span> <span class="n">entry_points</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s1">&#39;console_scripts&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;wheel&#39;</span><span class="p">)</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">wheel</span><span class="p">,)</span> <span class="o">=</span> <span class="n">entry_points</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">group</span><span class="o">=</span><span class="s1">&#39;console_scripts&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;wheel&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>解決したエントリポイントを検証する:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wheel</span>  
+<span class="go">EntryPoint(name=&#39;wheel&#39;, value=&#39;wheel.cli:main&#39;, group=&#39;console_scripts&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wheel</span><span class="o">.</span><span class="n">module</span>  
+<span class="go">&#39;wheel.cli&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wheel</span><span class="o">.</span><span class="n">attr</span>  
+<span class="go">&#39;main&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wheel</span><span class="o">.</span><span class="n">extras</span>  
+<span class="go">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span> <span class="o">=</span> <span class="n">wheel</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">main</span>  
+<span class="go">&lt;function main at 0x103528488&gt;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">group</span></code> と <code class="docutils literal notranslate"><span class="pre">name</span></code> はパッケージの作者によって定義された任意の値で、通常クライアントは特定のグループのエントリポイントを解決したいと思うでしょう。エントリポイント、その他の定義、使用方法についての詳細は <a class="reference external" href="https://setuptools.pypa.io/en/latest/userguide/entry_point.html">setuptoolsのドキュメント</a> を参照してください。</p>
+<p><em>Compatibility Note</em></p>
+<p>The &quot;selectable&quot; entry points were introduced in <code class="docutils literal notranslate"><span class="pre">importlib_metadata</span></code>
+3.6 and Python 3.10. Prior to those changes, <code class="docutils literal notranslate"><span class="pre">entry_points</span></code> accepted
+no parameters and always returned a dictionary of entry points, keyed
+by group. With <code class="docutils literal notranslate"><span class="pre">importlib_metadata</span></code> 5.0 and Python 3.12,
+<code class="docutils literal notranslate"><span class="pre">entry_points</span></code> always returns an <code class="docutils literal notranslate"><span class="pre">EntryPoints</span></code> object. See
+<a class="reference external" href="https://pypi.org/project/backports.entry_points_selectable/">backports.entry_points_selectable</a>
+for compatibility options.</p>
+</section>
+<section id="distribution-metadata">
+<span id="metadata"></span><h3>配布物メタデータ<a class="headerlink" href="importlib.metadata.html#distribution-metadata" title="Link to this heading">¶</a></h3>
+<p>すべての <a class="reference external" href="https://packaging.python.org/ja/latest/glossary/#term-Distribution-Package">配布パッケージ</a> にはメタデータが含まれており、 <code class="docutils literal notranslate"><span class="pre">metadata()</span></code> 関数を使って取得することができます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wheel_metadata</span> <span class="o">=</span> <span class="n">metadata</span><span class="p">(</span><span class="s1">&#39;wheel&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>返されたデータ構造である <code class="docutils literal notranslate"><span class="pre">PackageMetadata</span></code> のキーはメタデータのキーワードを表し、値は配布パッケージのメタデータから解析されずに返されます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wheel_metadata</span><span class="p">[</span><span class="s1">&#39;Requires-Python&#39;</span><span class="p">]</span>  
+<span class="go">&#39;&gt;=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*&#39;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">PackageMetadata</span></code> には <code class="docutils literal notranslate"><span class="pre">json</span></code> 属性があり、 <span class="target" id="index-2"></span><a class="pep reference external" href="https://peps.python.org/pep-0566/"><strong>PEP 566</strong></a> に従ってすべてのメタデータをJSON互換の形式で返します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">wheel_metadata</span><span class="o">.</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;requires_python&#39;</span><span class="p">]</span>
+<span class="go">&#39;&gt;=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*&#39;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p><code class="docutils literal notranslate"><span class="pre">metadata()</span></code> が返すオブジェクトの実際の型は実装の詳細であり、 <a class="reference external" href="https://importlib-metadata.readthedocs.io/en/latest/api.html#importlib_metadata.PackageMetadata">PackageMetadataプロトコル</a> が示すインターフェースを通じてのみアクセスすることができます。</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified changed">バージョン 3.10 で変更: </span>ペイロードを通して提示されるとき、 <code class="docutils literal notranslate"><span class="pre">Description</span></code> がメタデータに含まれるようになりました。行の継続文字は削除されました。</p>
+<p><code class="docutils literal notranslate"><span class="pre">json</span></code> 属性が追加されました。</p>
+</div>
+</section>
+<section id="distribution-versions">
+<span id="version"></span><h3>配布物バージョン<a class="headerlink" href="importlib.metadata.html#distribution-versions" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">version()</span></code> 関数は <a class="reference external" href="https://packaging.python.org/ja/latest/glossary/#term-Distribution-Package">配布パッケージ</a> のバージョン番号を文字列で取得するもっとも簡単な方法です。:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">version</span><span class="p">(</span><span class="s1">&#39;wheel&#39;</span><span class="p">)</span>  
+<span class="go">&#39;0.32.3&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="distribution-files">
+<span id="files"></span><h3>配布物ファイル<a class="headerlink" href="importlib.metadata.html#distribution-files" title="Link to this heading">¶</a></h3>
+<p>また、配布パッケージに含まれるファイルのフルセットを取得することもできます。<code class="docutils literal notranslate"><span class="pre">files()</span></code> 関数は <a class="reference external" href="https://packaging.python.org/ja/latest/glossary/#term-Distribution-Package">配布パッケージ</a> 名を受け取り、この配布パッケージにインストールされているすべてのファイルを返します。返される各ファイルオブジェクトは <code class="docutils literal notranslate"><span class="pre">PackagePath</span></code> で、 <a class="reference internal" href="pathlib.html#pathlib.PurePath" title="pathlib.PurePath"><code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.PurePath</span></code></a> から派生したオブジェクトに、メタデータで示された <code class="docutils literal notranslate"><span class="pre">dist</span></code>, <code class="docutils literal notranslate"><span class="pre">size</span></code>, <code class="docutils literal notranslate"><span class="pre">hash</span></code> プロパティを追加しています。 例えば:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">util</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">files</span><span class="p">(</span><span class="s1">&#39;wheel&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="s1">&#39;util.py&#39;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">util</span>  
+<span class="go">PackagePath(&#39;wheel/util.py&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">util</span><span class="o">.</span><span class="n">size</span>  
+<span class="go">859</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">util</span><span class="o">.</span><span class="n">dist</span>  
+<span class="go">&lt;importlib.metadata._hooks.PathDistribution object at 0x101e0cef0&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">util</span><span class="o">.</span><span class="n">hash</span>  
+<span class="go">&lt;FileHash mode: sha256 value: bYkw5oMccfazVCoYQwKkkemoVyMAFoR34mmKBx8R1NI&gt;</span>
+</pre></div>
+</div>
+<p>ファイルを取得したら、その内容を読むこともできます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>  
+<span class="go">import base64</span>
+<span class="go">import sys</span>
+<span class="go">...</span>
+<span class="go">def as_bytes(s):</span>
+<span class="go">    if isinstance(s, text_type):</span>
+<span class="go">        return s.encode(&#39;utf-8&#39;)</span>
+<span class="go">    return s</span>
+</pre></div>
+</div>
+<p>また、 <code class="docutils literal notranslate"><span class="pre">locate</span></code> メソッドを使用すると、ファイルへの絶対パスを取得することができます:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">util</span><span class="o">.</span><span class="n">locate</span><span class="p">()</span>  
+<span class="go">PosixPath(&#39;/home/gustav/example/lib/site-packages/wheel/util.py&#39;)</span>
+</pre></div>
+</div>
+<p>In the case where the metadata file listing files
+(RECORD or SOURCES.txt) is missing, <code class="docutils literal notranslate"><span class="pre">files()</span></code> will
+return <code class="docutils literal notranslate"><span class="pre">None</span></code>. The caller may wish to wrap calls to
+<code class="docutils literal notranslate"><span class="pre">files()</span></code> in <a class="reference external" href="https://more-itertools.readthedocs.io/en/stable/api.html#more_itertools.always_iterable">always_iterable</a>
+or otherwise guard against this condition if the target
+distribution is not known to have the metadata present.</p>
+</section>
+<section id="distribution-requirements">
+<span id="requirements"></span><h3>配布物の要件<a class="headerlink" href="importlib.metadata.html#distribution-requirements" title="Link to this heading">¶</a></h3>
+<p><a class="reference external" href="https://packaging.python.org/ja/latest/glossary/#term-Distribution-Package">配布パッケージ</a> に必要なすべての要件を取得するには、 <code class="docutils literal notranslate"><span class="pre">requires()</span></code> 関数を使用します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">requires</span><span class="p">(</span><span class="s1">&#39;wheel&#39;</span><span class="p">)</span>  
+<span class="go">[&quot;pytest (&gt;=3.0.0) ; extra == &#39;test&#39;&quot;, &quot;pytest-cov ; extra == &#39;test&#39;&quot;]</span>
+</pre></div>
+</div>
+</section>
+<section id="mapping-import-to-distribution-packages">
+<span id="import-distribution-package-mapping"></span><span id="package-distributions"></span><h3>Mapping import to distribution packages<a class="headerlink" href="importlib.metadata.html#mapping-import-to-distribution-packages" title="Link to this heading">¶</a></h3>
+<p>インポート可能なトップレベルのPythonモジュールまたは <a class="reference external" href="https://packaging.python.org/ja/latest/glossary/#term-Import-Package">パッケージ</a> を提供する <a class="reference external" href="https://packaging.python.org/en/latest/glossary/#term-Distribution-Package">配布パッケージ</a> 名(名前空間パッケージの場合はその名前)を解決する便利なメソッドです:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">packages_distributions</span><span class="p">()</span>
+<span class="go">{&#39;importlib_metadata&#39;: [&#39;importlib-metadata&#39;], &#39;yaml&#39;: [&#39;PyYAML&#39;], &#39;jaraco&#39;: [&#39;jaraco.classes&#39;, &#39;jaraco.functools&#39;], ...}</span>
+</pre></div>
+</div>
+<p>Some editable installs, <a class="reference external" href="https://github.com/pypa/packaging-problems/issues/609">do not supply top-level names</a>, and thus this
+function is not reliable with such installs.</p>
+<div class="versionadded">
+<p><span class="versionmodified added">Added in version 3.10.</span></p>
+</div>
+</section>
+</section>
+<section id="distributions">
+<span id="id9"></span><h2>Distributions<a class="headerlink" href="importlib.metadata.html#distributions" title="Link to this heading">¶</a></h2>
+<p>上記のAPIは最も一般的で便利な使い方ですが、 <code class="docutils literal notranslate"><span class="pre">Distribution</span></code> クラスからすべての情報を得ることができます。 <code class="docutils literal notranslate"><span class="pre">Distribution</span></code> はPython <a class="reference external" href="https://packaging.python.org/ja/latest/glossary/#term-Distribution-Package">配布パッケージ</a> のメタデータを表す抽象オブジェクトです。 <code class="docutils literal notranslate"><span class="pre">Distribution</span></code> のインスタンスを取得することができます。</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">importlib.metadata</span> <span class="kn">import</span> <span class="n">distribution</span>  
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span> <span class="o">=</span> <span class="n">distribution</span><span class="p">(</span><span class="s1">&#39;wheel&#39;</span><span class="p">)</span>  
+</pre></div>
+</div>
+<p>したがって、バージョン情報を取得する別の方法として、 <code class="docutils literal notranslate"><span class="pre">Distribution</span></code> インスタンスを使用します:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span><span class="o">.</span><span class="n">version</span>  
+<span class="go">&#39;0.32.3&#39;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">Distribution</span></code> インスタンスには、あらゆる種類の追加メタデータが用意されています:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;Requires-Python&#39;</span><span class="p">]</span>  
+<span class="go">&#39;&gt;=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dist</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;License&#39;</span><span class="p">]</span>  
+<span class="go">&#39;MIT&#39;</span>
+</pre></div>
+</div>
+<p>利用可能なメタデータのフルセットは、ここでは説明しません。詳細は <a class="reference external" href="https://packaging.python.org/ja/latest/specifications/core-metadata/#core-metadata">コアとなるメタデータの仕様</a> を参照してください。</p>
+</section>
+<section id="distribution-discovery">
+<h2>Distribution Discovery<a class="headerlink" href="importlib.metadata.html#distribution-discovery" title="Link to this heading">¶</a></h2>
+<p>デフォルトでは、このパッケージは組み込みで、ファイルシステムおよび zip ファイル <a class="reference external" href="https://packaging.python.org/ja/latest/glossary/#term-Distribution-Package">配布パッケージ</a> のメタデータを発見するためのサポートを提供します。このメタデータ検索のデフォルトは <code class="docutils literal notranslate"><span class="pre">sys.path</span></code> ですが、その値をどのように解釈するかは、他のインポート機構が行う方法とは若干異なります。具体的には:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code> は <code class="docutils literal notranslate"><span class="pre">sys.path</span></code> の <a class="reference internal" href="stdtypes.html#bytes" title="bytes"><code class="xref py py-class docutils literal notranslate"><span class="pre">bytes</span></code></a> オブジェクトを受け入れません。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code> は、インポート時には無視されますが、 <code class="docutils literal notranslate"><span class="pre">sys.path</span></code> 上の <a class="reference internal" href="pathlib.html#pathlib.Path" title="pathlib.Path"><code class="xref py py-class docutils literal notranslate"><span class="pre">pathlib.Path</span></code></a> オブジェクトを優先的に使用します。</p></li>
+</ul>
+</section>
+<section id="extending-the-search-algorithm">
+<h2>検索アルゴリズムの拡張<a class="headerlink" href="importlib.metadata.html#extending-the-search-algorithm" title="Link to this heading">¶</a></h2>
+<p>Because <a class="reference external" href="https://packaging.python.org/en/latest/glossary/#term-Distribution-Package">Distribution Package</a> metadata
+is not available through <a class="reference internal" href="sys.html#sys.path" title="sys.path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code></a> searches, or
+package loaders directly,
+the metadata for a distribution is found through import
+system <a class="reference internal" href="../reference/import.html#finders-and-loaders"><span class="std std-ref">finders</span></a>.  To find a distribution package's metadata,
+<code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code> queries the list of <a class="reference internal" href="../glossary.html#term-meta-path-finder"><span class="xref std std-term">meta path finders</span></a> on
+<a class="reference internal" href="sys.html#sys.meta_path" title="sys.meta_path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.meta_path</span></code></a>.</p>
+<p>By default <code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code> installs a finder for distribution packages
+found on the file system.
+This finder doesn't actually find any <em>distributions</em>,
+but it can find their metadata.</p>
+<p>抽象クラス <a class="reference internal" href="importlib.html#importlib.abc.MetaPathFinder" title="importlib.abc.MetaPathFinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">importlib.abc.MetaPathFinder</span></code></a> はPythonの importシステムによってファインダーに期待されるインターフェイスを定義しています。 <code class="docutils literal notranslate"><span class="pre">importlib.metadata</span></code> はこのプロトコルを拡張し、 <a class="reference internal" href="sys.html#sys.meta_path" title="sys.meta_path"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.meta_path</span></code></a> からファインダーにオプションの <code class="docutils literal notranslate"><span class="pre">find_distributions</span></code> を呼び出すことができるようにし、この拡張インターフェースを <code class="docutils literal notranslate"><span class="pre">DistributionFinder</span></code> 抽象基底クラスとして提示し、この抽象メソッドを定義しています:</p>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+<span class="k">def</span> <span class="nf">find_distributions</span><span class="p">(</span><span class="n">context</span><span class="o">=</span><span class="n">DistributionFinder</span><span class="o">.</span><span class="n">Context</span><span class="p">()):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return an iterable of all Distribution instances capable of</span>
+<span class="sd">    loading the metadata for packages for the indicated ``context``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">DistributionFinder.Context</span></code> オブジェクトは、検索するパスと一致する名前を示す <code class="docutils literal notranslate"><span class="pre">.path</span></code> と <code class="docutils literal notranslate"><span class="pre">.name</span></code> のプロパティを提供し、その他の関連するコンテキストを提供することもできます。</p>
+<p>つまり、ファイルシステム以外の場所にある配布パッケージのメタデータを見つけるには、 <code class="docutils literal notranslate"><span class="pre">Distribution</span></code> をサブクラス化して抽象メソッドを実装します。そして、カスタムファインダーから <code class="docutils literal notranslate"><span class="pre">find_distributions()</span></code> メソッドで、派生した <code class="docutils literal notranslate"><span class="pre">Distribution</span></code> のインスタンスを返します。</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../contents.html">目次</a></h3>
+    <ul>
+<li><a class="reference internal" href="importlib.metadata.html#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib.metadata</span></code> -- パッケージメタデータへのアクセス</a><ul>
+<li><a class="reference internal" href="importlib.metadata.html#overview">概要</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#functional-api">機能 API</a><ul>
+<li><a class="reference internal" href="importlib.metadata.html#entry-points">エントリポイント</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#distribution-metadata">配布物メタデータ</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#distribution-versions">配布物バージョン</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#distribution-files">配布物ファイル</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#distribution-requirements">配布物の要件</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#mapping-import-to-distribution-packages">Mapping import to distribution packages</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="importlib.metadata.html#distributions">Distributions</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#distribution-discovery">Distribution Discovery</a></li>
+<li><a class="reference internal" href="importlib.metadata.html#extending-the-search-algorithm">検索アルゴリズムの拡張</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="importlib.resources.abc.html"
+                          title="前の章へ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib.resources.abc</span></code> -- リソースの抽象基底クラス</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="sys_path_init.html"
+                          title="次の章へ"><code class="xref py py-data docutils literal notranslate"><span class="pre">sys.path</span></code> モジュール検索パスの初期化</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="../bugs.html">バグ報告</a></li>
+      <li>
+        <a href="https://github.com/python/cpython/blob/main/Doc/library/importlib.metadata.rst"
+            rel="nofollow">ソースの表示
+        </a>
+      </li>
+    </ul>
+  </div>
+        </div>
+<div id="sidebarbutton" title="サイドバーをたたむ">
+<span>«</span>
+</div>
+
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Pythonモジュール索引"
+             >モジュール</a> |</li>
+        <li class="right" >
+          <a href="sys_path_init.html" title="sys.path モジュール検索パスの初期化"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="importlib.resources.abc.html" title="importlib.resources.abc -- リソースの抽象基底クラス"
+             >前へ</a> |</li>
+
+          <li><img src="../_static/py.svg" alt="Python logo" style="vertical-align: middle; margin-top: -1px"/></li>
+          <li><a href="https://www.python.org/">Python</a> &#187;</li>
+          <li class="switchers">
+            <div class="language_switcher_placeholder"></div>
+            <div class="version_switcher_placeholder"></div>
+          </li>
+          <li>
+              
+          </li>
+    <li id="cpython-language-and-version">
+      <a href="../index.html">3.12.4 Documentation</a> &#187;
+    </li>
+
+          <li class="nav-item nav-item-1"><a href="index.html" >Python 標準ライブラリ</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >モジュールのインポート</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="importlib.metadata.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">importlib.metadata</span></code> -- パッケージメタデータへのアクセス</a></li>
+                <li class="right">
+                    
+
+    <div class="inline-search" role="search">
+        <form class="inline-search" action="../search.html" method="get">
+          <input placeholder="クイック検索" aria-label="クイック検索" type="search" name="q" id="search-box" />
+          <input type="submit" value="検索" />
+        </form>
+    </div>
+                     |
+                </li>
+            <li class="right">
+<label class="theme-selector-label">
+    Theme
+    <select class="theme-selector" oninput="activateTheme(this.value)">
+        <option value="auto" selected>Auto</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+    </select>
+</label> |</li>
+            
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; 
+      <a href="../copyright.html">
+    
+    Copyright
+    
+      </a>
+     2001-2024, Python Software Foundation.
+    <br />
+    This page is licensed under the Python Software Foundation License Version 2.
+    <br />
+    Examples, recipes, and other code in the documentation are additionally licensed under the Zero Clause BSD License.
+    <br />
+    
+      See <a href="../../../license.html">History and License</a> for more information.<br />
+    
+    
+    <br />
+
+    The Python Software Foundation is a non-profit corporation.
+<a href="https://www.python.org/psf/donations/">Please donate.</a>
+<br />
+    <br />
+      最終更新: Jun 11, 2024 (04:44 UTC)
+    
+      <a href="../../../bugs.html">Found a bug</a>?
+    
+    <br />
+
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.3.7.
+    </div>
+
+    <script type="text/javascript" src="../_static/switchers.js"></script>
+  </body>
+</html>
